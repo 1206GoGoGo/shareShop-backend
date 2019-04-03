@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.ManagerInfoDao">
+
+  <resultMap id="BaseResultMap" type="whut.pojo.ManagerInfo">
+    <id column="manager_info_id" jdbcType="INTEGER" property="managerInfoId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="identity_card_type" jdbcType="TINYINT" property="identityCardType" />
+    <result column="identity_card_no" jdbcType="VARCHAR" property="identityCardNo" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    
+    <association property="userLogin" javaType="whut.pojo.UserLogin">
+    	<result column="username" jdbcType="VARCHAR" property="username" />
+    	<result column="status" jdbcType="TINYINT" property="status" />
+    	<result column="level" jdbcType="INTEGER" property="level" />
+    </association>
+  </resultMap>
+  
+   <select id="getList" resultMap="BaseResultMap">
+         SELECT * FROM manager_info mi LEFT JOIN user_login ul on mi.user_id = ul.user_id where ul.status = #{status}
+   </select>
+   
+   <select id="add" parameterType="ManagerInfo">
+    	INSERT INTO manager_info
+    	(user_id,name,identity_card_type,identity_card_no,phone_number,email,gender,
+    	birthday,register_time)      
+        VALUES
+    	(#{userId},#{name},#{identityCardType},#{identityCardNo},#{phoneNumber},#{email},
+    	#{gender},#{birthday},now())
+    </select>
+    
+   <select id="getDetail" parameterType="int" resultMap="BaseResultMap">
+     	SELECT * FROM manager_info mi LEFT JOIN user_login ul on mi.user_id = ul.user_id 
+     	WHERE mi.user_id = #{id}
+   </select>
+   
+  	<select id="delete" parameterType="int">
+        UPDATE user_login SET status = 0 where user_id = #{id}
+   </select>
+   
+   <select id="modify" parameterType="ManagerInfo">
+    	UPDATE manager_info SET 
+    	name = #{name},identity_card_type = #{identityCardType},identity_card_no = #{identityCardNo},
+    	phone_number = #{phoneNumber},email = #{email},gender = #{gender},birthday = #{birthday}
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>

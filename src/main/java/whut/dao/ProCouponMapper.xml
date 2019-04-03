@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.ProCouponDao">
+  <resultMap id="CouponInfoResultMap" type="whut.pojo.CouponInfo">
+    <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="TINYINT" property="type" />
+    <result column="face_value" jdbcType="DECIMAL" property="faceValue" />
+    <result column="use_condition" jdbcType="DECIMAL" property="useCondition" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="remaining_quantity" jdbcType="INTEGER" property="remainingQuantity" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  
+  <resultMap id="CouponReceiveResultMap" type="whut.pojo.CouponReceive">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="coupon_id" jdbcType="INTEGER" property="couponId" />
+    <result column="coupon_money" jdbcType="DECIMAL" property="couponMoney" />
+    <result column="full_money" jdbcType="DECIMAL" property="fullMoney" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  
+  <resultMap id="CouponLogsResultMap" type="whut.pojo.CouponLogs">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="coupon_id" jdbcType="INTEGER" property="couponId" />
+    <result column="order_number" jdbcType="BIGINT" property="orderNumber" />
+    <result column="order_original_money" jdbcType="DECIMAL" property="orderOriginalMoney" />
+    <result column="coupon_money" jdbcType="DECIMAL" property="couponMoney" />
+    <result column="order_final_money" jdbcType="DECIMAL" property="orderFinalMoney" />
+    <result column="full_money" jdbcType="DECIMAL" property="fullMoney" />
+    <result column="time" jdbcType="TIMESTAMP" property="time" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  
+  <select id="getList"  parameterType="hashmap" resultMap="CouponInfoResultMap">
+        SELECT * FROM coupon_info where status = 1
+        limit #{pageindex},#{pagesize}
+   </select>
+   
+   <select id="addCoupon" parameterType="CouponInfo">
+    	INSERT INTO coupon_info
+    	(name,type,face_value,use_condition,image_url,start_time,end_time,amount,
+    	remaining_quantity,create_time,category_id,status)      
+        VALUES
+    	(#{name},#{type},#{faceValue},#{useCondition},#{imageUrl},#{startTime},
+    	#{endTime},#{amount},#{remainingQuantity},now(),#{categoryId},#{status})
+    </select>
+    
+   <select id="getCouponDetailById" parameterType="string" resultMap="CouponInfoResultMap">
+        SELECT * FROM coupon_info where coupon_id = #{id}
+    </select>
+    
+    <select id="deleteCoupon" parameterType="string">
+        UPDATE coupon_info SET status = -1 WHERE coupon_id = #{id}
+    </select>
+    
+    <select id="getCouponByUId" parameterType="hashmap" resultMap="CouponReceiveResultMap">
+        SELECT * FROM coupon_receive where user_id = #{userId}
+        limit #{pageindex},#{pagesize}
+    </select>
+    
+ 	<select id="getCouponReceiveList" parameterType="hashmap" resultMap="CouponReceiveResultMap">
+        SELECT * FROM coupon_receive where status != -1
+        limit #{pageindex},#{pagesize}
+    </select>
+  
+    <select id="getCouponLogsList" parameterType="hashmap" resultMap="CouponLogsResultMap">
+        SELECT * FROM coupon_logs where status = 1
+        limit #{pageindex},#{pagesize}
+    </select>
+    
+    <select id="addCouponLogs" parameterType="couponLogs">
+    	INSERT INTO coupon_logs
+    	(user_id,coupon_id,order_number,order_original_money,coupon_money,
+    	order_final_money,full_money,time,status)      
+        VALUES
+    	(#{userId},#{couponId},#{orderNumber},#{orderOriginalMoney},#{couponMoney},
+    	#{orderFinalMoney},#{fullMoney},now(),#{status})
+    </select>
+    
+   <select id="getCouponLogsDetail" parameterType="hashmap" resultMap="CouponLogsResultMap">
+        SELECT * FROM coupon_logs 
+        where 1 = 1
+        <if test="couponId != null">
+      		and coupon_id = #{couponId} 
+    	</if>
+    	<if test="orderNumber != null">
+      		and order_number = #{orderNumber} 
+    	</if>
+    	  limit #{pageindex},#{pagesize}
+    </select>
+    
+   <select id="getCouponLogsListByStatus" parameterType="hashmap" resultMap="CouponLogsResultMap">
+        SELECT * FROM coupon_logs where status = #{status}
+        limit #{pageindex},#{pagesize}
+    </select>
+    
+    <select id="modifyCouponLogsStatus" parameterType="string">
+    	UPDATE coupon_logs SET status = 0 where coupon_id = #{id}
+    </select>
+    
+   <select id="addCouponReceive" parameterType="couponReceive">
+    	INSERT INTO coupon_receive
+    	(user_id,coupon_id,coupon_money,full_money,receive_time,status)      
+        VALUES
+    	(#{userId},#{couponId},#{couponMoney},#{fullMoney},#{receiveTime},#{status})
+    </select>
+    
+    <select id="modifyCouponReceiveStatus" parameterType="string">
+    	UPDATE coupon_receive SET status = 0 where coupon_id = #{id}
+    </select>
+    
+  </mapper>

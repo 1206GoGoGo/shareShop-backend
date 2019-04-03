@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="whut.dao.ProSpecsDao" >
+  <resultMap id="BaseResultMap" type="whut.pojo.ProductSpecs" >
+    <id column="product_specs_id" property="productSpecsId" jdbcType="INTEGER" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="product_code" property="productCode" jdbcType="VARCHAR" />
+    <result column="specs" property="specs" jdbcType="VARCHAR" />
+    <result column="specs_sort" property="specsSort" jdbcType="TINYINT" />
+    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+    <result column="average_cost" property="averageCost" jdbcType="DECIMAL" />
+    <result column="original_price" property="originalPrice" jdbcType="DECIMAL" />
+    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="product_stock" property="productStock" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <select id="getProSpecsByProId" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM product_specs where product_id = #{id}
+   </select>
+   
+   <select id="getProSpecsById" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM product_specs where product_specs_id = #{id}
+   </select>
+   
+   <select id="addProSpecs" parameterType="ProductSpecs">
+    	INSERT INTO product_specs
+    	(product_id,name,product_code,specs,specs_sort,pic_url,average_cost,
+    	original_price,price,description,product_stock,create_time)      
+        VALUES
+    	(#{productId},#{name},#{productCode},#{specs},#{specsSort},#{picUrl},#{averageCost},
+    	#{originalPrice},#{price},#{description},#{productStock},now())
+    </select>
+    
+    <select id="modifyProSpecs" parameterType="ProductSpecs">
+    	UPDATE product_specs SET 
+    	name = #{name},product_code = #{productCode},specs = #{specs},specs_sort = #{specsSort},
+    	pic_url = #{picUrl},average_cost = #{averageCost},original_price = #{originalPrice},price = #{price},
+    	description = #{description},product_stock=#{productStock},update_time = now()
+        WHERE product_specs_id = #{productSpecsId}
+    </select>
+ 
+ </mapper>

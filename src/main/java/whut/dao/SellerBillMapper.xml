@@ -1,0 +1,56 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.SellerBillDao">
+  <resultMap id="WithdrawMap" type="whut.pojo.WithdrawRecord">
+    <id column="withdraw_id" jdbcType="INTEGER" property="withdrawId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="withdraw_money" jdbcType="DECIMAL" property="withdrawMoney" />
+    <result column="notes" jdbcType="VARCHAR" property="notes" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  
+  <resultMap id="YieldMap" type="whut.pojo.YieldDetail">
+    <id column="yield_id" jdbcType="INTEGER" property="yieldId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="yield_money" jdbcType="DECIMAL" property="yieldMoney" />
+    <result column="received_money" jdbcType="DECIMAL" property="receivedMoney" />
+    <result column="tax_money" jdbcType="DECIMAL" property="taxMoney" />
+    <result column="purchaser_id" jdbcType="INTEGER" property="purchaserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
+	<select id="getList" parameterType="hashmap" resultType="SellerBill">
+    	SELECT withdraw_money as money, create_time as createTime, 'withdraw_money' as type FROM withdraw_record where user_id = #{userId}
+		union
+		SELECT yield_money as money , create_time as createTime ,'yield_money' as type FROM yield_detail where user_id = #{userId}
+		ORDER BY createTime
+		limit #{pageindex},#{pagesize}
+    </select>
+    
+    <select id="addWithdraw" parameterType="WithdrawRecord">
+    	INSERT INTO withdraw_record
+    	(user_id,withdraw_money,notes,create_time,status)      
+        VALUES
+    	(#{userId},#{withdrawMoney},#{notes},now(),1)
+    </select>
+    
+    <select id="addYield" parameterType="YieldDetail">
+    	INSERT INTO yield_detail
+    	(user_id,order_id,yield_money,received_money,tax_money,purchaser_id,create_time)      
+        VALUES
+    	(#{userId},#{orderId},#{yieldMoney},#{receivedMoney},#{taxMoney},#{purchaserId},now())
+    </select>
+    
+    <select id="getWithdrawList" parameterType="hashmap" resultMap="WithdrawMap">
+		SELECT * FROM withdraw_record where user_id = #{userId} ORDER BY create_time
+		limit #{pageindex},#{pagesize}
+    </select>
+    
+    <select id="getYieldList" parameterType="hashmap" resultMap="YieldMap">
+    	SELECT * FROM yield_detail where user_id = #{userId} ORDER BY create_time
+    	limit #{pageindex},#{pagesize}
+    </select>
+
+</mapper>

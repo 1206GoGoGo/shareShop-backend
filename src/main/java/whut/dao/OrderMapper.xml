@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.OrderDao">
+  <resultMap id="orderResultMap" type="whut.pojo.OrderMaster">
+    <id column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="order_number" jdbcType="BIGINT" property="orderNumber" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="first_addr" jdbcType="VARCHAR" property="firstAddr" />
+    <result column="second_addr" jdbcType="VARCHAR" property="secondAddr" />
+    <result column="payment_mode" jdbcType="TINYINT" property="paymentMode" />
+    <result column="order_moeny" jdbcType="DECIMAL" property="orderMoeny" />
+    <result column="discount_money" jdbcType="DECIMAL" property="discountMoney" />
+    <result column="shipping_money" jdbcType="DECIMAL" property="shippingMoney" />
+    <result column="payment_money" jdbcType="DECIMAL" property="paymentMoney" />
+    <result column="express_number" jdbcType="VARCHAR" property="expressNumber" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="shipping_time" jdbcType="TIMESTAMP" property="shippingTime" />
+    <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
+    <result column="order_status" jdbcType="TINYINT" property="orderStatus" />
+    
+    <collection property="orderDetails" javaType="list" ofType="OrderDetail">
+    	<id column="order_detail_id" jdbcType="INTEGER" property="orderDetailId" />
+    	 <result column="product_id" jdbcType="INTEGER" property="productId" />
+    	 <result column="product_specs_id" jdbcType="INTEGER" property="productSpecsId" />
+    	<result column="poduct_name" jdbcType="VARCHAR" property="poductName" />
+    	<result column="product_quantity" jdbcType="INTEGER" property="productQuantity" />
+    	<result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    	<result column="status" jdbcType="TINYINT" property="status" />
+    </collection>
+  </resultMap>
+  
+ <resultMap id="OrderDetailResultMap" type="whut.pojo.OrderDetail">
+    <id column="order_detail_id" jdbcType="INTEGER" property="orderDetailId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+     <result column="product_id" jdbcType="INTEGER" property="productId" />
+     <result column="product_specs_id" jdbcType="INTEGER" property="productSpecsId" />
+    <result column="poduct_name" jdbcType="VARCHAR" property="poductName" />
+    <result column="product_quantity" jdbcType="INTEGER" property="productQuantity" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  
+   <select id="getListByUser" parameterType="hashmap" resultMap="orderResultMap">
+       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
+       where user_id = #{id} 
+       limit #{pageindex},#{pagesize}
+   </select>
+   
+   <select id="getListByPro" parameterType="hashmap" resultMap="OrderDetailResultMap">
+       SELECT * FROM order_detail where product_specs_id = #{id}  limit #{pageindex},#{pagesize}
+   </select>
+   
+   <select id="getListByStatus" parameterType="hashmap" resultMap="orderResultMap">
+       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
+       where order_status = #{status}  
+       limit #{pageindex},#{pagesize}
+   </select>
+   
+    <select id="searchByOrderNumber" parameterType="string" resultMap="orderResultMap">
+       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
+       where order_number = #{orderNumber} 
+   </select>
+   
+   <select id="getMasterByOrderId" parameterType="int" resultMap="orderResultMap">
+       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
+       where om.order_id = #{orderId} 
+   </select>
+   
+   
+  <select id="getDetailListByOrderId" parameterType="int" resultMap="OrderDetailResultMap">
+       SELECT * FROM order_detail where order_id = #{orderId}
+   </select>
+   
+   <select id="getOrderDetailByOrderDetailId" parameterType="int" resultMap="OrderDetailResultMap">
+       SELECT * FROM order_detail where order_detail_id = #{orderDetailId}
+   </select>
+   
+      
+   <select id="modifyOrder" parameterType="orderMaster">
+    	UPDATE order_master SET 
+    	consignee_name = #{consigneeName},consignee_phone = #{consigneePhone},postal_code = #{postalCode},
+    	state = #{state},city = #{city},first_addr = #{firstAddr},second_addr = #{secondAddr}
+        WHERE order_id = #{orderId}
+    </select>
+    
+   <select id="modifyPro" parameterType="orderDetail">
+    	
+    </select>
+    
+    <select id="modifyOrderStatus" parameterType="hashmap">
+    	UPDATE order_master SET 
+    	order_status = #{orderStatus}
+        WHERE order_id = #{orderId}
+    </select>
+    
+        
+   <select id="modifyProStatus" parameterType="hashmap">
+    	UPDATE order_detail SET 
+    	status = #{status}
+        WHERE order_detail_id = #{orderDetailId}
+    </select>
+    
+    <select id="modifyProStatusByOrderId" parameterType="hashmap">
+    	UPDATE order_detail SET 
+    	status = #{status}
+        WHERE order_id = #{orderId}
+    </select>
+    
+   <select id="getCountADay" parameterType="string" resultMap="java.lang.Integer">
+        SELECT count(*) from order_master where date_format(pay_time,'%Y-%m-%d') =#{day}
+   </select>
+   
+   <select id="getAmountADay" parameterType="string" resultMap="java.lang.Double">
+        SELECT sum(payment_money) from order_master where date_format(pay_time,'%Y-%m-%d') =#{day}
+   </select>
+   
+   <select id="getCountAMonth" parameterType="string" resultMap="java.lang.Integer">
+        SELECT count(*) from order_master where date_format(pay_time,'%Y-%m') =#{month}
+   </select>
+   
+   <select id="getAmountAMonth" parameterType="string" resultMap="java.lang.Double">
+        SELECT sum(payment_money) from order_master where date_format(pay_time,'%Y-%m') =#{month}
+   </select>
+
+</mapper>
