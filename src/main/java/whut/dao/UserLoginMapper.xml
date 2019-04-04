@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.UserLoginDao">
+  <resultMap id="BaseResultMap" type="whut.pojo.UserLogin">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+  </resultMap>
+  
+   <select id="getLoginInfo" resultMap="BaseResultMap">
+        SELECT * FROM user_login where username = #{username}
+   </select>
+   
+   <select id="addUser" parameterType="UserLogin">
+        INSERT INTO user_login
+        (username,password,status,level)
+        VALUES
+        (#{username},#{password},#{status},#{level})
+   </select>
+   
+   <select id="getLoginInfoById" parameterType="int" resultMap="BaseResultMap">
+        SELECT * FROM user_login where user_id = #{userId}
+   </select>
+   
+   <select id="getLoginInfoAmountByLevel" parameterType="int" resultType="java.lang.Integer">
+        SELECT count(*) FROM user_login where level = #{level}
+   </select>
+   
+    <select id="addSeller" parameterType="string">
+    	UPDATE user_login SET level = 3 WHERE user_id = #{id}
+    </select>
+    
+   <select id="deleteSeller" parameterType="string">
+    	UPDATE user_login SET level = 1 WHERE user_id = #{id}
+    </select>
+    
+   <select id="getCountADay" parameterType="hashmap" resultType="java.lang.Integer">
+        SELECT count(*) from user_info where date_format(register_time,'%Y-%m-%d') =#{day}
+		AND user_id IN (SELECT user_id FROM user_login where level = #{level})
+   </select>
+
+</mapper>   
+      

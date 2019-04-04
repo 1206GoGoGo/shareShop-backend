@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.ProInfoDao">
+  <resultMap id="BaseResultMap" type="whut.pojo.ProductInfo">
+     <id column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="spu" jdbcType="VARCHAR" property="spu" />
+    <result column="one_category_id" jdbcType="INTEGER" property="oneCategoryId" />
+    <result column="two_category_id" jdbcType="INTEGER" property="twoCategoryId" />
+    <result column="three_category_id" jdbcType="INTEGER" property="threeCategoryId" />
+    <result column="main_image" jdbcType="VARCHAR" property="mainImage" />
+    <result column="attribute_list" jdbcType="VARCHAR" property="attributeList" />
+    <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
+    <result column="audit_status" jdbcType="TINYINT" property="auditStatus" />
+    <result column="use_coupon" jdbcType="TINYINT" property="useCoupon" />
+    <result column="discount_rate" jdbcType="INTEGER" property="discountRate" />
+    <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+  </resultMap>
+    <select id="getList" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM product_info where publish_status = 1 and audit_status = 1
+        limit #{pageindex},#{pagesize}  
+    </select>
+    
+    <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where product_id = #{id}
+    </select>
+    
+    <select id="getDetailByCode" parameterType="String" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where product_code = #{id}
+    </select>
+    
+     <select id="add" parameterType="ProductComment">
+    	INSERT INTO product_info
+    	(product_name,brand_name,spu,one_category_id,two_category_id,three_category_id,
+    	 main_image,attribute_list,publish_status,audit_status,use_coupon,discount_rate,
+    	production_date,description,stock,input_time)      
+        VALUES
+    	(#{productName},#{brandName},#{spu},#{oneCategoryId},#{twoCategoryId},#{threeCategoryId},
+    	#{mainImage},#{attributeList},#{publishStatus},#{auditStatus},
+    	#{useCoupon},#{discountRate},#{productionDate},#{description},#{stock},now())
+    </select>
+    
+    <select id="search" parameterType="hashmap" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where product_name LIKE '%${productName}%'
+    	limit #{pageindex},#{pagesize}  
+    </select>
+    
+    <select id="modify" parameterType="ProductInfo">
+    	UPDATE product_info SET 
+    	product_name = #{productName},brand_name = #{brandName},spu = #{spu},one_category_id = #{oneCategoryId},two_category_id = #{twoCategoryId},
+    	three_category_id = #{threeCategoryId},main_image = #{mainImage},attribute_list = #{attributeList},publish_status = #{publishStatus},
+    	audit_status = #{auditStatus},use_coupon = #{useCoupon},discount_rate = #{discountRate},
+    	production_date = #{productionDate},description = #{description},stock = #{stock},modified_time = now()    
+        WHERE product_id = #{productId}
+    </select>
+    
+    <select id="modifyAuditStatus" parameterType="hashmap">
+    	UPDATE `product_info` SET 
+    	audit_status = #{auditStatus},  modified_time = now()
+        WHERE product_id = #{productId}
+    </select>
+    
+    <select id="modifyShelfStatus" parameterType="hashmap">
+    	UPDATE `product_info` SET 
+    	publish_status = #{publishStatus}, modified_time = now()
+        WHERE product_id = #{productId}
+    </select>
+    
+    <select id="getListByCategory" parameterType="hashmap"  resultMap="BaseResultMap">
+    	SELECT * FROM product_info where (one_category_id = #{oneCategoryId}
+    	or two_category_id = #{twoCategoryId}
+    	or three_category_id = #{threeCategoryId})
+    	and publish_status = 1 and audit_status = 1
+    	limit #{pageindex},#{pagesize} 
+    </select>
+    
+    <select id="getIfcheckedList" parameterType="hashmap" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where  audit_status = #{auditStatus}
+    	limit #{pageindex},#{pagesize} 
+    </select>
+    
+   <select id="getIfShelfList" parameterType="hashmap" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where  publish_status = #{publishStatus}
+    	limit #{pageindex},#{pagesize} 
+    </select>
+    
+    <select id="getListByCondition" parameterType="hashmap" resultMap="BaseResultMap">
+    	SELECT * FROM product_info where  1 = 1
+    	<if test="productName != null">
+      		and product_name = #{productName} 
+    	</if>
+    	<if test="productCode != null">
+      		and product_code = #{productCode} 
+    	</if>
+    	<if test="oneCategoryId != null">
+      		and one_category_id = #{oneCategoryId} 
+    	</if>
+    	<if test="twoCategoryId != null">
+      		and two_category_id = #{twoCategoryId} 
+    	</if>
+    	<if test="threeCategoryId != null">
+      		and three_category_id = #{threeCategoryId} 
+    	</if>
+    	<if test="publishStatus != null">
+      		and publish_status = #{publishStatus}  
+    	</if>
+        <if test="auditStatus != null">
+      		and audit_status = #{auditStatus}  
+    	</if>
+    	 limit #{pageindex},#{pagesize} 
+    </select>
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.UserInfoDao">
+
+<resultMap id="BaseResultMap" type="whut.pojo.UserInfo">
+    <id column="user_info_id" jdbcType="INTEGER" property="userInfoId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="identity_card_type" jdbcType="TINYINT" property="identityCardType" />
+    <result column="identity_card_no" jdbcType="VARCHAR" property="identityCardNo" />
+    <result column="phone_number" jdbcType="INTEGER" property="phoneNumber" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="gender" jdbcType="VARCHAR" property="gender" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="superior_id" jdbcType="INTEGER" property="superiorId" />
+    <result column="card_number" property="cardNumber" jdbcType="VARCHAR" />
+    <result column="user_money" jdbcType="DECIMAL" property="userMoney" />
+    
+    <association property="userLogin" javaType="whut.pojo.UserLogin">
+    	<result column="username" jdbcType="VARCHAR" property="username" />
+    	<result column="status" jdbcType="TINYINT" property="status" />
+    	<result column="level" jdbcType="INTEGER" property="level" />
+    </association>
+  </resultMap>
+  
+    <select id="getList" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id
+        where ul.status = #{status} 
+        limit #{pageindex}, #{pagesize}
+   </select>
+   
+    <select id="getSellerList" resultMap="BaseResultMap">
+        SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id where ul.level = 3
+        limit #{pageindex}, #{pagesize}
+   </select>
+
+   <select id="add" parameterType="UserInfo">
+    	INSERT INTO user_info
+    	(name,identity_card_type,identity_card_no,phone_number,email,gender,birthday,
+    	register_time,user_id,superior_id,card_number)      
+        VALUES
+    	(#{name},#{identityCardType},#{identityCardNo},#{phoneNumber},#{email},#{gender},#{birthday},
+    	now(),#{userId},#{superiorId},#{cardNumber})
+    </select>
+    
+   <select id="delete" parameterType="int">
+        DELETE FROM user_info where user_id = #{id}
+   </select>
+   
+   <select id="modify" parameterType="UserInfo">
+    	UPDATE user_info SET 
+    	name = #{name},identity_card_type = #{identityCardType},identity_card_no = #{identityCardNo},phone_number = #{phoneNumber},
+    	email = #{email},gender = #{gender},birthday = #{birthday},superior_id = #{superiorId},card_number = #{cardNumber}
+        WHERE user_id = #{userId}
+    </select>
+   
+   <select id="getUserInfo" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id
+        WHERE ui.user_id = #{id}
+   </select>
+   
+   <select id="searchAllInfoByUserInfo" parameterType="hashmap" resultMap="BaseResultMap">
+      SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id 
+      where  1 = 1
+    	<if test="username != null">
+      		and ul.username = #{username} 
+    	</if>
+    	<if test="phoneNumber != null">
+      		and ui.phone_number = #{phoneNumber} 
+    	</if>
+    	<if test="name != null">
+      		and ui.name = #{name} 
+    	</if>
+    	<if test="identityCardNo != null">
+      		and ui.identity_card_no = #{identityCardNo} 
+    	</if>
+    	<if test="level != null">
+      		and ul.level = #{level}  
+    	</if>
+        <if test="email != null">
+      		and ui.email = #{email}  
+    	</if>
+    	<if test="status != null">
+      		and ul.status = #{status}  
+    	</if>
+    	limit #{pageindex}, #{pagesize}
+   </select>
+   
+  <select id="getMemberBySellerId" parameterType="hashmap" resultMap="BaseResultMap">
+       SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id
+        where ui.superior_id = #{superiorId} and ul.status = 1
+        limit #{pageindex}, #{pagesize}
+   </select>
+   
+</mapper>

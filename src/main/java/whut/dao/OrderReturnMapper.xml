@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.OrderReturnDao" >
+  <resultMap id="BaseResultMap" type="whut.pojo.ReturnRecord" >
+    <id column="return_id" property="returnId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_detail_id" property="orderDetailId" jdbcType="INTEGER" />
+    <result column="product_specs_id" property="productSpecsId" jdbcType="INTEGER" />
+    <result column="return_type" property="returnType" jdbcType="TINYINT" />
+    <result column="return_money" property="returnMoney" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="addOrderReturn" parameterType="ReturnRecord">
+    	INSERT INTO return_record
+    	(user_id,order_id,order_detail_id,product_specs_id,return_type,return_money,
+    	create_time,status,reason)      
+        VALUES
+    	(#{userId},#{orderId},#{orderDetailId},#{productSpecsId},#{returnType},#{returnMoney},
+    	now(),#{status},#{reason})
+  </select>
+  
+  <select id="modifyStatusByOrderId" parameterType="hashmap">
+    	UPDATE return_record SET status = #{status}
+        WHERE order_id = #{orderId}
+  </select>
+  
+  <select id="modifyStatusByOrderDetailId" parameterType="hashmap">
+    	UPDATE return_record SET status = #{status}
+        WHERE order_detail_id = #{orderDetailId}
+  </select>
+  
+   <select id="getListByUser" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM return_record where user_id = #{userId}
+        limit #{pageindex}, #{pagesize}
+   </select>
+  
+  
+    <select id="getListByStatus" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM return_record where status = #{status}
+        limit #{pageindex}, #{pagesize}
+   </select>
+   
+    <select id="getListByOrderId" parameterType="int" resultMap="BaseResultMap">
+        SELECT * FROM return_record where order_id = #{orderId}
+   </select>
+   
+    <select id="getListByReturnType" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM return_record where return_type = #{type}
+        limit #{pageindex}, #{pagesize}
+   </select>
+  
+  </mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="whut.dao.ProCommentDao">
+  <resultMap id="BaseResultMap" type="whut.pojo.ProductComment">
+    <id column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="reply" property="reply" jdbcType="VARCHAR" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="second_content" jdbcType="VARCHAR" property="secondContent" />
+    <result column="grade" jdbcType="TINYINT" property="grade" />
+    <result column="comment_time" jdbcType="TIMESTAMP" property="commentTime" />
+    <result column="audit_status" jdbcType="TINYINT" property="auditStatus" />
+  </resultMap>
+  
+  <select id="getListByProduct" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM product_comment where product_id = #{productId} and audit_status = 1
+        limit #{pageindex},#{pagesize}
+   </select>
+   
+    <select id="getListByUser" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM product_comment where user_id = #{userId}
+        limit #{pageindex},#{pagesize}
+   </select>
+   
+   <select id="add" parameterType="ProductInfo">
+    	INSERT INTO product_comment
+    	(product_id,order_id,user_id,reply,content,grade,comment_time,audit_status)      
+        VALUES
+    	(#{productId},#{orderId},#{userId},#{reply},#{content},#{grade},now(),1)
+    </select>
+    
+   <select id="delete" parameterType="String">
+    	UPDATE product_comment SET 
+    	audit_status = 0
+        WHERE comment_id = #{commentId}
+    </select>
+    
+    <select id="addAgain" parameterType="hashmap">
+    	UPDATE product_comment SET 
+    	second_content = #{secondContent}
+        WHERE comment_id = #{commentId}
+    </select>
+
+ 	<select id="getCommentById" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM product_comment where comment_id = #{id}
+   </select>
+ 
+  </mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.UserAddrDao">
+
+ <resultMap id="BaseResultMap" type="whut.pojo.UserAddr">
+    <id column="user_addr_id" jdbcType="INTEGER" property="userAddrId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="first_addr" jdbcType="VARCHAR" property="firstAddr" />
+    <result column="second_addr" jdbcType="VARCHAR" property="secondAddr" />
+    <result column="is_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+  </resultMap>
+  
+   <select id="getListByUserId" parameterType="int" resultMap="BaseResultMap">
+         SELECT * FROM user_addr where user_id = #{id}
+   </select>
+
+</mapper>

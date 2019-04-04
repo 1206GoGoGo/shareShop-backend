@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.ProDiscountDao">
+
+<resultMap id="BaseResultMap" type="whut.pojo.ProductDiscount">
+    <id column="discount_id" jdbcType="INTEGER" property="discountId" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="discount_rate" jdbcType="TINYINT" property="discountRate" />
+    <result column="seller_discount_rate" jdbcType="TINYINT" property="sellerDiscountRate" />
+    <result column="yield_rate" jdbcType="TINYINT" property="yieldRate" />
+</resultMap>
+
+	<select id="getList"  parameterType="hashmap"  resultMap="BaseResultMap">
+        SELECT * FROM product_discount
+        limit #{pageindex},#{pagesize}
+    </select>
+    
+
+    <select id="search" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM product_discount where category_id = #{id}
+    </select>
+    
+     <select id="add" parameterType="ProductDiscount">
+    	INSERT INTO product_discount
+    	(category_id,discount_rate,seller_discount_rate,yield_rate)      
+        VALUES
+    	(#{categoryId},#{discountRate},#{sellerDiscountRate},#{yieldRate})
+    </select>
+    
+     <select id="modify" parameterType="ProductDiscount">
+    	UPDATE product_discount SET 
+    	category_id = #{categoryId},discount_rate = #{discountRate},seller_discount_rate = #{sellerDiscountRate},yield_rate = #{yieldRate} 
+        WHERE discount_id = #{discountId}
+    </select>
+
+</mapper>
