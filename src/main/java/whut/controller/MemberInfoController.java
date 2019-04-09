@@ -43,18 +43,18 @@ public class MemberInfoController {
 	 * @return
 	 */
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
-		return  memberInfoService.delete(jsonString);
+	public @ResponseBody ResponseData delete() {
+		return  memberInfoService.delete();
 	}
 	
 	@RequestMapping(value = "/getDetail", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getDetail(int id) {
-		return  memberInfoService.getDetail(id);
+	public @ResponseBody ResponseData getDetail() {
+		return  memberInfoService.getDetail();
 	}
 	
 	@RequestMapping(value = "/getCountAWeek", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCountAWeek() {
-		return  memberInfoService.getCountAWeek();
+	public @ResponseBody ResponseData getCountAWeek(int userId) {
+		return  memberInfoService.getCountAWeek(userId);
 	}
 
 }

@@ -19,27 +19,6 @@ public class MemberOrderController {
 	private MemberOrderService memberOrderService;
 	
 	/**
-	 * 获取某用户的订单信息
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUser(int pageindex, int pagesize, int id) {
-		return memberOrderService.getListByUser(pageindex, pagesize, id);
-	}
-	
-	/**
-	 * 根据用户名获取订单列表
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/getListByUserName", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUserName(int pageindex, int pagesize, String username) {
-		return memberOrderService.getListByUserName(pageindex, pagesize, username);
-	}
-
-	
-	/**
 	 * 根据订单状态
 	 * @param Status
 	 * @return
@@ -47,16 +26,6 @@ public class MemberOrderController {
 	@RequestMapping(value = "/getListByStatus", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getListByStatus(int pageindex, int pagesize, int status) {
 		return memberOrderService.getListByStatus(pageindex, pagesize, status);
-	}
-	
-	/**
-	 * 通过订单号查询订单（唯一返回值）
-	 * @param orderNumber
-	 * @return
-	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public @ResponseBody ResponseData search(String orderNumber) {
-		return memberOrderService.search(orderNumber);
 	}
 	
 	/**

@@ -46,22 +46,11 @@
     <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
-  
-   <select id="getListByUser" parameterType="hashmap" resultMap="orderResultMap">
-       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
-       where user_id = #{id} 
-       limit #{pageindex},#{pagesize}
-   </select>
    
    <select id="getListByStatus" parameterType="hashmap" resultMap="orderResultMap">
        SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
        where order_status = #{status}  
        limit #{pageindex},#{pagesize}
-   </select>
-   
-    <select id="searchByOrderNumber" parameterType="string" resultMap="orderResultMap">
-       SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
-       where order_number = #{orderNumber} 
    </select>
    
    <select id="getMasterByOrderId" parameterType="int" resultMap="orderResultMap">

@@ -21,6 +21,7 @@ public interface UserLoginDao {
 
 	void deleteSeller(String id);
 
-	//通过传入的日期2019-04-04获取改天注册用户数\seller    用户数量map:day\level
+	//通过传入的日期2019-04-04获取该天注册用户数	用户数量map:day\sellerId
+	//获取seller新增推广用户的数量
 	int getCountADay(Map<String, Object> map);
 }

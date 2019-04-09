@@ -11,6 +11,7 @@ import whut.dao.OrderReturnDao;
 import whut.pojo.ReturnRecord;
 import whut.service.MemberOrderReturnService;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 
 @Service
 public class MemberOrderReturnServiceImpl implements MemberOrderReturnService {
@@ -19,11 +20,11 @@ public class MemberOrderReturnServiceImpl implements MemberOrderReturnService {
 	private OrderReturnDao orderReturnDao;
 	
 	@Override
-	public ResponseData getListByUser(int pageindex, int pagesize, int userId) {
+	public ResponseData getListByUser(int pageindex, int pagesize) {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
-		map.put("userId", userId);
+		map.put("userId", SysContent.getUserId());
 		List<ReturnRecord> list = orderReturnDao.getListByUser(map);
 		if(list.isEmpty()) {
 			return new ResponseData(400,"no data satify request",null);

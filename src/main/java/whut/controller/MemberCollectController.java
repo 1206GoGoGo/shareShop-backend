@@ -21,8 +21,8 @@ public class MemberCollectController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUser(int id) {
-		return memberCollectService.getListByUser(id);
+	public @ResponseBody ResponseData getListByUser() {
+		return memberCollectService.getListByUser();
 	}
 	
 	/**

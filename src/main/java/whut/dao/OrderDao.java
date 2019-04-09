@@ -9,13 +9,8 @@ import whut.pojo.SellerBill;
 
 public interface OrderDao {
 
-	//String pageindex, String pagesize, String id
-	List<OrderMaster> getListByUser(Map<String, Integer> map);
-
 	//String pageindex, String pagesize, String status
 	List<OrderMaster> getListByStatus(Map<String, Integer> map);
-
-	OrderMaster searchByOrderNumber(String orderNumber);
 	
 	OrderMaster getMasterByOrderId(int orderId);
 

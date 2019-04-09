@@ -9,6 +9,7 @@ import whut.dao.OrderCartDao;
 import whut.pojo.OrderCart;
 import whut.service.MemberShopCartService;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 @Service
 public class MemberShopCartServiceImpl implements MemberShopCartService {
 
@@ -16,8 +17,8 @@ public class MemberShopCartServiceImpl implements MemberShopCartService {
 	private OrderCartDao dao;
 
 	@Override
-	public ResponseData getListByUser(int id) {
-		List<OrderCart> list = dao.getListByUser(id);
+	public ResponseData getListByUser() {
+		List<OrderCart> list = dao.getListByUser(SysContent.getUserId());
 		if(list.isEmpty()) {
 			return new ResponseData(400,"no data satify request",null);
 		}else {

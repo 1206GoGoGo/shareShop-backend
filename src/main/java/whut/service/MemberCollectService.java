@@ -4,7 +4,7 @@ import whut.utils.ResponseData;
 
 public interface MemberCollectService {
 
-	ResponseData getListByUser(int id);
+	ResponseData getListByUser();
 
 	ResponseData getAmountById(int id);
 

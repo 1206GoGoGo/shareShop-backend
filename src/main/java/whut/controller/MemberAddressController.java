@@ -17,8 +17,8 @@ public class MemberAddressController {
 	private MemberAddressService memberAddressService;
 	
 	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUserId(int id) {
-		return  memberAddressService.getListByUserId(id);
+	public @ResponseBody ResponseData getListByUserId() {
+		return  memberAddressService.getListByUserId();
 	}
 	
 }

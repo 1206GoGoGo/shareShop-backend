@@ -27,11 +27,8 @@ public class MemberLoginController {
 	
 	@RequestMapping(value = "/in", method = RequestMethod.POST)
 	public @ResponseBody ResponseData loginin(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-
-		
 		return  loginService.loginin(jsonString, request, response);
 	}
-	
 	
 	@RequestMapping(value = "/out", method = RequestMethod.GET)
 	public @ResponseBody ResponseData loginout(String username, HttpServletRequest request, HttpServletResponse response) {
@@ -42,7 +39,8 @@ public class MemberLoginController {
 	@RequestMapping(value = "/getPhoneCode", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getPhoneCode(String phoneCode) {
 		
-		System.out.println(SysContent.getSession().getId());
+		SysContent.getSession().getAttribute("userId");
+		
 		return  loginService.getPhoneCode(phoneCode);
 	}
 	

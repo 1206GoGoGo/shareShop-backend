@@ -19,6 +19,7 @@ import whut.pojo.UserLogin;
 import whut.service.MemberInfoService;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 @Service
 public class MemberInfoServiceImpl implements MemberInfoService {
 
@@ -102,9 +103,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	}
 
 	@Override
-	public ResponseData delete( String jsonString) {
-		int id = new JsonUtils(jsonString).getIntValue("id");
-		UserLogin userLogin = loginDao.getLoginInfoById(id);
+	public ResponseData delete() {
+		UserLogin userLogin = loginDao.getLoginInfoById(SysContent.getUserId());
 		if(userLogin == null) {
 			return new ResponseData(406,"user does not exist",null);
 		}
@@ -133,7 +133,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
 	@Override
 	public ResponseData modify(UserInfo user) {
-		UserInfo userOld = dao.getUserInfo(String.valueOf(user.getUserId()));
+		UserInfo userOld = dao.getUserInfo( String.valueOf(SysContent.getUserId()) );
 		//修改用户信息，密码、登录名、证件号、账户余额禁止修改(编号识别要修改的用户)。需要判断是否满足指定条件，如果用户状态已经是注销状态禁止修改。
 		
 		//判断当前用户状态
@@ -156,8 +156,8 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	}
 
 	@Override
-	public ResponseData getDetail(int id) {
-		UserInfo info = dao.getUserInfo(String.valueOf(id));
+	public ResponseData getDetail() {
+		UserInfo info = dao.getUserInfo(String.valueOf(SysContent.getUserId()));
 		if(info != null) {
 			return new ResponseData(200,"success",info);
 		}else {
@@ -208,8 +208,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     }
 
 	@Override
-	public ResponseData getCountAWeek() {
+	public ResponseData getCountAWeek(int userId) {
 		Map<String,Object> map = new HashMap<>();
+		map.put("sellerId", userId);
 		String list = "[";
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal=Calendar.getInstance();
@@ -218,15 +219,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 			String day = df.format(d);
 			list += "{\"data\":\""+day+"\",\"user\":";
 			map.put("day", day);
-			map.put("level", 1);
 			list += loginDao.getCountADay( map ) + ",\"member\":";
 
 			map.put("day", day);
-			map.put("level", 2);
-			list += loginDao.getCountADay( map ) + ",\"seller\":";
-
-			map.put("day", day);
-			map.put("level", 3);
 			list += loginDao.getCountADay( map );
 
 			if(i<6) {

@@ -8,13 +8,13 @@ public interface MemberInfoService {
 
 	public ResponseData add(UserInfo user);
 
-	public ResponseData delete(String jsonString);
+	public ResponseData delete();
 
 	public ResponseData modify(UserInfo user);
 
-	public ResponseData getDetail(int id);
+	public ResponseData getDetail();
 
 	public ResponseData getMemberListBySeller(int pagesize, int pageindex, String username);
 
-	public ResponseData getCountAWeek();
+	public ResponseData getCountAWeek(int userId);
 }

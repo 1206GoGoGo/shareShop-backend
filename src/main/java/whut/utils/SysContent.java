@@ -19,6 +19,7 @@ public class SysContent {
 	//static RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
     private static HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
     private static HttpServletResponse response = ((ServletRequestAttributes)requestAttributes).getResponse();
+    private static int userId = Integer.parseInt( ((HttpSession) request.getSession()).getAttribute("userId").toString() );
     
     public static HttpServletRequest getRequest() {
         return request;
@@ -30,5 +31,9 @@ public class SysContent {
 
     public static HttpSession getSession() {
         return (HttpSession) request.getSession();
+    }
+    
+    public static int getUserId() {
+        return userId;
     }
 }

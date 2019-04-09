@@ -9,14 +9,7 @@ import whut.utils.ResponseData;
 
 public interface MemberOrderService {
 
-	public ResponseData getListByUser(int pageindex, int pagesize, int id);
-
-	public ResponseData getListByUserName(int pageindex, int pagesize, String username);
-
-
 	public ResponseData getListByStatus(int pageindex, int pagesize, int status);
-
-	public ResponseData search(String orderNumber);
 
 	public ResponseData getDetailListByOrderId(int orderId);
 	

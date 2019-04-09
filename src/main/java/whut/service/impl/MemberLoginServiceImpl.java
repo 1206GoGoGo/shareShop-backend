@@ -16,6 +16,7 @@ import whut.service.MemberLoginService;
 import whut.utils.EncryptUtil;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 @Service
 public class MemberLoginServiceImpl implements MemberLoginService {
 	
@@ -24,7 +25,6 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 	
 	@Override
 	public ResponseData loginin(String jsonString, HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
 		
 		JsonUtils jsonUtils = new JsonUtils(jsonString);
 		String username = jsonUtils.getStringValue("username");
@@ -74,10 +74,15 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		
 		//设置session
 		//用户登录信息
+
+        HttpSession session = SysContent.getSession();
 		session.setAttribute("_tzBDSFRCVID",sercity);
 		session.setMaxInactiveInterval(60*60*24);//有效期1天
 		//用户名
 		session.setAttribute("_octouser",username);
+		session.setMaxInactiveInterval(60*60*24);
+		
+		session.setAttribute("userId",userLogin.getUserId());
 		session.setMaxInactiveInterval(60*60*24);
 
 		return new ResponseData(200,"login success",null);

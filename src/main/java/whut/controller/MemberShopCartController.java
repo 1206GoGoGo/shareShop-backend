@@ -21,8 +21,8 @@ public class MemberShopCartController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUser(int id) {
-		return  memberShopCartService.getListByUser(id);
+	public @ResponseBody ResponseData getListByUser() {
+		return  memberShopCartService.getListByUser();
 	}
 	
 	/**

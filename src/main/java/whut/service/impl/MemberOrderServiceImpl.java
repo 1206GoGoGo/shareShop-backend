@@ -43,43 +43,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	private ProCategoryDao proCategoryDao;
 
 	@Override
-	public ResponseData getListByUser(int pageindex, int pagesize, int id) {
-		Map<String, Integer> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		map.put("id", id);
-		List<OrderMaster> list = dao.getListByUser(map);
-		if(list.isEmpty()) {
-			return new ResponseData(400,"no data satify request",null);
-		}else {
-			return new ResponseData(200,"success",list);
-		}
-	}
-	
-	@Override
-	public ResponseData getListByUserName(int pageindex, int pagesize, String username) {
-		int id = 0;
-		try {
-			id = loginDao.getLoginInfo(username).getUserId();
-		}catch(Exception e) {
-			return new ResponseData(4001,"the user does not exist",null);
-		}
-		
-		Map<String, Integer> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		map.put("id", id);
-		
-		List<OrderMaster> list = dao.getListByUser(map);
-		if(list.isEmpty()) {
-			return new ResponseData(4002,"the user has no order record",null);
-		}else {
-			return new ResponseData(200,"success",list);
-		}
-	}
-
-
-	@Override
 	public ResponseData getListByStatus(int pageindex, int pagesize, int status) {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("pageindex", pageindex);
@@ -91,18 +54,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			return new ResponseData(400,"no data satify request",null);
 		}else {
 			return new ResponseData(200,"success",list);
-		}
-	}
-
-	@Override
-	public ResponseData search(String orderNumber) {
-		OrderMaster orderMaster = dao.searchByOrderNumber(orderNumber);
-		List<OrderMaster> list = new ArrayList<OrderMaster>();
-		list.add(orderMaster);
-		if(orderMaster != null) {
-			return new ResponseData(200,"success",list);
-		}else {
-			return new ResponseData(400,"no data satify request",null);
 		}
 	}
 	

@@ -9,6 +9,7 @@ import whut.dao.UserCollectDao;
 import whut.pojo.UserCollect;
 import whut.service.MemberCollectService;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 @Service
 public class MemberCollectServiceImpl implements MemberCollectService {
 
@@ -16,8 +17,8 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	private UserCollectDao dao;
 
 	@Override
-	public ResponseData getListByUser(int id) {
-		List<UserCollect> list = dao.getListByUser(id);
+	public ResponseData getListByUser() {
+		List<UserCollect> list = dao.getListByUser(SysContent.getUserId());
 		if(list.isEmpty()) {
 			return new ResponseData(400,"no data satify request",null);
 		}else {

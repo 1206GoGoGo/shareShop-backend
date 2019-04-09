@@ -21,8 +21,8 @@ public class MemberOrderReturnController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUser(int pageindex, int pagesize, int id) {
-		return memberOrderReturnService.getListByUser(pageindex, pagesize, id);
+	public @ResponseBody ResponseData getListByUser(int pageindex, int pagesize) {
+		return memberOrderReturnService.getListByUser(pageindex, pagesize);
 	}
 	
 	@RequestMapping(value = "/getListByStatus", method = RequestMethod.GET)
