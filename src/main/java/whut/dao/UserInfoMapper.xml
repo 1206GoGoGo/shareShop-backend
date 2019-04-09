@@ -61,4 +61,32 @@
         limit #{pageindex}, #{pagesize}
    </select>
    
+      
+   <select id="searchAllInfoByUserInfo" parameterType="hashmap" resultMap="BaseResultMap">
+      SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id 
+      where  1 = 1
+    	<if test="username != null">
+      		and ul.username = #{username} 
+    	</if>
+    	<if test="phoneNumber != null">
+      		and ui.phone_number = #{phoneNumber} 
+    	</if>
+    	<if test="name != null">
+      		and ui.name = #{name} 
+    	</if>
+    	<if test="identityCardNo != null">
+      		and ui.identity_card_no = #{identityCardNo} 
+    	</if>
+    	<if test="level != null">
+      		and ul.level = #{level}  
+    	</if>
+        <if test="email != null">
+      		and ui.email = #{email}  
+    	</if>
+    	<if test="status != null">
+      		and ul.status = #{status}  
+    	</if>
+    	limit #{pageindex}, #{pagesize}
+   </select>
+   
 </mapper>

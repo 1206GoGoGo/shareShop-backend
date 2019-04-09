@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import whut.utils.ResponseData;
 
-public interface ManagerLoginService {
+public interface MemberLoginService {
 
 	ResponseData loginin(String jsonString, HttpServletRequest request, HttpServletResponse response);
 

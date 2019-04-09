@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 
 import whut.dao.UserLoginDao;
 import whut.pojo.UserLogin;
-import whut.service.ManagerLoginService;
+import whut.service.MemberLoginService;
 import whut.utils.EncryptUtil;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 @Service
-public class ManagerLoginServiceImpl implements ManagerLoginService {
+public class MemberLoginServiceImpl implements MemberLoginService {
 	
 	@Autowired
 	private UserLoginDao loginDao;

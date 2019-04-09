@@ -99,8 +99,9 @@ public class JedisUtil{
     //jedis调用示例（前台存储用户登录信息使用/后台暂不使用）
 //	private static void jedisinit() {
 //		Jedis jedis = JedisUtil.getJedis();
-//		jedis.append("id", "12");
+//		jedis.set("id", "12");	//增加或覆盖
 //		System.out.println(jedis.get("id"));
+//    	JedisUtil.closeJedis(jedis);
 //	}
     
 }

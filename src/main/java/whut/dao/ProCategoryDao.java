@@ -1,15 +1,8 @@
 package whut.dao;
 
 import java.util.List;
-<<<<<<< HEAD
-import java.util.Map;
 
 import whut.pojo.ProductCategory;
-import whut.utils.ResponseData;
-=======
-
-import whut.pojo.ProductCategory;
->>>>>>> f911572dc6b8337a2251bff00c7b376ebbea9eec
 
 public interface ProCategoryDao {
 

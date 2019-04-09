@@ -10,33 +10,49 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import whut.service.ManagerLoginService;
+import whut.pojo.UserInfo;
+import whut.service.MemberLoginService;
+import whut.service.MemberInfoService;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 
 @Controller
-@RequestMapping(value = "/manager/login")
-public class ManagerLoginController {
+@RequestMapping(value = "/member/login")
+public class MemberLoginController {
 	@Autowired
-	private ManagerLoginService managerLoginService;
+	private MemberLoginService loginService;
+
+	@Autowired
+	private MemberInfoService memberInfoService;
 	
 	@RequestMapping(value = "/in", method = RequestMethod.POST)
 	public @ResponseBody ResponseData loginin(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-		return  managerLoginService.loginin(jsonString, request, response);
+
+		
+		return  loginService.loginin(jsonString, request, response);
 	}
 	
 	
 	@RequestMapping(value = "/out", method = RequestMethod.GET)
 	public @ResponseBody ResponseData loginout(String username, HttpServletRequest request, HttpServletResponse response) {
-		return  managerLoginService.loginout(username, request, response);
+		
+		return  loginService.loginout(username, request, response);
 	}
 	
 	@RequestMapping(value = "/getPhoneCode", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getPhoneCode(String phoneCode) {
-		return  managerLoginService.getPhoneCode(phoneCode);
+		
+		System.out.println(SysContent.getSession().getId());
+		return  loginService.getPhoneCode(phoneCode);
 	}
 	
 	@RequestMapping(value = "/getMailCode", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getMailCode(String mailCode) {
-		return  managerLoginService.getMailCode(mailCode);
+		return  loginService.getMailCode(mailCode);
+	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public @ResponseBody ResponseData add(@RequestBody UserInfo user){
+		return  memberInfoService.add(user);
 	}
 }

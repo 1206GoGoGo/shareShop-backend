@@ -23,5 +23,12 @@ public interface UserInfoDao {
 	//通过登录表id获取用户信息
 	UserInfo getUserInfo(String id);
 
+
+	//通过用户对象获取用户全部信息（两个表的信息）
+	//无数据返回list为空
+	//String pagesize, String pageindex, String username, String phoneNumber,String name,String identityCardNo, String level
+	//int status, String email
+	List<UserInfo> searchAllInfoByUserInfo(Map<String, Object> map);
+
 	
 }

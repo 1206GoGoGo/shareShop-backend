@@ -28,7 +28,7 @@ public class LoginFilter implements Filter{
 			throws IOException, ServletException {
 		
 		//用户登录不过滤
-		if( ((HttpServletRequest)request).getRequestURI().indexOf("/manager/login")>-1 ) {
+		if( ((HttpServletRequest)request).getRequestURI().indexOf("/member/login")>-1 ) {
 			//继续执行
 			chain.doFilter(request,response);
 			return;

@@ -14,6 +14,5 @@ public class Test {
 		//SolrJUtil.updateData();
 		//SolrJUtil.deleteData();
 		
-		( new MemberOrderServiceImpl() ).getCountWeekOrYear(1);
 	}
 }

@@ -45,7 +45,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		
 		//查询，处分页都可能为空
 		Map<String,Object> map = new HashMap<>();
-		map.put("pageindex", 1);
+		map.put("pageindex", 0);
 		map.put("pagesize", 1);
 		map.put("username", null);
 		map.put("phoneNumber", null);
