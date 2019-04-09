@@ -30,22 +30,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	
 	@Autowired
 	private OrderDao orderDao;
-	
-	@Override
-	public ResponseData getList(int status,int pageindex, int pagesize) {
-		Map<String,Integer> map = new HashMap<>();
-		map.put("status", status);
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		
-		List<UserInfo> list = dao.getList(map);
-		if(list.isEmpty()) {
-			return new ResponseData(400,"no data satify request",null);
-		}else {
-			return new ResponseData(200,"success",list);
-		}
-
-	}
 
 	@Override
 	public ResponseData add(UserInfo user){
@@ -145,47 +129,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		
 		dao.delete(id);
 		return new ResponseData(200,"success",null);
-	}
-
-	@Override
-	public ResponseData search(int pagesize, int pageindex, String username, String phoneNumber,String name
-			,String identityCardNo, String level,int status, String email) {
-		
-		//通过用户名直接查询，不再进行其他条件判断
-		int userId = 0;
-		try {
-			if(username!=null && !username.equals("")) {
-				userId = loginDao.getLoginInfo(username).getUserId();
-			}
-		}catch(Exception e) {
-			return new ResponseData(400,"no specified user",null);
-		}
-
-		List<UserInfo> list = new ArrayList<>();
-		if(userId!=0) {
-			//获取列表
-			list.add( dao.getUserInfo(String.valueOf(userId)) );
-			return new ResponseData(200,"success",list);
-		}
-			
-		//查询，处分页都可能为空
-		Map<String,Object> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		map.put("username", username);
-		map.put("phoneNumber", phoneNumber);
-		map.put("name", name);
-		map.put("identityCardNo", identityCardNo);
-		map.put("level", level);
-		map.put("email", email);
-		map.put("status", status);
-		
-		list = dao.searchAllInfoByUserInfo(map);
-		if(list!=null) {
-			return new ResponseData(200,"success",list);
-		}
-		
-		return  new ResponseData(400,"no specified user",null);
 	}
 
 	@Override

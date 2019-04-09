@@ -13,7 +13,6 @@ public interface MemberOrderService {
 
 	public ResponseData getListByUserName(int pageindex, int pagesize, String username);
 
-	public ResponseData getListByPro(int pageindex, int pagesize, int id);
 
 	public ResponseData getListByStatus(int pageindex, int pagesize, int status);
 
@@ -33,7 +32,4 @@ public interface MemberOrderService {
 
 	public ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen);
 
-	public ResponseData getCountWeekOrYear(int type);
-
-	public ResponseData getCountWeekOrYearForOnePro(int type, int proId);
 }

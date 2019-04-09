@@ -19,15 +19,6 @@ public class MemberInfoController {
 	@Autowired
 	private MemberInfoService memberInfoService;
 	
-	/**
-	 * 通过用户状态获取会员信息列表
-	 * @param status
-	 * @return
-	 */
-	@RequestMapping(value = "/getList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getList(int status,int pageindex, int pagesize) {
-		return  memberInfoService.getList(status, pageindex, pagesize);
-	}
 	
 	/**
 	 * 通过seller获取用户信息列表
@@ -58,17 +49,6 @@ public class MemberInfoController {
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
 		return  memberInfoService.delete(jsonString);
-	}
-	
-	/**
-	 * 根据某些字段去查找
-	 * @param jsonString查询条件用Post组成json字符串传入
-	 * @return
-	 */
-	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public @ResponseBody ResponseData search(int pagesize,int pageindex,String username,
-			String phoneNumber,String name,String identityCardNo,String level,int status, String email) {
-		return  memberInfoService.search(pagesize,pageindex,username, phoneNumber, name, identityCardNo,level,status,email);
 	}
 	
 	@RequestMapping(value = "/getDetail", method = RequestMethod.GET)
