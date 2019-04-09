@@ -27,22 +27,5 @@
    <select id="getProSpecsById" parameterType="string" resultMap="BaseResultMap">
         SELECT * FROM product_specs where product_specs_id = #{id}
    </select>
-   
-   <select id="addProSpecs" parameterType="ProductSpecs">
-    	INSERT INTO product_specs
-    	(product_id,name,product_code,specs,specs_sort,pic_url,average_cost,
-    	original_price,price,description,product_stock,create_time)      
-        VALUES
-    	(#{productId},#{name},#{productCode},#{specs},#{specsSort},#{picUrl},#{averageCost},
-    	#{originalPrice},#{price},#{description},#{productStock},now())
-    </select>
-    
-    <select id="modifyProSpecs" parameterType="ProductSpecs">
-    	UPDATE product_specs SET 
-    	name = #{name},product_code = #{productCode},specs = #{specs},specs_sort = #{specsSort},
-    	pic_url = #{picUrl},average_cost = #{averageCost},original_price = #{originalPrice},price = #{price},
-    	description = #{description},product_stock=#{productStock},update_time = now()
-        WHERE product_specs_id = #{productSpecsId}
-    </select>
  
  </mapper>

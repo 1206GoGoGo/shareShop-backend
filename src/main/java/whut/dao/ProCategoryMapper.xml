@@ -16,26 +16,6 @@
   <select id="getList"  resultMap="BaseResultMap">
         SELECT * FROM product_category where category_level = 1 and category_status = 1
    </select>
-   
-   <select id="add" parameterType="ProductCategory">
-    	INSERT INTO product_category
-    	(category_name,category_code,parent_id,category_level,category_status,pic_url)      
-        VALUES
-    	(#{categoryName},#{categoryCode},#{parentId},#{categoryLevel},#{categoryStatus},#{picUrl})
-    </select>
-    
-    <select id="modify" parameterType="ProductCategory">
-    	UPDATE product_category SET 
-    	category_name = #{categoryName},category_code = #{categoryCode},parent_id = #{parentId},
-    	category_level = #{categoryLevel},category_status = #{categoryStatus},pic_url = #{picUrl}
-        WHERE category_id = #{categoryId}
-    </select>
-    
-    <select id="delete" parameterType="string">
-    	UPDATE product_category SET 
-    	category_status = 0  
-        WHERE category_id = #{id}
-    </select>
     
     <select id="ifCategoryExist" parameterType="string" resultType="ProductCategory" resultMap="BaseResultMap">
         SELECT * FROM product_category where category_code = #{categoryCode}
@@ -44,11 +24,5 @@
 	<select id="ifHaveChild" parameterType="string" resultType="ProductCategory" resultMap="BaseResultMap">
         SELECT * FROM product_category where parent_id = #{id} and category_status = 1
 	</select>
-	
-    <select id="modifyStatusNoShow" parameterType="string">
-    	UPDATE product_category SET 
-    	category_status = 2 
-        WHERE category_id = #{id}
-    </select>
 
 </mapper>

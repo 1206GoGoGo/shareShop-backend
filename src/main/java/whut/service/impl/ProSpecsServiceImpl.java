@@ -39,18 +39,4 @@ public class ProSpecsServiceImpl implements ProSpecsService {
 
 	}
 
-	@Override
-	public ResponseData addProSpecs(ProductSpecs productSpecs) {
-		// TODO Auto-generated method stub
-		proSpecsDao.addProSpecs(productSpecs);
-		return new ResponseData(200,"success",null);
-	}
-
-	@Override
-	public ResponseData modifyProSpecs(ProductSpecs productSpecs) {
-		// TODO Auto-generated method stub
-		proSpecsDao.modifyProSpecs(productSpecs);
-		return new ResponseData(200,"success",null);
-	}
-
 }

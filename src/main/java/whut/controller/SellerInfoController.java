@@ -16,12 +16,6 @@ public class SellerInfoController {
 	@Autowired
 	public SellerInfoService sellerInfoService;
 	
-	
-	//获取所有的seller信息
-	@RequestMapping(value = "/getSellerList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getSellerList(int pageindex, int pagesize){
-		return sellerInfoService.getSellerList(pageindex,pagesize);	
-	}
 
 	//注册seller，修改UserInfo表用户是否是店主
 	@RequestMapping(value = "/addSeller", method = RequestMethod.GET)

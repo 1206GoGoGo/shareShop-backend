@@ -35,43 +35,14 @@
     	SELECT * FROM product_info where product_code = #{id}
     </select>
     
-     <select id="add" parameterType="ProductComment">
-    	INSERT INTO product_info
-    	(product_name,brand_name,spu,one_category_id,two_category_id,three_category_id,
-    	 main_image,attribute_list,publish_status,audit_status,use_coupon,discount_rate,
-    	production_date,description,stock,input_time)      
-        VALUES
-    	(#{productName},#{brandName},#{spu},#{oneCategoryId},#{twoCategoryId},#{threeCategoryId},
-    	#{mainImage},#{attributeList},#{publishStatus},#{auditStatus},
-    	#{useCoupon},#{discountRate},#{productionDate},#{description},#{stock},now())
-    </select>
+     
     
     <select id="search" parameterType="hashmap" resultMap="BaseResultMap">
     	SELECT * FROM product_info where product_name LIKE '%${productName}%'
     	limit #{pageindex},#{pagesize}  
     </select>
     
-    <select id="modify" parameterType="ProductInfo">
-    	UPDATE product_info SET 
-    	product_name = #{productName},brand_name = #{brandName},spu = #{spu},one_category_id = #{oneCategoryId},two_category_id = #{twoCategoryId},
-    	three_category_id = #{threeCategoryId},main_image = #{mainImage},attribute_list = #{attributeList},publish_status = #{publishStatus},
-    	audit_status = #{auditStatus},use_coupon = #{useCoupon},discount_rate = #{discountRate},
-    	production_date = #{productionDate},description = #{description},stock = #{stock},modified_time = now()    
-        WHERE product_id = #{productId}
-    </select>
-    
-    <select id="modifyAuditStatus" parameterType="hashmap">
-    	UPDATE `product_info` SET 
-    	audit_status = #{auditStatus},  modified_time = now()
-        WHERE product_id = #{productId}
-    </select>
-    
-    <select id="modifyShelfStatus" parameterType="hashmap">
-    	UPDATE `product_info` SET 
-    	publish_status = #{publishStatus}, modified_time = now()
-        WHERE product_id = #{productId}
-    </select>
-    
+   
     <select id="getListByCategory" parameterType="hashmap"  resultMap="BaseResultMap">
     	SELECT * FROM product_info where (one_category_id = #{oneCategoryId}
     	or two_category_id = #{twoCategoryId}
@@ -80,39 +51,4 @@
     	limit #{pageindex},#{pagesize} 
     </select>
     
-    <select id="getIfcheckedList" parameterType="hashmap" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where  audit_status = #{auditStatus}
-    	limit #{pageindex},#{pagesize} 
-    </select>
-    
-   <select id="getIfShelfList" parameterType="hashmap" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where  publish_status = #{publishStatus}
-    	limit #{pageindex},#{pagesize} 
-    </select>
-    
-    <select id="getListByCondition" parameterType="hashmap" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where  1 = 1
-    	<if test="productName != null">
-      		and product_name = #{productName} 
-    	</if>
-    	<if test="productCode != null">
-      		and product_code = #{productCode} 
-    	</if>
-    	<if test="oneCategoryId != null">
-      		and one_category_id = #{oneCategoryId} 
-    	</if>
-    	<if test="twoCategoryId != null">
-      		and two_category_id = #{twoCategoryId} 
-    	</if>
-    	<if test="threeCategoryId != null">
-      		and three_category_id = #{threeCategoryId} 
-    	</if>
-    	<if test="publishStatus != null">
-      		and publish_status = #{publishStatus}  
-    	</if>
-        <if test="auditStatus != null">
-      		and audit_status = #{auditStatus}  
-    	</if>
-    	 limit #{pageindex},#{pagesize} 
-    </select>
 </mapper>

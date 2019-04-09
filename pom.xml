@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>cn.edu.whut</groupId>
-  <artifactId>shareshopDM</artifactId>
+  <artifactId>shareshop</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>shareshopDM Maven Webapp</name>
+  <name>shareshop Maven Webapp</name>
   <url>http://maven.apache.org</url>
       <properties>
         <!-- Spring版本号 -->
@@ -155,7 +155,7 @@
 	</dependency>
 </dependencies>
   <build>
-    <finalName>shareshopDM</finalName>
+    <finalName>shareshop</finalName>
     <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

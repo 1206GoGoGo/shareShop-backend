@@ -2,12 +2,10 @@ package whut.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import whut.pojo.ProductSpecs;
 import whut.service.ProSpecsService;
 import whut.utils.ResponseData;
 
@@ -30,15 +28,4 @@ public class ProSpecsController {
 		return proSpecsService.getProSpecsById(id);
 	}
 	
-	//向商品规格表添加商品规格【addProSpecs】post【ProductSpecs productSpecs】
-	@RequestMapping(value = "addProSpecs", method = RequestMethod.POST,consumes = "application/json")
-	public @ResponseBody ResponseData addProSpecs(@RequestBody ProductSpecs productSpecs) {
-		return proSpecsService.addProSpecs(productSpecs);
-	}
-	
-	//修改商品规格表的商品规格【modifyProSpecs】post 【ProductSpecs productSpecs】
-	@RequestMapping(value = "modifyProSpecs", method = RequestMethod.POST,consumes = "application/json")
-	public @ResponseBody ResponseData modifyProSpecs(@RequestBody ProductSpecs productSpecs) {
-		return proSpecsService.modifyProSpecs(productSpecs);
-	}
 }

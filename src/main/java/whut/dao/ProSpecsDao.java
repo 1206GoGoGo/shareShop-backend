@@ -14,10 +14,4 @@ public interface ProSpecsDao {
 	//根据商品规格id查看商品规格表
 	public ProductSpecs getProSpecsById(String id);
 
-	//向商品规格表添加商品规格
-	public void addProSpecs(ProductSpecs productSpecs);
-
-	//修改商品规格表的商品规格
-	public void modifyProSpecs(ProductSpecs productSpecs);
-
 }

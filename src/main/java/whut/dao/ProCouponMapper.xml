@@ -45,36 +45,13 @@
         SELECT * FROM coupon_info where status = 1
         limit #{pageindex},#{pagesize}
    </select>
-   
-   <select id="addCoupon" parameterType="CouponInfo">
-    	INSERT INTO coupon_info
-    	(name,type,face_value,use_condition,image_url,start_time,end_time,amount,
-    	remaining_quantity,create_time,category_id,status)      
-        VALUES
-    	(#{name},#{type},#{faceValue},#{useCondition},#{imageUrl},#{startTime},
-    	#{endTime},#{amount},#{remainingQuantity},now(),#{categoryId},#{status})
-    </select>
     
    <select id="getCouponDetailById" parameterType="string" resultMap="CouponInfoResultMap">
         SELECT * FROM coupon_info where coupon_id = #{id}
     </select>
     
-    <select id="deleteCoupon" parameterType="string">
-        UPDATE coupon_info SET status = -1 WHERE coupon_id = #{id}
-    </select>
-    
     <select id="getCouponByUId" parameterType="hashmap" resultMap="CouponReceiveResultMap">
         SELECT * FROM coupon_receive where user_id = #{userId}
-        limit #{pageindex},#{pagesize}
-    </select>
-    
- 	<select id="getCouponReceiveList" parameterType="hashmap" resultMap="CouponReceiveResultMap">
-        SELECT * FROM coupon_receive where status != -1
-        limit #{pageindex},#{pagesize}
-    </select>
-  
-    <select id="getCouponLogsList" parameterType="hashmap" resultMap="CouponLogsResultMap">
-        SELECT * FROM coupon_logs where status = 1
         limit #{pageindex},#{pagesize}
     </select>
     
@@ -85,18 +62,6 @@
         VALUES
     	(#{userId},#{couponId},#{orderNumber},#{orderOriginalMoney},#{couponMoney},
     	#{orderFinalMoney},#{fullMoney},now(),#{status})
-    </select>
-    
-   <select id="getCouponLogsDetail" parameterType="hashmap" resultMap="CouponLogsResultMap">
-        SELECT * FROM coupon_logs 
-        where 1 = 1
-        <if test="couponId != null">
-      		and coupon_id = #{couponId} 
-    	</if>
-    	<if test="orderNumber != null">
-      		and order_number = #{orderNumber} 
-    	</if>
-    	  limit #{pageindex},#{pagesize}
     </select>
     
    <select id="getCouponLogsListByStatus" parameterType="hashmap" resultMap="CouponLogsResultMap">

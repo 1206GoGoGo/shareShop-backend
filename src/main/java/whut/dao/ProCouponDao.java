@@ -9,30 +9,25 @@ import whut.pojo.CouponReceive;
 
 public interface ProCouponDao {
 
+	//获取所有优惠券信息
 	List<CouponInfo> getList(Map<String, Object> map);
 
-	void addCoupon(CouponInfo couponInfo);
-
+	//根据优惠券ID查看优惠券详情
 	CouponInfo getCouponDetailById(String id);
 
-	void deleteCoupon(String id);
-
+	//根据用户Id查看用户领取的未使用(状态为0)优惠券信息
 	List<CouponReceive> getCouponByUId(Map<String, Object> map);
 
-	List<CouponLogs> getCouponLogsList(Map<String, Object> map);
-
-	List<CouponReceive> getCouponReceiveList(Map<String, Object> map);
-
+	//向优惠券消费记录表增加记录
 	void addCouponLogs(CouponLogs couponLogs);
 
-	CouponLogs getCouponLogsDetail(Map<String, String> map);
-
+	//根据状态获取优惠券消费记录列表
 	List<CouponLogs> getCouponLogsListByStatus(Map<String, Object> map);
 
-	void modifyCouponLogsStatus(String id);
-
+	//向优惠券领取表增加记录
 	void addCouponReceive(CouponReceive couponReceive);
 
+	//根据优惠券id修改优惠券领取表状态
 	void modifyCouponReceiveStatus(String id);
 
 	

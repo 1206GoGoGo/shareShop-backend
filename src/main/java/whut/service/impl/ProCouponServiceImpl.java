@@ -36,13 +36,7 @@ public class ProCouponServiceImpl implements ProCouponService{
 		}
 	}
 
-	@Override
-	public ResponseData addCoupon(CouponInfo couponInfo) {
-		// TODO Auto-generated method stub
-		proCouponDao.addCoupon(couponInfo);
-		return new ResponseData(200,"success",null);
-	}
-
+	
 	@Override
 	public ResponseData getCouponDetailById(String id) {
 		// TODO Auto-generated method stub
@@ -52,13 +46,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 		}else {
 			return new ResponseData(400,"No data",null);
 		}
-	}
-
-	@Override
-	public ResponseData deleteCoupon(String id) {
-		// TODO Auto-generated method stub
-		proCouponDao.deleteCoupon(id);
-		return new ResponseData(200,"success",null);
 	}
 
 	@Override
@@ -78,54 +65,10 @@ public class ProCouponServiceImpl implements ProCouponService{
 	}
 
 	@Override
-	public ResponseData getCouponLogsList(int pageindex, int pagesize) {
-		// TODO Auto-generated method stub
-		Map<String,Object> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		List<CouponLogs> list =	new ArrayList<>();
-		list = proCouponDao.getCouponLogsList(map);
-		if(list != null) {
-			return new ResponseData(200,"success",list);
-		}else {
-			return new ResponseData(400,"no data",null);
-		}
-	}
-
-	@Override
-	public ResponseData getCouponReceiveList(int pageindex, int pagesize) {
-		// TODO Auto-generated method stub
-		Map<String,Object> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		List<CouponReceive> list =	new ArrayList<>();
-		list = proCouponDao.getCouponReceiveList(map);
-		if(list != null) {
-			return new ResponseData(200,"success",list);
-		}else {
-			return new ResponseData(400,"no data",null);
-		}
-	}
-
-	@Override
 	public ResponseData addCouponLogs(CouponLogs couponLogs) {
 		// TODO Auto-generated method stub
 		proCouponDao.addCouponLogs(couponLogs);
 		return new ResponseData(200,"success",null);
-	}
-
-	@Override
-	public ResponseData getCouponLogsDetail(String id, String orderNumber) {
-		// TODO Auto-generated method stub
-		Map<String, String> map = new HashMap<>();
-		map.put("couponId", id);
-		map.put("orderNumber", orderNumber);
-		CouponLogs couponLogs = proCouponDao.getCouponLogsDetail(map);
-		if(couponLogs != null) {
-			return new ResponseData(200,"success",couponLogs);
-		}else {
-			return new ResponseData(400,"No data",null);
-		}
 	}
 
 	@Override
@@ -142,13 +85,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 		}else {
 			return new ResponseData(400,"no data",null);
 		}
-	}
-
-	@Override
-	public ResponseData modifyCouponLogsStatus(String id) {
-		// TODO Auto-generated method stub
-		proCouponDao.modifyCouponLogsStatus(id);
-		return new ResponseData(200,"success",null);
 	}
 
 	@Override

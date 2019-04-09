@@ -16,12 +16,11 @@
         limit #{pageindex},#{pagesize}
     </select>
     
-
     <select id="search" parameterType="String" resultMap="BaseResultMap">
         SELECT * FROM product_discount where category_id = #{id}
     </select>
     
-     <select id="add" parameterType="ProductDiscount">
+    <select id="add" parameterType="ProductDiscount">
     	INSERT INTO product_discount
     	(category_id,discount_rate,seller_discount_rate,yield_rate)      
         VALUES
