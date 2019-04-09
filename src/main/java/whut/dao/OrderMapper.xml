@@ -53,10 +53,6 @@
        limit #{pageindex},#{pagesize}
    </select>
    
-   <select id="getListByPro" parameterType="hashmap" resultMap="OrderDetailResultMap">
-       SELECT * FROM order_detail where product_specs_id = #{id}  limit #{pageindex},#{pagesize}
-   </select>
-   
    <select id="getListByStatus" parameterType="hashmap" resultMap="orderResultMap">
        SELECT * FROM order_master om LEFT JOIN order_detail od on om.order_id = od.order_id
        where order_status = #{status}  
@@ -112,21 +108,6 @@
     	status = #{status}
         WHERE order_id = #{orderId}
     </select>
-    
-   <select id="getCountADay" parameterType="string" resultType="java.lang.Integer">
-        SELECT count(*) from order_master where date_format(pay_time,'%Y-%m-%d') =#{day}
-   </select>
-   
-   <select id="getAmountADay" parameterType="string" resultType="java.lang.Double">
-        SELECT sum(payment_money) from order_master where date_format(pay_time,'%Y-%m-%d') =#{day}
-   </select>
-   
-   <select id="getCountAMonth" parameterType="string" resultType="java.lang.Integer">
-        SELECT count(*) from order_master where date_format(pay_time,'%Y-%m') =#{month}
-   </select>
-   
-   <select id="getAmountAMonth" parameterType="string" resultType="java.lang.Double">
-        SELECT sum(payment_money) from order_master where date_format(pay_time,'%Y-%m') =#{month}
-   </select>
+
 
 </mapper>

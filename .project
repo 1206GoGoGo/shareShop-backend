@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
+<<<<<<< HEAD
+	<name>shareshopDM</name>
+=======
 	<name>shareshop</name>
+>>>>>>> f911572dc6b8337a2251bff00c7b376ebbea9eec
 	<comment></comment>
 	<projects>
 	</projects>

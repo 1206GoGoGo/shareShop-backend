@@ -37,16 +37,7 @@ public class MemberOrderController {
 	public @ResponseBody ResponseData getListByUserName(int pageindex, int pagesize, String username) {
 		return memberOrderService.getListByUserName(pageindex, pagesize, username);
 	}
-	
-	/**
-	 * 获取某商品的购买记录
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value = "/getListByPro", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByPro(int pageindex, int pagesize, int id) {
-		return memberOrderService.getListByPro(pageindex, pagesize, id);
-	}
+
 	
 	/**
 	 * 根据订单状态
@@ -148,37 +139,5 @@ public class MemberOrderController {
 	public @ResponseBody ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen) {
 		return memberOrderService.getRecordByUser(pageindex, pagesize, user, timebe, timeen);
 	}
-	
-	/**
-	 * 查询一周中每天的订单数和销售额，以及一年中每月的订单数和销售额
-	 * @param type
-	 * @return
-	 */
-	@RequestMapping(value = "/getCountWeekOrYear", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCountWeekOrYear(int type) {
-		return memberOrderService.getCountWeekOrYear(type);
-	}
-	
 
-	/**
-	 * 某周或某年某商品的订单数、总金额、成本   (待测试)
-	 * @param type
-	 * @param proId
-	 * @return
-	 */
-	@RequestMapping(value = "/getCountForOnePro", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCountWeekOrYearForOnePro(int type, int proId) {
-		return memberOrderService.getCountWeekOrYearForOnePro(type, proId);
-	}
-	
-	/**
-	 * 某分类下商品某年的订单数、总金额、成本
-	 * @param type
-	 * @param proId
-	 * @return
-	 */
-	@RequestMapping(value = "/getCountForOneClass", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCountForOneClass(int cateId) {
-		return memberOrderService.getCountForOneClass(cateId);
-	}
 }
