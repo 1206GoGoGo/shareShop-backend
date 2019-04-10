@@ -122,12 +122,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("pageindex", 1);
 		map.put("pagesize", 1);
-		map.put("id", id);
-		if(orderDao.getListByUser(map)!=null) {
-			return new ResponseData(4063,"the user has order information",null);
-		}
+		//map.put("id", id);
+		//if(orderDao.getListByUser(map)!=null) {
+		//	return new ResponseData(4063,"the user has order information",null);
+		//}
 		
-		dao.delete(id);
+		//dao.delete(id);
 		return new ResponseData(200,"success",null);
 	}
 
