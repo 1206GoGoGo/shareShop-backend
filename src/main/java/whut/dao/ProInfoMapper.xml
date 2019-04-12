@@ -32,11 +32,9 @@
     </select>
     
     <select id="getDetailByCode" parameterType="String" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where product_code = #{id}
+    	SELECT * FROM product_info where spu = #{id}
     </select>
-    
-     
-    
+       
     <select id="search" parameterType="hashmap" resultMap="BaseResultMap">
     	SELECT * FROM product_info where product_name LIKE '%${productName}%'
     	limit #{pageindex},#{pagesize}  

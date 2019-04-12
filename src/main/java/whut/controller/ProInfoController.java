@@ -36,7 +36,6 @@ public class ProInfoController {
 	@RequestMapping(value = "/getDetailByCode", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getDetailByCode(String id){
 		return proInfoService.getDetailByCode(id);
-
 	}
 	
 	//根据商品名称查找商品
