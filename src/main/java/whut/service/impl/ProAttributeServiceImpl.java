@@ -36,18 +36,6 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 	}
 
 	@Override
-	public ResponseData addProductAttributeKey(ProductAttributeKey productAttributeKey) {
-		// TODO Auto-generated method stub
-		Object productAttributeKey1 = getProductAttributeKeyByIdAndName(productAttributeKey.getCategoryId().toString(),productAttributeKey.getAttrName()).getData();
-		if(productAttributeKey1 == null) {
-			proAttributeDao.addProductAttributeKey(productAttributeKey);
-			return new ResponseData(200,"success",null);
-		}
-		else
-			return new ResponseData(400,"This commodity attribute already exists under this category",null);
-	}
-
-	@Override
 	public ResponseData getProductAttributeKeyByIdAndName(String id, String name) {
 		// TODO Auto-generated method stub
 		Map<String, String> map = new HashMap<>();
@@ -60,26 +48,6 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 			return new ResponseData(400,"no data",null);
 	}
 
-	@Override
-	public ResponseData modifyProductAttributeKey(ProductAttributeKey productAttributeKey) {
-		// TODO Auto-generated method stub
-		ProductAttributeKey productAttributeKey1 = new ProductAttributeKey();		
-		//只能修改部分参数
-		productAttributeKey1.setNameSort(productAttributeKey.getNameSort());
-		proAttributeDao.modifyProductAttributeKey(productAttributeKey1);
-		return new ResponseData(200,"success",null);
-	}
-
-
-	@Override
-	public ResponseData modifyProductAttributeKeyByStatus(String id, String status) {
-		// TODO Auto-generated method stub
-		Map<String, String> map = new HashMap<>();
-		map.put("keyId", id);
-		map.put("status", status);
-		proAttributeDao.modifyProductAttributeKeyByStatus(map);
-		return new ResponseData(200,"success",null);
-	}
 
 	@Override
 	public ResponseData getProductAttributeKeyByCategoryID(String id) {
@@ -104,18 +72,6 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 	}
 
 	@Override
-	public ResponseData addProductAttributeValue(ProductAttributeValue productAttributeValue) {
-		// TODO Auto-generated method stub
-		Object productAttributeValue1 = getProductAttributeValueByIdAndValue(productAttributeValue.getAttrKeyId().toString(),productAttributeValue.getAttrValue()).getData();
-		if(productAttributeValue1 == null) {
-			proAttributeDao.addProductAttributeValue(productAttributeValue);
-			return new ResponseData(200,"success",null);
-		}
-		else
-			return new ResponseData(400,"This commodity attribute already exists under this category",null);
-	}
-
-	@Override
 	public ResponseData getProductAttributeValueByIdAndValue(String id, String value) {
 		// TODO Auto-generated method stub
 		Map<String, String> map = new HashMap<>();
@@ -128,25 +84,4 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 			return new ResponseData(400,"no data",null);
 	}
 
-	@Override
-	public ResponseData modifyProductAttributeValue(ProductAttributeValue productAttributeValue) {
-		// TODO Auto-generated method stub
-		ProductAttributeValue productAttributeValue1 = new ProductAttributeValue();
-		//修改部分参数
-		productAttributeValue1.setAttrValue(productAttributeValue.getAttrValue());
-		productAttributeValue1.setValueSort(productAttributeValue.getValueSort());
-		proAttributeDao.modifyProductAttributeValue(productAttributeValue1);
-		return new ResponseData(200,"success",null);
-	}
-
-	@Override
-	public ResponseData modifyProductAttributeValueByStatus(String id, String status) {
-		// TODO Auto-generated method stub
-		Map<String, String> map = new HashMap<>();
-		map.put("valueId", id);
-		map.put("status", status);
-		proAttributeDao.modifyProductAttributeValueByStatus(map);
-		return new ResponseData(200,"success",null);
-	}
-	
 }

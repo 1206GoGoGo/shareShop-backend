@@ -36,25 +36,7 @@
         	and attr_name = #{attrName}
         </if>
    </select>
-   
-    <select id="addProductAttributeKey" parameterType="ProductAttributeKey">
-    	INSERT INTO product_attribute_key
-    	(category_id,attr_name,name_sort,create_time,status)      
-        VALUES
-    	(#{categoryId},#{attrName},#{nameSort},now(),1)
-    </select>
-    
-    <select id="modifyProductAttributeKey" parameterType="ProductAttributeKey">
-    	UPDATE product_attribute_key SET 
-    	category_id = #{categoryId},attr_name = #{attrName},name_sort = #{nameSort},update_time = #{updateTime},status = #{status}
-        WHERE key_id = #{keyId}
-    </select>
-    
-    <select id="modifyProductAttributeKeyByStatus" parameterType="hashmap">
-    	UPDATE product_attribute_key SET status = #{status}
-        WHERE key_id = #{keyId}
-    </select>
-    
+ 
    <select id="getProductAttributeKeyByCategoryID"  parameterType="string" resultMap="ProductAttributeKeyResultMap">
         SELECT * FROM product_attribute_key where status = 1
         and category_id = #{id}
@@ -72,24 +54,6 @@
         <if test="attrValue != null">
         	and attr_value = #{attrValue}
         </if>
-   </select>
-   
-   <select id="addProductAttributeValue" parameterType="ProductAttributeValue">
-    	INSERT INTO product_attribute_value
-    	(attr_key_id,attr_value,value_sort,create_time,status)      
-        VALUES
-    	(#{attrKeyId},#{attrValue},#{valueSort},now(),1)
-    </select>
-    
-   <select id="modifyProductAttributeValue" parameterType="ProductAttributeValue">
-    	UPDATE product_attribute_value SET 
-    	attr_key_id = #{attrKeyId},attr_value = #{attrValue},value_sort = #{valueSort},update_time = #{updateTime},status = #{status}
-        WHERE value_id = #{valueId}
-    </select>
-    
-    <select id="modifyProductAttributeValueByStatus"  parameterType="hashmap">
-        UPDATE product_attribute_value SET status  = #{status}
-        where value_id = #{valueId}
    </select>
    
 </mapper>
