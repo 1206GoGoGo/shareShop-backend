@@ -68,7 +68,7 @@ public class ProCommentServiceImpl implements ProCommentService{
 	public ResponseData addAgain(String id, String content) {
 		// TODO Auto-generated method stub
 		ProductComment productComment = proCommentDao.getCommentById(id);
-		if(productComment.getSecondContent() == null) {
+		if(productComment.getSecondContent() == null || productComment.getSecondContent().isEmpty()) {
 			Map<String, String> map = new HashMap<>();
 			map.put("commentId", id);
 			map.put("secondContent", content);
