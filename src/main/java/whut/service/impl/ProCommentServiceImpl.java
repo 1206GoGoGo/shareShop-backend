@@ -58,13 +58,6 @@ public class ProCommentServiceImpl implements ProCommentService{
 	}
 
 	@Override
-	public ResponseData delete(String id) {
-		// TODO Auto-generated method stub
-		proCommentDao.delete(id);
-		return new ResponseData(200,"delete success",null);
-	}
-
-	@Override
 	public ResponseData addAgain(String id, String content) {
 		// TODO Auto-generated method stub
 		ProductComment productComment = proCommentDao.getCommentById(id);

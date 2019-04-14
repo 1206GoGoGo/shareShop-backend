@@ -18,9 +18,6 @@ public interface ProCommentDao {
 	//新增评论第一次
 	public void add(ProductComment productComment);
 
-	//删除评论,修改评论状态
-	public void delete(String id);
-
 	//根据评论id追加评论第二次
 	public void addAgain(Map<String, String> map);
 

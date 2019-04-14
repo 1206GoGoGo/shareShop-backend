@@ -33,12 +33,6 @@
     	(#{productId},#{orderId},#{userId},#{reply},#{content},#{grade},now(),1)
     </select>
     
-   <select id="delete" parameterType="String">
-    	UPDATE product_comment SET 
-    	audit_status = 0
-        WHERE comment_id = #{commentId}
-    </select>
-    
     <select id="addAgain" parameterType="hashmap">
     	UPDATE product_comment SET 
     	second_content = #{secondContent}

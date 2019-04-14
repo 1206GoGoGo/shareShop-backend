@@ -15,8 +15,6 @@ public interface ProCommentService {
 	
 	public ResponseData add(ProductComment productComment);
 
-	public ResponseData delete(String id);
-
 	public ResponseData addAgain(String id, String content);
 
 	public ProductComment getCommentById(String id);

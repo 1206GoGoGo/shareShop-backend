@@ -45,11 +45,4 @@ public class ProCommentController {
 		return proCommentService.addAgain(id, content);
 	}
 	
-	//删除评论,修改评论状态
-	@RequestMapping(value = "/delete", method = RequestMethod.GET)
-	public @ResponseBody ResponseData delete(String id){
-		return proCommentService.delete(id);
-		
-	}
-	
 }
