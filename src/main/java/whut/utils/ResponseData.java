@@ -12,7 +12,7 @@ public class ResponseData {
 	
 	public ResponseData(Object data){
 		this.code = 200;
-		this.msg = "成功处理数据";
+		this.msg = "success";
 		this.data = data;
 	}
 	
