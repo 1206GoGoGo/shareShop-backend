@@ -10,7 +10,7 @@ public interface MemberCollectService {
 
 	ResponseData add(int productId);
 
-	ResponseData delete(int productId);
+	ResponseData delete(int collectId);
 
 
 }

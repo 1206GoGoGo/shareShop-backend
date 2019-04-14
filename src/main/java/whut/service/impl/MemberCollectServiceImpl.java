@@ -51,17 +51,15 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	}
 
 	@Override
-	public ResponseData delete(int productId) {
-		Map<String, Integer> map = new HashMap<>();
-		map.put("productId", productId);
-		map.put("userId", SysContent.getUserId());
-        UserCollect userCollect = dao.getCollect(map);
+	public ResponseData delete(int collectId) {
+        UserCollect userCollect = dao.getCollectByCollectId(collectId);
 		if(userCollect==null) {
 			return new ResponseData(406,"the merchandise has not been collected",null);
 		}
-		dao.delete(userCollect.getCollectId());
+		if(userCollect.getUserId()!=SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		dao.delete(collectId);
 		return new ResponseData(null);
 	}
-	
-
 }

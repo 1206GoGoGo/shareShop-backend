@@ -2,10 +2,12 @@ package whut.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import whut.pojo.OrderCart;
 import whut.service.MemberShopCartService;
 import whut.utils.ResponseData;
 
@@ -34,5 +36,20 @@ public class MemberShopCartController {
 	public @ResponseBody ResponseData getAmountById(int id) {
 		return  memberShopCartService.getAmountById(id);
 	}
-
+	
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public @ResponseBody ResponseData delete(@RequestBody int cartId) {
+		return  memberShopCartService.delete(cartId);
+	}
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	public @ResponseBody ResponseData modify(@RequestBody OrderCart orderCart) {
+		return  memberShopCartService.modify(orderCart);
+	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public @ResponseBody ResponseData add(@RequestBody OrderCart orderCart) {
+		return  memberShopCartService.add(orderCart);
+	}
 }

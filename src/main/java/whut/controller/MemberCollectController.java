@@ -43,7 +43,7 @@ public class MemberCollectController {
 	
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody int productId) {
-		return  memberCollectService.delete(productId);
+	public @ResponseBody ResponseData delete(@RequestBody int collectId) {
+		return  memberCollectService.delete(collectId);
 	}
 }

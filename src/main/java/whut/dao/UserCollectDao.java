@@ -21,5 +21,8 @@ public interface UserCollectDao {
 	//删除收藏
 	void delete(int collectId);
 
+	//通过collectId获取收藏
+	UserCollect getCollectByCollectId(int collectId);
+
 
 }
