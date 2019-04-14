@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import whut.pojo.UserAddr;
-import whut.pojo.UserInfo;
 import whut.service.MemberAddressService;
 import whut.utils.ResponseData;
 
@@ -33,7 +32,6 @@ public class MemberAddressController {
 	public @ResponseBody ResponseData add(@RequestBody UserAddr userAddr) {
 		return  memberAddressService.add(userAddr);
 	}
-	
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public @ResponseBody ResponseData delete(@RequestBody int userAddrId) {

@@ -8,5 +8,9 @@ public interface MemberCollectService {
 
 	ResponseData getAmountById(int id);
 
+	ResponseData add(int productId);
+
+	ResponseData delete(int productId);
+
 
 }
