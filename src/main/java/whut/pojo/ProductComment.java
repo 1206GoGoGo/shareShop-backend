@@ -14,7 +14,7 @@ public class ProductComment implements Serializable{
 
     private Integer productId;  //商品ID
 
-    private Integer orderId; //订单ID
+    private Integer orderDetailId; //订单详情ID
 
     private Integer userId;  //用户ID
 
@@ -29,6 +29,13 @@ public class ProductComment implements Serializable{
     private Date commentTime;  //评论时间
 
     private Byte auditStatus;  //审核状态
+    
+    private String username; //评价的用户名
+    
+    private String productName; //商品名称
+    
+    private String productSpecs; //商品规格
+    
 
     public Integer getCommentId() {
         return commentId;
@@ -46,12 +53,12 @@ public class ProductComment implements Serializable{
         this.productId = productId;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getOrderDetailId() {
+        return orderDetailId;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderDetailId(Integer orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
     public Integer getUserId() {
@@ -109,4 +116,28 @@ public class ProductComment implements Serializable{
     public void setAuditStatus(Byte auditStatus) {
         this.auditStatus = auditStatus;
     }
+    
+    public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductSpecs() {
+		return productSpecs;
+	}
+
+	public void setProductSpecs(String productSpecs) {
+		this.productSpecs = productSpecs;
+	}
 }
