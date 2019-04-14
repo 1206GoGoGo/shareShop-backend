@@ -77,7 +77,7 @@
     	INSERT INTO coupon_receive
     	(user_id,coupon_id,coupon_money,full_money,receive_time,status)      
         VALUES
-    	(#{userId},#{couponId},#{couponMoney},#{fullMoney},#{receiveTime},#{status})
+    	(#{userId},#{couponId},#{couponMoney},#{fullMoney},now(),#{status})
     </select>
     
     <select id="modifyCouponReceiveStatus" parameterType="string">
