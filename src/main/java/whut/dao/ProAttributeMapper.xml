@@ -21,21 +21,6 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
-  
-   <select id="getProductAttributeKeyList"  parameterType="hashmap" resultMap="ProductAttributeKeyResultMap">
-        SELECT * FROM product_attribute_key where status = 1
-        limit #{pageindex},#{pagesize}
-   </select>
-   
-   <select id="getProductAttributeKeyByIdAndName"  parameterType="hashmap" resultMap="ProductAttributeKeyResultMap">
-        SELECT * FROM product_attribute_key where status = 1
-        <if test="categoryId != null">
-        	and category_id = #{categoryId}
-        </if>
-        <if test="attrName != null">
-        	and attr_name = #{attrName}
-        </if>
-   </select>
  
    <select id="getProductAttributeKeyByCategoryID"  parameterType="string" resultMap="ProductAttributeKeyResultMap">
         SELECT * FROM product_attribute_key where status = 1
@@ -44,16 +29,6 @@
    
    <select id="getProductAttributeValueByKeyID"  parameterType="string" resultMap="ProductAttributeValueResultMap">
         SELECT * FROM product_attribute_value where status = 1 and attr_key_id = #{id}
-   </select>
-   
-   <select id="getProductAttributeValueByIdAndValue"  parameterType="hashmap" resultMap="ProductAttributeValueResultMap">
-        SELECT * FROM product_attribute_value where status = 1
-        <if test="attrKeyId != null">
-        	and attr_key_id = #{attrKeyId}
-        </if>
-        <if test="attrValue != null">
-        	and attr_value = #{attrValue}
-        </if>
    </select>
    
 </mapper>

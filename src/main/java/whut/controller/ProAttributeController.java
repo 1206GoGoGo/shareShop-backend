@@ -17,18 +17,6 @@ public class ProAttributeController {
 	@Autowired
 	private ProAttributeService proAttributeService;
 	
-	//查询商品属性Key表
-	@RequestMapping(value = "/getProductAttributeKeyList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getProductAttributeKeyList(int pageindex, int pagesize) {
-		return proAttributeService.getProductAttributeKeyList(pageindex, pagesize);
-	}
-		
-	//根据商品分类Id和属性名称查找商品属性Key表
-	@RequestMapping(value = "/getProductAttributeKeyByIdAndName", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getProductAttributeKeyByIdAndName(String id, String name) {
-		return proAttributeService.getProductAttributeKeyByIdAndName(id, name);
-	}
-	
 	//根据商品分类ID查看商品属性Key表
 	@RequestMapping(value = "/getProductAttributeKeyByCategoryID", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getProductAttributeKeyByCategoryID(String id) {
@@ -40,11 +28,5 @@ public class ProAttributeController {
 	public @ResponseBody ResponseData getProductAttributeValueByKeyID(String id) {
 		return proAttributeService.getProductAttributeValueByKeyID(id);
 	}	
-	
-	//根据属性keyID和属性值查找商品属性Value表
-	@RequestMapping(value = "/getProductAttributeValueByIdAndValue", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getProductAttributeValueByIdAndValue(String id, String value) {
-		return proAttributeService.getProductAttributeValueByIdAndValue(id, value);
-	}
 	
 }

@@ -1,6 +1,5 @@
 package whut.service.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,35 +18,6 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 	
 	@Autowired
 	private ProAttributeDao proAttributeDao;
-
-	@Override
-	public ResponseData getProductAttributeKeyList(int pageindex, int pagesize) {
-		// TODO Auto-generated method stub
-		Map<String,Integer> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		List<ProductAttributeKey> list = new ArrayList<>();
-		list = proAttributeDao.getProductAttributeKeyList(map);
-		if(list != null) {
-			return new ResponseData(200,"success",list);
-		}else {
-			return new ResponseData(400,"no data",null);
-		}
-	}
-
-	@Override
-	public ResponseData getProductAttributeKeyByIdAndName(String id, String name) {
-		// TODO Auto-generated method stub
-		Map<String, String> map = new HashMap<>();
-		map.put("categoryId", id);
-		map.put("attrName", name);
-		ProductAttributeKey productAttributeKey = proAttributeDao.getProductAttributeKeyByIdAndName(map);
-		if(productAttributeKey != null)
-			return new ResponseData(200,"success",productAttributeKey);
-		else
-			return new ResponseData(400,"no data",null);
-	}
-
 
 	@Override
 	public ResponseData getProductAttributeKeyByCategoryID(String id) {
@@ -69,19 +39,6 @@ public class ProAttributeServiceImpl implements ProAttributeService{
 		}else {
 			return new ResponseData(400,"no data",null);
 		}
-	}
-
-	@Override
-	public ResponseData getProductAttributeValueByIdAndValue(String id, String value) {
-		// TODO Auto-generated method stub
-		Map<String, String> map = new HashMap<>();
-		map.put("attrKeyId", id);
-		map.put("attrValue", value);
-		ProductAttributeValue productAttributeValue = proAttributeDao.getProductAttributeValueByIdAndValue(map);
-		if(productAttributeValue != null)
-			return new ResponseData(200,"success",productAttributeValue);
-		else
-			return new ResponseData(400,"no data",null);
 	}
 
 }
