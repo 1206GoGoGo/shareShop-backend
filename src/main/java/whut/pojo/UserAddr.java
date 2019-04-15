@@ -12,6 +12,8 @@ public class UserAddr implements Serializable{
     private Integer userAddrId;  //用户地址ID
 
     private Integer userId;  //用户id
+    
+    private String consigneeName;//收货人姓名
 
     private Integer postalCode;  //邮编
     
@@ -43,6 +45,14 @@ public class UserAddr implements Serializable{
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+    
+    public String getConsigneeName() {
+    	return consigneeName;
+    }
+
+    public void setConsigneeName(String consigneeName) {
+    	this.consigneeName = consigneeName == null ? null : consigneeName.trim();
     }
 
     public Integer getPostalCode() {

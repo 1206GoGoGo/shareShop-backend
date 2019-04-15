@@ -39,7 +39,7 @@
     
    <select id="getCountADay" parameterType="hashmap" resultType="java.lang.Integer">
         SELECT count(*) from user_info where date_format(register_time,'%Y-%m-%d') =#{day}
-		AND user_id IN (SELECT user_id FROM user_login where level = #{level})
+		AND superior_id = #{sellerId}
    </select>
 
 </mapper>   

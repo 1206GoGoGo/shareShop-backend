@@ -6,6 +6,7 @@
  <resultMap id="BaseResultMap" type="whut.pojo.UserAddr">
     <id column="user_addr_id" jdbcType="INTEGER" property="userAddrId" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
     <result column="postal_code" jdbcType="INTEGER" property="postalCode" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="state" jdbcType="VARCHAR" property="state" />
@@ -19,5 +20,34 @@
    <select id="getListByUserId" parameterType="int" resultMap="BaseResultMap">
          SELECT * FROM user_addr where user_id = #{id}
    </select>
+   
+   <select id="getAddrByAddrId" parameterType="int" resultMap="BaseResultMap">
+		SELECT * FROM user_addr where user_addr_id = #{userAddrId}
+	</select>
+
+	<select id="modifyDefault" parameterType="int">
+		UPDATE user_addr SET is_default = 0
+		WHERE user_addr_id = #{userAddrId}
+	</select>
+
+	<select id="modifyAddr" parameterType="UserAddr">
+		UPDATE user_addr SET 
+		consignee_name = #{consigneeName},postal_code = #{postalCode},phone = #{phone},state = #{state},
+		city = #{city},first_addr = #{firstAddr},second_addr = #{secondAddr},is_default = #{isDefault},modified_time = now()
+		WHERE user_addr_id = #{userAddrId}
+	</select>
+	
+	<select id="addAddr" parameterType="UserAddr">
+		INSERT INTO user_addr
+		(user_id,consignee_name,postal_code,phone,state,city,first_addr,
+		second_addr,is_default)      
+		VALUES
+		(#{userId},#{consigneeName},#{postalCode},#{phone},#{state},#{city},#{firstAddr},
+		#{secondAddr},#{isDefault},#{cardNumber})
+	</select>
+	
+	<select id="delete" parameterType="int">
+		DELETE FROM user_addr where user_addr_id = #{userAddrId}
+	</select>
 
 </mapper>
