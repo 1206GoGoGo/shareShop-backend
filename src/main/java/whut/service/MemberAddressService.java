@@ -13,4 +13,8 @@ public interface MemberAddressService {
 
 	public ResponseData delete(int userAddrId);
 
+	public ResponseData getListState();
+
+	public ResponseData getListCity(int stateId);
+
 }

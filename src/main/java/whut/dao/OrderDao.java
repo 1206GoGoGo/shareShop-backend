@@ -9,7 +9,7 @@ import whut.pojo.SellerBill;
 
 public interface OrderDao {
 
-	//String pageindex, String pagesize, String status
+	//String pageindex, String pagesize, int status=0查全部, int userId
 	List<OrderMaster> getListByStatus(Map<String, Integer> map);
 	
 	OrderMaster getMasterByOrderId(int orderId);
@@ -18,7 +18,7 @@ public interface OrderDao {
 
 	void modifyOrder(OrderMaster orderMaster);
 
-	void modifyPro(OrderDetail orderDetail);
+	//void modifyPro(OrderDetail orderDetail);
 
 	//int orderId, Byte status
 	void modifyOrderStatus(Map<String, String> map);

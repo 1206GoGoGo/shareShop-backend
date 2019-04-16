@@ -2,6 +2,8 @@ package whut.dao;
 
 import java.util.List;
 
+import whut.pojo.City;
+import whut.pojo.State;
 import whut.pojo.UserAddr;
 
 public interface UserAddrDao {
@@ -22,6 +24,12 @@ public interface UserAddrDao {
 
 	//通过地址id删除地址
 	void delete(int userAddrId);
+
+	//获取州列表
+	List<State> getStateList();
+
+	//获取stateId下的城市
+	List<City> getCityList(int stateId);
 	
 	
 }

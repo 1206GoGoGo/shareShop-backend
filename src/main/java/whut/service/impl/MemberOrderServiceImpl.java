@@ -1,9 +1,5 @@
 package whut.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +19,7 @@ import whut.pojo.SellerBill;
 import whut.service.MemberOrderService;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 
 @Service
 public class MemberOrderServiceImpl implements MemberOrderService {
@@ -48,18 +45,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
 		map.put("status", status);
+		map.put("userId", SysContent.getUserId());
 		
 		List<OrderMaster> list = dao.getListByStatus(map);
-		if(list.isEmpty()) {
-			return new ResponseData(400,"no data satify request",null);
-		}else {
-			return new ResponseData(200,"success",list);
-		}
-	}
-	
-	@Override
-	public ResponseData getDetailListByOrderId(int orderId) {
-		List<OrderDetail> list = dao.getDetailListByOrderId(orderId);
 		if(list.isEmpty()) {
 			return new ResponseData(400,"no data satify request",null);
 		}else {
@@ -69,8 +57,11 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 
 	@Override
 	public ResponseData getDetail(int orderId) {
-		OrderMaster  orderMaster = dao.getMasterByOrderId(orderId);
+		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
 		if(orderMaster != null) {
+			if(orderMaster.getUserId() != SysContent.getUserId()) {
+				return new ResponseData(403,"illegally accessed",null);
+			}
 			return new ResponseData(200,"success",orderMaster);
 		}else {
 			return new ResponseData(400,"no data satify request",null);
@@ -86,6 +77,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	@Override
 	public ResponseData modifyOrder(OrderMaster orderMaster) {
 		OrderMaster orderMasterOld = dao.getMasterByOrderId(orderMaster.getOrderId());
+		if(orderMasterOld.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
 		//判断当前订单状态
 		if( orderMasterOld.getOrderStatus()==1 ||  orderMasterOld.getOrderStatus()==2) {
 			//满足条件可以修改
@@ -110,37 +104,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	}
 
 	/**
-	 * 通过订单状态判断是否允许修改
-	 */
-	@Override
-	public ResponseData modifyPro(OrderDetail orderDetail) {
-		OrderDetail orderDetailOld = dao.getOrderDetailByOrderDetailId(orderDetail.getOrderDetailId());
-		
-		//判断当前订单状态
-		if( orderDetailOld.getStatus()==1 ||  orderDetailOld.getStatus()==2) {
-			//满足条件可以修改
-		}else {
-			return new ResponseData(4061,"current status prohibits modification",null);
-		}
-		int productIdOld = proSpecsDao.getProSpecsBySpecsId(orderDetailOld.getProductSpecsId()).getProductId();
-		int productId = proSpecsDao.getProSpecsBySpecsId(orderDetail.getProductSpecsId()).getProductId();
-		if( productIdOld != productId ) {
-			return new ResponseData(4062,"no exchange for commodity except for color ..",null);
-		}
-		
-		if( orderDetailOld.getProductPrice() != orderDetail.getProductPrice()) {
-			return new ResponseData(4063,"replacement of goods at different prices",null);
-		}
-		
-		//通过修改商品名来修改商品颜色分类，并且是同一个商品，即商品名相同
-		orderDetailOld.setProductSpecsId(orderDetail.getProductSpecsId());
-		
-		dao.modifyPro(orderDetailOld);
-		return new ResponseData(200,"success",null);
-	
-	}
-
-	/**
 	 * 单向：不能从异常修改回来
 	 * 待处理、发货、确认收货
 	 */
@@ -151,6 +114,11 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		int status = jsonUtils.getIntValue("status");
 		
 		OrderMaster orderMaster = dao.getMasterByOrderId(Integer.parseInt(orderId));
+		
+
+		if(orderMaster.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
 		
 		int statusOld;
 		try {
@@ -178,55 +146,18 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		int newStatus = 0;
 		int returnStatus = 0;
 		
-		//发货2—— 4
-		if(statusOld == 2 && status == 4) {
-			newStatus = 4;
-		}
-		//同意取消订单11——12
-		if(statusOld == 11 && status == 12) {
-			newStatus = 12;
-		}
-		//同意退货申请21——22
-		if(statusOld == 21 && status == 22) {
-			newStatus = 22;
-			returnStatus = 22;
-		}
-		//收到退货商品，符合退货条件，完成退货22——29
-		if(statusOld == 22 && status == 29) {
-			newStatus = 29;
-			returnStatus = 29;
-		}
-		//退货商品不符合条件22——23
-		if(statusOld == 22 && status == 23) {
-			newStatus = 23;
-			returnStatus = 23;
-		}
-		//退货商品重新发货（发还用户）22、23——24
-		if( (statusOld == 22 || statusOld ==23) && status == 24) {
-			newStatus = 24;
-			returnStatus = 24;
-		}
-		//同意用户换货申请31——32
-		if(statusOld == 31 && status == 32) {
-			newStatus = 32;
-		}
-		//商品不符合换货条件，待返回32——33
-		if(statusOld == 32 && status == 33) {
-			newStatus = 33;
-		}
-		//换货失败原商品发回33——34
-		if(statusOld == 33 && status == 34) {
-			newStatus = 34;
-		}
-		//符合换货标准，待发新商品32——36
-		if(statusOld == 32 && status == 36) {
-			newStatus = 36;
-		}
-		//换货商品发出32、36——37
-		if( (statusOld == 32 || statusOld == 36) && status == 37) {
-			newStatus = 37;
-		}
 		
+		//未确认收货，申请退货4——21
+		if(statusOld == 4 && status == 21) {
+			newStatus = 21;
+			returnStatus = 21;
+		}
+		//确认收货后申请退货5——21
+		if(statusOld == 5 && status == 21) {
+			newStatus = 21;
+			returnStatus = 21;
+		}
+
 		if(newStatus==0) {
 			return new ResponseData(4063,"当前订单状态禁止修改或无法从原有状态修改到指定状态",null);
 		}
@@ -260,6 +191,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		
 		OrderDetail orderDetailOld = dao.getOrderDetailByOrderDetailId(Integer.parseInt(orderDetailId));
 
+		
 		int getStatus = Integer.parseInt(status);	//	传入的新status
 		int statusOld;
 		try {
@@ -267,49 +199,27 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		}catch(Exception e) {
 			return new ResponseData(406,"order does not exist",null);
 		}
+
+		if(dao.getMasterByOrderId(orderDetailOld.getOrderId()).getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		
+		
 		int newStatus = 0;
 		int returnStatus = 0;
 		//判断当前状态，修改单个状态及整单状态
-		//同意退货申请21——22
-		if(statusOld == 21 && getStatus == 22) {
-			newStatus = 22;
-			returnStatus = 22;
+
+		//未确认收货，申请退货4——21
+		if(statusOld == 4 && statusOld == 21) {
+			newStatus = 21;
+			returnStatus = 21;
 		}
-		//收到退货商品，符合退货条件，完成退货22——29
-		if(statusOld == 22 && getStatus == 29) {
-			newStatus = 29;
-			returnStatus = 29;
+		//确认收货后申请退货5——21
+		if(statusOld == 5 && statusOld == 21) {
+			newStatus = 21;
+			returnStatus = 21;
 		}
-		//退货商品不符合条件22——23
-		if(statusOld == 22 && getStatus == 23) {
-			newStatus = 23;
-			returnStatus = 23;
-		}
-		//退货商品重新发货（发还用户）22、23——24
-		if( (statusOld == 22 || statusOld ==23) && getStatus == 24) {
-			newStatus = 24;
-			returnStatus = 24;
-		}
-		//同意用户换货申请31——32
-		if(statusOld == 31 && getStatus == 32) {
-			newStatus = 32;
-		}
-		//商品不符合换货条件，待返回32——33
-		if(statusOld == 32 && getStatus == 33) {
-			newStatus = 33;
-		}
-		//换货失败原商品发回33——34
-		if(statusOld == 33 && getStatus == 34) {
-			newStatus = 34;
-		}
-		//符合换货标准，待发新商品32——36
-		if(statusOld == 32 && getStatus == 36) {
-			newStatus = 36;
-		}
-		//换货商品发出32、36——37
-		if( (statusOld == 32 || statusOld == 36) && getStatus == 37) {
-			newStatus = 37;
-		}
+		
 		
 		if(newStatus==0) {
 			return new ResponseData(4061,"当前订单状态禁止修改或无法从原有状态修改到指定状态",null);
@@ -332,7 +242,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		mapOrder.put("status", status);
 		dao.modifyOrderStatus(mapOrder);
 
-		
 		return new ResponseData(200,"success",null);
 	
 	}
@@ -361,5 +270,28 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		}
 	}
 
-
+	@Override
+	public ResponseData delete(int orderId) {
+		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
+		if(orderMaster==null) {
+			return new ResponseData(406,"order does not exist",null);
+		}
+		if(orderMaster.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		
+		//9,12,13,14,25,29,35,39才允许删除
+		int s = Integer.parseInt(orderMaster.getState());
+		if(s!=9 && s!=12 && s!=13 && s!=14 && s!=25 && s!=29 && s!=35 && s!=39) {
+			//禁止删除
+			return new ResponseData(4061,"Current status prohibits deletion",null);
+		}
+		
+		Map<String, String> map = new HashMap<>();
+		map.put("orderId", orderMaster.getState());
+		map.put("status", "19");
+		dao.modifyOrderStatus(map);
+		
+		return new ResponseData(null);
+	}
 }

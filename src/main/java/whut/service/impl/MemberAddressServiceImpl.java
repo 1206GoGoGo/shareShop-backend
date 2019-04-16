@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import whut.dao.UserAddrDao;
+import whut.pojo.City;
+import whut.pojo.State;
 import whut.pojo.UserAddr;
 import whut.service.MemberAddressService;
 import whut.utils.ResponseData;
@@ -74,6 +76,18 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 		}
 		dao.delete(userAddrId);
 		return new ResponseData(null);
+	}
+
+	@Override
+	public ResponseData getListState() {
+		List<State> stateList = dao.getStateList();
+		return new ResponseData(stateList);
+	}
+
+	@Override
+	public ResponseData getListCity(int stateId) {
+		List<City> cityList = dao.getCityList(stateId);
+		return new ResponseData(cityList);
 	}
 
 }

@@ -27,17 +27,7 @@ public class MemberOrderController {
 	public @ResponseBody ResponseData getListByStatus(int pageindex, int pagesize, int status) {
 		return memberOrderService.getListByStatus(pageindex, pagesize, status);
 	}
-	
-	/**
-	 * 通过订单id获取该订单下的商品列表
-	 * @param Status
-	 * @return
-	 */
-	@RequestMapping(value = "/getDetailListByOrderId", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getDetailListByOrderId(int orderId) {
-		return memberOrderService.getDetailListByOrderId(orderId);
-	}
-	
+
 	/**
 	 * 获取完整的一个订单信息
 	 * @param id
@@ -63,16 +53,6 @@ public class MemberOrderController {
 	@RequestMapping(value = "/modifyOrder", method = RequestMethod.POST)
 	public @ResponseBody ResponseData modifyOrder(@RequestBody OrderMaster orderMaster) {
 		return memberOrderService.modifyOrder(orderMaster);
-	}
-	
-	/**
-	 * 修改购买商品的颜色数量等信息
-	 * @param orderDetail
-	 * @return
-	 */
-	@RequestMapping(value = "/modifyPro", method = RequestMethod.POST)
-	public @ResponseBody ResponseData modifyPro(@RequestBody OrderDetail orderDetail ) {
-		return memberOrderService.modifyPro(orderDetail );
 	}
 	
 	/**
@@ -107,6 +87,11 @@ public class MemberOrderController {
 	@RequestMapping(value = "/getRecord", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen) {
 		return memberOrderService.getRecordByUser(pageindex, pagesize, user, timebe, timeen);
+	}
+	
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public @ResponseBody ResponseData delete(@RequestBody int orderId) {
+		return memberOrderService.delete(orderId);
 	}
 
 }

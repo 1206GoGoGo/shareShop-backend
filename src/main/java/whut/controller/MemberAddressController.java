@@ -37,4 +37,14 @@ public class MemberAddressController {
 	public @ResponseBody ResponseData delete(@RequestBody int userAddrId) {
 		return  memberAddressService.delete(userAddrId);
 	}
+	
+	@RequestMapping(value = "/getListState", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getListState() {
+		return  memberAddressService.getListState();
+	}
+	
+	@RequestMapping(value = "/getListCity", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getListCity(@RequestBody int id) {
+		return  memberAddressService.getListCity(id);
+	}
 }
