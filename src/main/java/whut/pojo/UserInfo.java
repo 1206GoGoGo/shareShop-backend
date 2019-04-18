@@ -32,8 +32,6 @@ public class UserInfo implements Serializable{
 
     private Integer superiorId;  //上一级用户ID
 
-    private String cardNumber;  //信用卡号
-
     private BigDecimal userMoney;  //账户余额
     
     private UserLogin userLogin; //用户登录对象
@@ -132,14 +130,6 @@ public class UserInfo implements Serializable{
 
     public void setSuperiorId(Integer superiorId) {
         this.superiorId = superiorId;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber == null ? null : cardNumber.trim();
     }
     
     public BigDecimal getUserMoney() {

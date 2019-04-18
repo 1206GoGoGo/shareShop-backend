@@ -15,7 +15,6 @@
     <result column="register_time" jdbcType="TIMESTAMP" property="registerTime" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="superior_id" jdbcType="INTEGER" property="superiorId" />
-    <result column="card_number" property="cardNumber" jdbcType="VARCHAR" />
     <result column="user_money" jdbcType="DECIMAL" property="userMoney" />
     
     <association property="userLogin" javaType="whut.pojo.UserLogin">
@@ -33,10 +32,10 @@
    <select id="add" parameterType="UserInfo">
     	INSERT INTO user_info
     	(name,identity_card_type,identity_card_no,phone_number,email,gender,birthday,
-    	register_time,user_id,superior_id,card_number)      
+    	register_time,user_id,superior_id)      
         VALUES
     	(#{name},#{identityCardType},#{identityCardNo},#{phoneNumber},#{email},#{gender},#{birthday},
-    	now(),#{userId},#{superiorId},#{cardNumber})
+    	now(),#{userId},#{superiorId})
     </select>
     
    <select id="delete" parameterType="int">
@@ -46,7 +45,7 @@
    <select id="modify" parameterType="UserInfo">
     	UPDATE user_info SET 
     	name = #{name},identity_card_type = #{identityCardType},identity_card_no = #{identityCardNo},phone_number = #{phoneNumber},
-    	email = #{email},gender = #{gender},birthday = #{birthday},superior_id = #{superiorId},card_number = #{cardNumber}
+    	email = #{email},gender = #{gender},birthday = #{birthday},superior_id = #{superiorId}
         WHERE user_id = #{userId}
     </select>
    

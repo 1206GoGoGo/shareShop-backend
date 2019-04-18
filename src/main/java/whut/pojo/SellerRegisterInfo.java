@@ -20,8 +20,6 @@ public class SellerRegisterInfo implements Serializable{
 
     private Date time;//注册时间
 
-    private String cardNumber;//提现卡号
-
     public Integer getRegisterId() {
         return registerId;
     }
@@ -52,13 +50,5 @@ public class SellerRegisterInfo implements Serializable{
 
     public void setTime(Date time) {
         this.time = time;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
-        this.cardNumber = cardNumber == null ? null : cardNumber.trim();
     }
 }
