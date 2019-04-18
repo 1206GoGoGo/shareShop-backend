@@ -7,6 +7,11 @@
     <result column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="collect_time" jdbcType="TIMESTAMP" property="collectTime" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="main_image" jdbcType="VARCHAR" property="mainImage" />
+    <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+     <result column="price" property="price" jdbcType="DECIMAL" />
   </resultMap>
 
    <select id="getListByUser" parameterType="int" resultMap="BaseResultMap">
