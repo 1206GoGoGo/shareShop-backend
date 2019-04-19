@@ -9,7 +9,7 @@ import org.apache.solr.client.solrj.beans.Field;
  * @author wangql
  *
  */
-public class ProductInfoForSearch{
+public class ProductInfoForSearch implements Serializable{
 	
 	@Field
     private Integer productId;//商品ID

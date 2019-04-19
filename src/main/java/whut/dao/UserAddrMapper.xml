@@ -17,6 +17,18 @@
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
   </resultMap>
   
+ <resultMap id="StateResultMap" type="whut.pojo.State">
+    <id column="state_id" jdbcType="INTEGER" property="stateId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="abbreviation" jdbcType="VARCHAR" property="abbreviation" />
+  </resultMap>
+  
+  <resultMap id="CityResultMap" type="whut.pojo.City">
+    <id column="city_id" jdbcType="INTEGER" property="cityId" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="state_id" jdbcType="INTEGER" property="stateId" />
+  </resultMap>
+  
    <select id="getListByUserId" parameterType="int" resultMap="BaseResultMap">
          SELECT * FROM user_addr where user_id = #{id}
    </select>
@@ -48,6 +60,14 @@
 	
 	<select id="delete" parameterType="int">
 		DELETE FROM user_addr where user_addr_id = #{userAddrId}
+	</select>
+	
+	<select id="getStateList" resultMap="StateResultMap">
+		SELECT * FROM state
+	</select>
+	
+	<select id="getCityList" resultMap="CityResultMap">
+		SELECT * FROM city where state_id = #{stateId}
 	</select>
 
 </mapper>
