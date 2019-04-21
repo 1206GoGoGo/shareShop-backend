@@ -18,7 +18,7 @@ import whut.utils.ResponseData;
 public class ProDiscountServiceImpl implements ProDiscountService{
 
 	@Autowired
-	public ProDiscountDao proDiscountDao;
+	private ProDiscountDao proDiscountDao;
 	
 	@Override
 	public ResponseData getList(int pageindex, int pagesize) {

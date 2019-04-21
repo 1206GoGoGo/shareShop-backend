@@ -19,7 +19,7 @@ import whut.utils.ResponseData;
 public class SellerBillServiceImpl implements SellerBillService{
 
 	@Autowired
-	public SellerBillDao sellerBillDao;
+	private SellerBillDao sellerBillDao;
 
 	@Override
 	public ResponseData getList(String id,int pageindex, int pagesize) {

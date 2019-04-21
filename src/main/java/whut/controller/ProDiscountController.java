@@ -16,7 +16,7 @@ import whut.utils.ResponseData;
 public class ProDiscountController {
 	
 	@Autowired
-	public ProDiscountService proDiscountService;
+	private ProDiscountService proDiscountService;
 	
 	//获取商品折扣列表
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)

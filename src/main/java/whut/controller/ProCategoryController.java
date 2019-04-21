@@ -16,7 +16,7 @@ import whut.utils.ResponseData;
 public class ProCategoryController {
 	
 	@Autowired
-	public ProCategoryService proCategoryService;
+	private ProCategoryService proCategoryService;
 	
 	//获取第一层级分类列表
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)

@@ -18,7 +18,7 @@ import whut.utils.ResponseData;
 public class ProCommentController {
 	
 	@Autowired
-	public ProCommentService proCommentService;
+	private ProCommentService proCommentService;
 	
 	//根据商品id获取评论列表
 	@RequestMapping(value = "/getListByProduct", method = RequestMethod.GET)

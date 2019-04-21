@@ -14,7 +14,7 @@ import whut.utils.ResponseData;
 public class SellerInfoController {
 	
 	@Autowired
-	public SellerInfoService sellerInfoService;
+	private SellerInfoService sellerInfoService;
 	
 
 	//注册seller，修改UserInfo表用户是否是店主

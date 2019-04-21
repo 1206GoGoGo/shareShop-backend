@@ -17,7 +17,7 @@ import whut.utils.ResponseData;
 public class ProCategoryServiceImpl implements ProCategoryService{
 
 	@Autowired
-	public ProCategoryDao proCategoryDao;
+	private ProCategoryDao proCategoryDao;
 	
 	@Override
 	public ResponseData getList() {

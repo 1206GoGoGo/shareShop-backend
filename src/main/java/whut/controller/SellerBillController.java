@@ -20,7 +20,7 @@ import whut.utils.ResponseData;
 public class SellerBillController {
 
 	@Autowired
-	public SellerBillService sellerBillService;
+	private SellerBillService sellerBillService;
 	
 	//获取某一seller的账户余额变动信息
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)

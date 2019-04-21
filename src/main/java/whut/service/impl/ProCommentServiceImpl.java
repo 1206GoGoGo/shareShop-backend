@@ -19,7 +19,7 @@ import whut.utils.ResponseData;
 public class ProCommentServiceImpl implements ProCommentService{
 
 	@Autowired
-	public ProCommentDao proCommentDao;
+	private ProCommentDao proCommentDao;
 
 	@Override
 	public ResponseData getListByProduct(String id,int pageindex, int pagesize) {
