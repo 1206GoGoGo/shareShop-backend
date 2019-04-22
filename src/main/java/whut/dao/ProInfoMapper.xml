@@ -17,35 +17,70 @@
     <result column="use_coupon" jdbcType="TINYINT" property="useCoupon" />
     <result column="discount_rate" jdbcType="INTEGER" property="discountRate" />
     <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="pro_description" jdbcType="VARCHAR" property="description" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
     <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
+    
+    <association property="productSpecs" javaType="whut.pojo.ProductSpecs">
+    	<id column="product_specs_id" property="productSpecsId" jdbcType="INTEGER" />
+	    <result column="name" property="name" jdbcType="VARCHAR" />
+	    <result column="product_code" property="productCode" jdbcType="VARCHAR" />
+	    <result column="specs" property="specs" jdbcType="VARCHAR" />
+	    <result column="specs_sort" property="specsSort" jdbcType="TINYINT" />
+	    <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+	    <result column="average_cost" property="averageCost" jdbcType="DECIMAL" />
+	    <result column="original_price" property="originalPrice" jdbcType="DECIMAL" />
+	    <result column="price" property="price" jdbcType="DECIMAL" />
+	    <result column="description" property="description" jdbcType="VARCHAR" />
+	    <result column="product_stock" property="productStock" jdbcType="INTEGER" />
+	    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+	    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    </association>
+    
   </resultMap>
+  
+  	<sql id="proInfo">
+  		SELECT pi.product_id,pi.product_name,pi.brand_name,pi.spu,pi.one_category_id,pi.two_category_id,pi.three_category_id,
+  		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.use_coupon,
+  		pi.discount_rate,pi.production_date,pi.description pro_description,pi.stock,pi.input_time,pi.modified_time, 
+  		ps.product_specs_id,ps.name,ps.product_code,ps.specs,ps.specs_sort,ps.pic_url,ps.average_cost,ps.original_price,
+  		ps.price,ps.description,ps.product_stock,ps.create_time,ps.update_time  FROM product_info pi
+		LEFT JOIN product_specs ps on ps.product_id = pi.product_id
+  	</sql>
+  	
     <select id="getList" parameterType="hashmap" resultMap="BaseResultMap">
-        SELECT * FROM product_info where publish_status = 1 and audit_status = 1
+        <include refid="proInfo"/>
+        where publish_status = 1 and audit_status = 1
+        ORDER BY product_id
         limit #{pageindex},#{pagesize}  
     </select>
     
     <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where product_id = #{id}
+    	<include refid="proInfo"/>
+    	where product_id = #{id}
+    	ORDER BY product_id
     </select>
     
     <select id="getDetailByCode" parameterType="String" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where spu = #{id}
+    	<include refid="proInfo"/>
+    	where spu = #{id}
+    	ORDER BY product_id
     </select>
        
     <select id="search" parameterType="hashmap" resultMap="BaseResultMap">
-    	SELECT * FROM product_info where product_name LIKE '%${productName}%'
+    	<include refid="proInfo"/>
+    	where product_name LIKE CONCAT(CONCAT('%',#{productName}),'%')
+    	ORDER BY product_id
     	limit #{pageindex},#{pagesize}  
     </select>
     
    
     <select id="getListByCategory" parameterType="hashmap"  resultMap="BaseResultMap">
-    	SELECT * FROM product_info where (one_category_id = #{oneCategoryId}
-    	or two_category_id = #{twoCategoryId}
-    	or three_category_id = #{threeCategoryId})
+    	<include refid="proInfo"/> 
+    	where (one_category_id = #{oneCategoryId} or two_category_id = #{twoCategoryId} or three_category_id = #{threeCategoryId})
     	and publish_status = 1 and audit_status = 1
+    	ORDER BY product_id
     	limit #{pageindex},#{pagesize} 
     </select>
     
