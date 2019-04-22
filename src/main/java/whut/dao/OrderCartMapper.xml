@@ -12,11 +12,44 @@
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
   </resultMap>
   
+    <sql id="orderCart">
+  		SELECT oc.cart_id,oc.product_id,oc.user_id,oc.product_specs_id,oc.product_quantity,ps.price product_price,oc.add_time FROM order_cart oc 
+		LEFT JOIN product_specs ps ON oc.product_specs_id = ps.product_specs_id
+    </sql>
+  
    <select id="getListByUser" parameterType="int" resultMap="BaseResultMap">
-        SELECT * FROM order_cart where user_id = #{id}
+        <include refid="orderCart"/>
+        where user_id = #{id}
    </select>
    
    <select id="getAmountById" parameterType="int" resultType="java.lang.Integer">
         SELECT count(*) FROM order_cart where product_specs_id = #{id}
    </select>
+   
+   <select id="getCartByCartId" parameterType="int" resultMap="BaseResultMap">
+        <include refid="orderCart"/>
+         where cart_id = #{cartId}
+   </select>
+   
+   <select id="delete" parameterType="int">
+        DELETE FROM order_cart where cart_id = #{cartId}
+   </select>
+   
+   <select id="modify" parameterType="OrderCart">
+    	UPDATE order_cart SET product_quantity = #{productQuantity}
+    	WHERE cart_id = #{cartId}
+    </select>
+    
+    <select id="getCartBySpecsId" parameterType="hashmap" resultMap="BaseResultMap">
+       <include refid="orderCart"/>
+        where user_id = #{userId} and product_specs_id = #{productSpecsId}
+   </select>
+   
+   <select id="addCart" parameterType="OrderCart">
+        INSERT INTO order_cart
+        (product_id,user_id,product_specs_id,product_quantity,add_time)
+        VALUES
+        (#{productId},#{userId},#{productSpecsId},#{productQuantity},now())
+    </select>
+   
 </mapper>
