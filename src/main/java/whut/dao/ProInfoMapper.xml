@@ -21,8 +21,8 @@
     <result column="stock" jdbcType="INTEGER" property="stock" />
     <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
-    
-    <association property="productSpecs" javaType="whut.pojo.ProductSpecs">
+  
+    <collection  property="productSpecs" javaType="list" ofType="whut.pojo.ProductSpecs">
     	<id column="product_specs_id" property="productSpecsId" jdbcType="INTEGER" />
 	    <result column="name" property="name" jdbcType="VARCHAR" />
 	    <result column="product_code" property="productCode" jdbcType="VARCHAR" />
@@ -36,7 +36,7 @@
 	    <result column="product_stock" property="productStock" jdbcType="INTEGER" />
 	    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 	    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    </association>
+    </collection >
     
   </resultMap>
   

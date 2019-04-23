@@ -28,7 +28,7 @@
    </select>
   
   
-   <select id="getCollect" parameterType="hashmap" resultType="BaseResultMap">
+   <select id="getCollect" parameterType="hashmap" resultMap="BaseResultMap">
        	SELECT uc.collect_id,uc.product_id,uc.user_id,uc.collect_time,
 		pi.product_name,pi.main_image,pi.publish_status,pi.description,
 		mp.price
