@@ -69,7 +69,7 @@ public class ProductInfoForSearch implements Serializable{
 	private int view;//用户浏览记录
 	
 	@Field
-    private Double score;//商品评分
+    private Double pscore;//商品评分
     
 	@Field
     private Double price;//商品中某种规格的最低价
@@ -88,7 +88,7 @@ public class ProductInfoForSearch implements Serializable{
 	public ProductInfoForSearch(Integer productId, String productName, String brandName, Integer oneCategoryId,
 			Integer twoCategoryId, Integer threeCategoryId, String mainImage, String attributeList, Integer publishStatus,
 			Integer auditStatus, Integer useCoupon, Integer discountRate, Date productionDate, String description,
-			Integer stock, Date inputTime, Date modifiedTime,int view, Double score, Double price, int collect, int cart, int sales) {
+			Integer stock, Date inputTime, Date modifiedTime,int view, Double pscore, Double price, int collect, int cart, int sales) {
 		this.productId = productId;
 		this.productName = productName;
 		this.brandName = brandName;
@@ -107,7 +107,7 @@ public class ProductInfoForSearch implements Serializable{
 		this.inputTime = inputTime;
 		this.modifiedTime = modifiedTime;
 		this.view = view;
-		this.score = score;
+		this.pscore = pscore;
 		this.price = price;
 		this.collect = collect;
 		this.cart = cart;
@@ -251,12 +251,12 @@ public class ProductInfoForSearch implements Serializable{
     }
     
 
-    public Double getScore() {
-		return score;
+    public Double getPscore() {
+		return pscore;
 	}
 
-	public void setScore(Double score) {
-		this.score = score;
+	public void setPscore(Double pscore) {
+		this.pscore = pscore;
 	}
 
 	public Double getPrice() {

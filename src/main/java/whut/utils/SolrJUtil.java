@@ -53,8 +53,8 @@ public class SolrJUtil {
         solrQuery.setRows(rows);
         //设置默认搜素域
         solrQuery.set("df", "Ptitle");
-        if(!sortAsc.isEmpty()) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
-        if(!sortDesc.isEmpty()) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
+        if(sortAsc != null) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
+        if(sortDesc != null) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
         if(queryItem != null) {
         	solrQuery.setFields(queryItem);
         }
@@ -83,6 +83,36 @@ public class SolrJUtil {
         SolrDocumentListForReturn solrDocumentListForReturn = new SolrDocumentListForReturn(solrDocumentList);
         System.out.println(solrDocumentListForReturn);
         return solrDocumentListForReturn.toString();
+	}
+	
+	public static Double getScoreById(Integer productId) {
+        //创建查询对象
+        SolrQuery solrQuery = new SolrQuery();
+        //设置查询条件
+        String searchWord = "productId:"+productId;
+        solrQuery.setQuery(searchWord);
+        //设置分页
+        solrQuery.setStart(0);
+        solrQuery.setRows(1);
+        //设置默认搜素域
+        solrQuery.addField("pscore");
+
+        //根据查询条件查询索引库
+        QueryResponse queryResponse = null;
+		try {
+			queryResponse = solrClient.query(coreName,solrQuery);
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        //取查询结果
+        SolrDocumentList solrDocumentList = queryResponse.getResults();
+        try {
+        	return (Double) solrDocumentList.get(0).getFieldValue("pscore");
+        }catch(Exception e) {
+        	return 0.0;
+        }
 	}
 	
 	public static void updateData() {

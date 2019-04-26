@@ -13,6 +13,7 @@ public class Test {
 		//SolrJUtil.search(1, 2, "*:*", null ,new String[] {"productId", "oneCategoryId"});
 		//SolrJUtil.updateData();
 		//SolrJUtil.deleteData();
+		System.out.println(SolrJUtil.getScoreById(11));
 		
 	}
 }
