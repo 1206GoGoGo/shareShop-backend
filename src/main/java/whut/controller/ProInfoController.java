@@ -38,9 +38,9 @@ public class ProInfoController {
 		return proInfoService.getDetailByCode(id);
 	}
 	
-	//根据商品名称查找商品
+	//根据商品名称通过搜索服务区查找商品
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public @ResponseBody ResponseData search(String name,int pageindex, int pagesize){
+	public @ResponseBody ResponseData search(String name,Integer pageindex, Integer pagesize){
 		return proInfoService.search(name,pageindex, pagesize);
 	}
 		

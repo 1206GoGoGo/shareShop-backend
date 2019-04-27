@@ -51,18 +51,17 @@ public class ProInfoServiceImpl implements ProInfoService{
 	
 
 	@Override
-	public ResponseData search(String name,int pageindex, int pagesize) {
+	public ResponseData search(String name,Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
-		SolrJUtil.search(pageindex,pagesize,"productName:name",new String[] {"productId", "productName","oneCategoryId","twoCategoryId","threeCategoryId"},null,null,null);
-		Map<String,Object> map = new HashMap<>();
-		map.put("productName", name);
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		List<ProductInfo> list = new ArrayList<>();
-		list = proInfoDao.search(map);
-		if(list.isEmpty())
-			return new ResponseData(400,"No match was found",null);
-		return new ResponseData(200,"success",list);
+		//pageindex从1开始
+		if(pageindex == null) {
+			pageindex = 1;
+		}
+		if(pagesize == null){
+			pagesize = 20;
+		}
+		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null));
 	}
 
 	@Override

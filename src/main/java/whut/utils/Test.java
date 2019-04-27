@@ -14,7 +14,7 @@ public class Test {
 		//SolrJUtil.updateData();
 		//SolrJUtil.deleteData();
 
-		SolrJUtil.search(1,2,"productName:hahha",new String[] {"productId", "productName","oneCategoryId","twoCategoryId","threeCategoryId"},null,null,null);
+		SolrJUtil.search(1,2,"productName:hahha",new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
 
 		System.out.println(SolrJUtil.getScoreById(11));
 
