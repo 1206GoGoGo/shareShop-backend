@@ -18,7 +18,7 @@ public class ProInfoController {
 	@Autowired
 	private ProInfoService proInfoService;	
 	
-	//获取所有商品列表
+	//获取所有商品搜索服务器的所有商品列表
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getList(Integer pageindex, Integer pagesize) {
 		return proInfoService.getList(pageindex, pagesize);
