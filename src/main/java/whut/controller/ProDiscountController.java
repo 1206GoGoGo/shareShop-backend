@@ -20,7 +20,7 @@ public class ProDiscountController {
 	
 	//获取商品折扣列表
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getList(int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getList(Integer pageindex, Integer pagesize) {
 		return proDiscountService.getList(pageindex,pagesize);
 		
 	}

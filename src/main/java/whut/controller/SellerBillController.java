@@ -24,19 +24,19 @@ public class SellerBillController {
 	
 	//获取某一seller的账户余额变动信息
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getList(String id,int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getList(String id,Integer pageindex, Integer pagesize) {
 		return sellerBillService.getList(id,pageindex,pagesize);
 	}
 	
 	//获取某一seller所有的提现记录
 	@RequestMapping(value = "/getWithdrawList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getWithdrawList(String id,int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getWithdrawList(String id,Integer pageindex, Integer pagesize) {
 		return sellerBillService.getWithdrawList(id,pageindex,pagesize);
 	}
 	
 	//获取某一seller所有的收益记录
 	@RequestMapping(value = "/getYieldList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getYieldList(String id,int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getYieldList(String id,Integer pageindex, Integer pagesize) {
 		return sellerBillService.getYieldList(id,pageindex,pagesize);
 	}
 	

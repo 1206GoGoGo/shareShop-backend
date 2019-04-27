@@ -22,13 +22,13 @@ public class ProCommentController {
 	
 	//根据商品id获取评论列表
 	@RequestMapping(value = "/getListByProduct", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByProduct(String id, int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getListByProduct(String id, Integer pageindex, Integer pagesize) {
 		return proCommentService.getListByProduct(id,pageindex, pagesize);
 	}
 	
 	//根据用户id查询用户评论列表
 	@RequestMapping(value = "/getListByUser", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByUser(String id, int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getListByUser(String id, Integer pageindex, Integer pagesize) {
 		return proCommentService.getListByUser(id,pageindex, pagesize);
 	}
 	

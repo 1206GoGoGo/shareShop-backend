@@ -22,7 +22,7 @@ public class ProCouponController {
 	
 	//获取所有优惠券信息
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getList(int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getList(Integer pageindex, Integer pagesize) {
 		return proCouponService.getList(pageindex, pagesize);
 	}
 	
@@ -35,7 +35,7 @@ public class ProCouponController {
 	
 	//根据用户Id查看用户领取的未使用(状态为0)优惠券信息
 	@RequestMapping(value = "/getCouponByUId", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCouponByUId(String id,int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getCouponByUId(String id,Integer pageindex, Integer pagesize) {
 		return proCouponService.getCouponByUId(id,pageindex, pagesize);
 	}
 	
@@ -48,7 +48,7 @@ public class ProCouponController {
 	
 	//根据状态获取优惠券消费记录列表
 	@RequestMapping(value = "/getCouponLogsListByStatus", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCouponLogsListByStatus(String status,int pageindex, int pagesize) {
+	public @ResponseBody ResponseData getCouponLogsListByStatus(String status,Integer pageindex, Integer pagesize) {
 		return proCouponService.getCouponLogsListByStatus(status,pageindex, pagesize);
 	}
 

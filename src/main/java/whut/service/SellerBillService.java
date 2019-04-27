@@ -7,14 +7,14 @@ import whut.utils.ResponseData;
 
 public interface SellerBillService {
 
-	public ResponseData getList(String id,int pageindex, int pagesize);
+	public ResponseData getList(String id,Integer pageindex, Integer pagesize);
 
 	public ResponseData addWithdraw(WithdrawRecord withdrawRecord);
 
 	public ResponseData addYield(YieldDetail yieldDetail);
 
-	public ResponseData getWithdrawList(String id,int pageindex, int pagesize);
+	public ResponseData getWithdrawList(String id,Integer pageindex, Integer pagesize);
 
-	public ResponseData getYieldList(String id,int pageindex, int pagesize);
+	public ResponseData getYieldList(String id,Integer pageindex, Integer pagesize);
 
 }

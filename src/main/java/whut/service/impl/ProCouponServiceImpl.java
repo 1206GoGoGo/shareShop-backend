@@ -22,8 +22,12 @@ public class ProCouponServiceImpl implements ProCouponService{
 	private ProCouponDao proCouponDao;
 
 	@Override
-	public ResponseData getList(int pageindex, int pagesize) {
+	public ResponseData getList(Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
+		if(pageindex == null)
+			pageindex = 0;
+		if(pagesize == null)
+			pagesize = 20;
 		Map<String,Object> map = new HashMap<>();
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
@@ -49,8 +53,12 @@ public class ProCouponServiceImpl implements ProCouponService{
 	}
 
 	@Override
-	public ResponseData getCouponByUId(String id,int pageindex, int pagesize) {
+	public ResponseData getCouponByUId(String id,Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
+		if(pageindex == null)
+			pageindex = 0;
+		if(pagesize == null)
+			pagesize = 20;
 		Map<String,Object> map = new HashMap<>();
 		map.put("userId", id);
 		map.put("pageindex", pageindex);
@@ -72,8 +80,12 @@ public class ProCouponServiceImpl implements ProCouponService{
 	}
 
 	@Override
-	public ResponseData getCouponLogsListByStatus(String status,int pageindex, int pagesize) {
+	public ResponseData getCouponLogsListByStatus(String status,Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
+		if(pageindex == null)
+			pageindex = 0;
+		if(pagesize == null)
+			pagesize = 20;
 		Map<String,Object> map = new HashMap<>();
 		map.put("status", status);
 		map.put("pageindex", pageindex);

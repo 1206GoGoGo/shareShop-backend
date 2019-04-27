@@ -6,15 +6,15 @@ import whut.utils.ResponseData;
 
 public interface ProCouponService {
 
-	ResponseData getList(int pageindex, int pagesize);
+	ResponseData getList(Integer pageindex, Integer pagesize);
 
 	ResponseData getCouponDetailById(String id);
 
-	ResponseData getCouponByUId(String id, int pageindex, int pagesize);
+	ResponseData getCouponByUId(String id, Integer pageindex, Integer pagesize);
 
 	ResponseData addCouponLogs(CouponLogs couponLogs);
 
-	ResponseData getCouponLogsListByStatus(String status, int pageindex, int pagesize);
+	ResponseData getCouponLogsListByStatus(String status, Integer pageindex, Integer pagesize);
 
 	ResponseData addCouponReceive(CouponReceive couponReceive);
 
