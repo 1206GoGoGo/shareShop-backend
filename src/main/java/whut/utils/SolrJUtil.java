@@ -11,6 +11,8 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import whut.dao.ProInfoDao;
 import whut.pojo.ProductInfoForSearch;
 
@@ -41,7 +43,7 @@ public class SolrJUtil {
 	 * @param highlightField	设置高亮的字段
 	 * @return
 	 */
-	public static String search(int page, int rows, String searchWord, String[] queryItem, String sortAsc, 
+	public static ObjectNode search(int page, int rows, String searchWord, String[] queryItem, String sortAsc, 
 			String sortDesc, String highlightField) {
         //创建查询对象
         SolrQuery solrQuery = new SolrQuery();
@@ -68,7 +70,6 @@ public class SolrJUtil {
         }
 
         
-
         //根据查询条件查询索引库
         QueryResponse queryResponse = null;
 		try {
@@ -81,8 +82,8 @@ public class SolrJUtil {
         //取查询结果
         SolrDocumentList solrDocumentList = queryResponse.getResults();
         SolrDocumentListForReturn solrDocumentListForReturn = new SolrDocumentListForReturn(solrDocumentList);
-        System.out.println(solrDocumentListForReturn);
-        return solrDocumentListForReturn.toString();
+        System.out.println(solrDocumentListForReturn.toJson());
+        return solrDocumentListForReturn.toJson();
 	}
 	
 	public static Double getScoreById(Integer productId) {
