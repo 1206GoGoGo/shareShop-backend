@@ -24,17 +24,15 @@ public class ProInfoServiceImpl implements ProInfoService{
 	private ProInfoDao proInfoDao;
 	
 	@Override
-	public ResponseData getList(int pageindex, int pagesize) {
+	public ResponseData getList(Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
-		Map<String,Object> map = new HashMap<>();
-		map.put("pageindex", pageindex);
-		map.put("pagesize", pagesize);
-		List<ProductInfo> list = proInfoDao.getList(map);
-		if(list != null) {
-			return new ResponseData(200,"success",list);
-		}else {
-			return new ResponseData(400,"no data",null);
+		if(pageindex == null) {
+			pageindex = 1;
 		}
+		if(pagesize == null){
+			pagesize = 20;
+		}
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"*:*",new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null));
 	}
 
 	@Override
@@ -65,7 +63,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 	}
 
 	@Override
-	public ResponseData getListByCategory(String id,int pageindex, int pagesize) {
+	public ResponseData getListByCategory(String id,Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<>();
 		map.put("oneCategoryId", id);
