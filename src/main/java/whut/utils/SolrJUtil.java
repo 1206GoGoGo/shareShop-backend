@@ -11,6 +11,8 @@ import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import whut.dao.ProInfoDao;
 import whut.pojo.ProductInfoForSearch;
 
@@ -41,7 +43,7 @@ public class SolrJUtil {
 	 * @param highlightField	设置高亮的字段
 	 * @return
 	 */
-	public static String search(int page, int rows, String searchWord, String[] queryItem, String sortAsc, 
+	public static ObjectNode search(int page, int rows, String searchWord, String[] queryItem, String sortAsc, 
 			String sortDesc, String highlightField) {
         //创建查询对象
         SolrQuery solrQuery = new SolrQuery();
@@ -53,8 +55,10 @@ public class SolrJUtil {
         solrQuery.setRows(rows);
         //设置默认搜素域
         solrQuery.set("df", "Ptitle");
+
         if(sortAsc != null ) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
         if(sortDesc != null ) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
+
         if(queryItem != null) {
         	solrQuery.setFields(queryItem);
         }
@@ -68,7 +72,6 @@ public class SolrJUtil {
         }
 
         
-
         //根据查询条件查询索引库
         QueryResponse queryResponse = null;
 		try {
@@ -81,9 +84,40 @@ public class SolrJUtil {
         //取查询结果
         SolrDocumentList solrDocumentList = queryResponse.getResults();
         SolrDocumentListForReturn solrDocumentListForReturn = new SolrDocumentListForReturn(solrDocumentList);
-        System.out.println(solrDocumentListForReturn);
-        System.out.println(solrDocumentList.getNumFound());				//获取总数量
-        return solrDocumentListForReturn.toString();
+
+        System.out.println(solrDocumentListForReturn.toJson());
+        return solrDocumentListForReturn.toJson();
+	}
+	
+	public static Double getScoreById(Integer productId) {
+        //创建查询对象
+        SolrQuery solrQuery = new SolrQuery();
+        //设置查询条件
+        String searchWord = "productId:"+productId;
+        solrQuery.setQuery(searchWord);
+        //设置分页
+        solrQuery.setStart(0);
+        solrQuery.setRows(1);
+        //设置默认搜素域
+        solrQuery.addField("pscore");
+
+        //根据查询条件查询索引库
+        QueryResponse queryResponse = null;
+		try {
+			queryResponse = solrClient.query(coreName,solrQuery);
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        //取查询结果
+        SolrDocumentList solrDocumentList = queryResponse.getResults();
+        try {
+        	return (Double) solrDocumentList.get(0).getFieldValue("pscore");
+        }catch(Exception e) {
+        	return 0.0;
+        }
+
 	}
 	
 	public static void updateData() {

@@ -33,7 +33,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	private OrderDao orderDao;
 
 	@Override
-	public ResponseData add(UserInfo user){
+	public ResponseData memberAdd(UserInfo user){
 
 		String username = user.getUserLogin().getUsername();
 		String password = user.getUserLogin().getPassword();
@@ -98,7 +98,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		user.setUserLogin(userLogin);
 
 		//添加用户
-		dao.add(user);
+		try {
+			dao.add(user);
+		}catch(Exception e) {
+			loginDao.deleteUserLoginForError(userLogin.getUserId());
+			return new ResponseData(5001,"system registration exception",null);
+		}
 		return new ResponseData(200,"success",null);
 	}
 

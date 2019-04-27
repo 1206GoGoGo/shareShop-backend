@@ -9,11 +9,15 @@ import whut.service.impl.MemberOrderServiceImpl;
  *
  */
 public class Test {
-	public static void main(String[] args) {
-		//SolrJUtil.search(1, 2, "*:*", null ,new String[] {"productId", "oneCategoryId"});
+	public static void main(String[] args) {//new String[] {"productId", "oneCategoryId"}
+		//SolrJUtil.search(1, 2, "*:*",new String[] {"productId", "attributeList"},null,null,null);
 		//SolrJUtil.updateData();
 		//SolrJUtil.deleteData();
+
 		SolrJUtil.search(1,2,"productName:hahha",new String[] {"productId", "productName","oneCategoryId","twoCategoryId","threeCategoryId"},null,null,null);
+
+		System.out.println(SolrJUtil.getScoreById(11));
+
 		
 	}
 }
