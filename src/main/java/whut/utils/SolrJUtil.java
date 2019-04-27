@@ -53,8 +53,8 @@ public class SolrJUtil {
         solrQuery.setRows(rows);
         //设置默认搜素域
         solrQuery.set("df", "Ptitle");
-        if(!sortAsc.isEmpty()) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
-        if(!sortDesc.isEmpty()) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
+        if(sortAsc != null ) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
+        if(sortDesc != null ) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
         if(queryItem != null) {
         	solrQuery.setFields(queryItem);
         }
@@ -82,6 +82,7 @@ public class SolrJUtil {
         SolrDocumentList solrDocumentList = queryResponse.getResults();
         SolrDocumentListForReturn solrDocumentListForReturn = new SolrDocumentListForReturn(solrDocumentList);
         System.out.println(solrDocumentListForReturn);
+        System.out.println(solrDocumentList.getNumFound());				//获取总数量
         return solrDocumentListForReturn.toString();
 	}
 	

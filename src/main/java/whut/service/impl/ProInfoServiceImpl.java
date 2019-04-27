@@ -13,6 +13,7 @@ import whut.dao.ProInfoDao;
 import whut.pojo.ProductInfo;
 import whut.service.ProInfoService;
 import whut.utils.ResponseData;
+import whut.utils.SolrJUtil;
 
 
 
@@ -52,6 +53,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 	@Override
 	public ResponseData search(String name,int pageindex, int pagesize) {
 		// TODO Auto-generated method stub
+		SolrJUtil.search(pageindex,pagesize,"productName:name",new String[] {"productId", "productName","oneCategoryId","twoCategoryId","threeCategoryId"},null,null,null);
 		Map<String,Object> map = new HashMap<>();
 		map.put("productName", name);
 		map.put("pageindex", pageindex);

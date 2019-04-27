@@ -13,6 +13,7 @@ public class Test {
 		//SolrJUtil.search(1, 2, "*:*", null ,new String[] {"productId", "oneCategoryId"});
 		//SolrJUtil.updateData();
 		//SolrJUtil.deleteData();
+		SolrJUtil.search(1,2,"productName:hahha",new String[] {"productId", "productName","oneCategoryId","twoCategoryId","threeCategoryId"},null,null,null);
 		
 	}
 }
