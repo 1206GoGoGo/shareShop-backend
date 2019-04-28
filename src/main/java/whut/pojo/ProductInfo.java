@@ -1,6 +1,7 @@
 package whut.pojo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +36,12 @@ public class ProductInfo implements Serializable{
     private Byte useCoupon;//是否可以使用优惠券
 
     private Integer discountRate;//折扣比率
+    
+    private BigDecimal minPrice;//最低价格
+    
+    private BigDecimal maxPrice;//最高价格
+    
+    private Double score;//商品评分
 
     private Date productionDate;//生产日期
 
@@ -161,7 +168,31 @@ public class ProductInfo implements Serializable{
         this.discountRate = discountRate;
     }
 
-    public Date getProductionDate() {
+    public BigDecimal getMinPrice() {
+		return minPrice;
+	}
+
+	public void setMinPrice(BigDecimal minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public BigDecimal getMaxPrice() {
+		return maxPrice;
+	}
+
+	public void setMaxPrice(BigDecimal maxPrice) {
+		this.maxPrice = maxPrice;
+	}
+
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
+
+	public Date getProductionDate() {
         return productionDate;
     }
 
