@@ -18,10 +18,17 @@ public class ProInfoController {
 	@Autowired
 	private ProInfoService proInfoService;	
 	
-	//获取所有商品搜索服务器的所有商品列表
+	//获取所有商品列表
 	@RequestMapping(value = "/getList", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getList(Integer pageindex, Integer pagesize) {
 		return proInfoService.getList(pageindex, pagesize);
+
+	}
+	
+	//获取所有商品搜索服务器的所有商品列表（新增给前台）
+	@RequestMapping(value = "/getListSearch", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getListSearch(Integer pageindex, Integer pagesize) {
+		return proInfoService.getListSearch(pageindex, pagesize);
 
 	}
 	
@@ -38,16 +45,23 @@ public class ProInfoController {
 		return proInfoService.getDetailByCode(id);
 	}
 	
-	//根据商品名称通过搜索服务器solr查找商品
+	//根据商品名称通过搜索服务器solr查找商品（修改给前台）
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public @ResponseBody ResponseData search(String name,Integer pageindex, Integer pagesize){
 		return proInfoService.search(name,pageindex, pagesize);
 	}
 		
+	
 	//根据分类获取商品列表
 	@RequestMapping(value = "/getListByCategory", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getListByCategory(String id,Integer pageindex, Integer pagesize){
 		return proInfoService.getListByCategory(id,pageindex, pagesize);	
+	}
+	
+	//根据分类通过搜索服务器solr查找商品（新增给前台）
+	@RequestMapping(value = "/getListByCategorySearch", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getListByCategorySearch(String id,Integer pageindex, Integer pagesize){
+		return proInfoService.getListByCategorySearch(id,pageindex, pagesize);	
 	}
 	
 }
