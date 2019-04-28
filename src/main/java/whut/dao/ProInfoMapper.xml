@@ -23,7 +23,7 @@
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="min_price" jdbcType="DECIMAL" property="minPrice"/>
     <result column="max_price" jdbcType="DECIMAL"  property="maxPrice"/>
-    <result column="max_price" jdbcType="DOUBLE" property="maxPrice"/>
+    <result column="score" jdbcType="DOUBLE" property="score"/>
   
     <collection  property="productSpecs" javaType="list" ofType="whut.pojo.ProductSpecs">
     	<id column="product_specs_id" property="productSpecsId" jdbcType="INTEGER" />
