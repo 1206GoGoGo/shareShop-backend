@@ -1,20 +1,14 @@
 package whut.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import whut.dao.ProInfoDao;
-import whut.pojo.ProductInfoForSearch;
 
 /**
  * 搜索服务器工具类
@@ -23,9 +17,7 @@ import whut.pojo.ProductInfoForSearch;
  */
 
 public class SolrJUtil {
-	
-	@Autowired
-	private static ProInfoDao proInfoDao;
+
 	private static HttpSolrClient solrClient;
 	private static String coreName =  "products_core";//创建的内核名
 	static {
@@ -118,34 +110,5 @@ public class SolrJUtil {
         	return 0.0;
         }
 
-	}
-	
-	public static void updateData() {
-		List<ProductInfoForSearch> productInfoForSearchs = new ArrayList<ProductInfoForSearch>();
-		productInfoForSearchs = proInfoDao.getSolrDoucumentList();
-		if(!productInfoForSearchs.isEmpty()) {
-			deleteData();
-		}else {
-			return;
-		}
-		try {
-			solrClient.addBeans(coreName,productInfoForSearchs);
-			solrClient.commit(coreName);
-		} catch (SolrServerException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private static void deleteData() {
-		try {
-			solrClient.deleteByQuery(coreName,"*:*");
-			solrClient.commit(coreName);
-		} catch (SolrServerException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

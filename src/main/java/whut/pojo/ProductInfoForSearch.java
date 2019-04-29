@@ -1,6 +1,7 @@
 package whut.pojo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -9,7 +10,7 @@ import org.apache.solr.client.solrj.beans.Field;
  * @author wangql
  *
  */
-public class ProductInfoForSearch implements Serializable{
+public class ProductInfoForSearch{
 	
 	@Field
     private Integer productId;//商品ID
@@ -69,10 +70,14 @@ public class ProductInfoForSearch implements Serializable{
 	private int view;//用户浏览记录
 	
 	@Field
-    private Double pscore;//商品评分
+    private Double score;//商品评分
+	
+    //price
+	@Field
+    private BigDecimal minPrice;//最低价格
     
 	@Field
-    private Double price;//商品中某种规格的最低价
+    private BigDecimal maxPrice;//最高价格
     
 	@Field
     private int collect;//收藏数
@@ -88,7 +93,7 @@ public class ProductInfoForSearch implements Serializable{
 	public ProductInfoForSearch(Integer productId, String productName, String brandName, Integer oneCategoryId,
 			Integer twoCategoryId, Integer threeCategoryId, String mainImage, String attributeList, Integer publishStatus,
 			Integer auditStatus, Integer useCoupon, Integer discountRate, Date productionDate, String description,
-			Integer stock, Date inputTime, Date modifiedTime,int view, Double pscore, Double price, int collect, int cart, int sales) {
+			Integer stock, Date inputTime, Date modifiedTime,int view, Double score, BigDecimal minPrice, BigDecimal maxPrice, int collect, int cart, int sales) {
 		this.productId = productId;
 		this.productName = productName;
 		this.brandName = brandName;
@@ -107,8 +112,9 @@ public class ProductInfoForSearch implements Serializable{
 		this.inputTime = inputTime;
 		this.modifiedTime = modifiedTime;
 		this.view = view;
-		this.pscore = pscore;
-		this.price = price;
+		this.score = score;
+		this.minPrice = minPrice;
+		this.maxPrice = maxPrice;
 		this.collect = collect;
 		this.cart = cart;
 		this.sales = sales;
@@ -251,21 +257,14 @@ public class ProductInfoForSearch implements Serializable{
     }
     
 
-    public Double getPscore() {
-		return pscore;
+    public Double getScore() {
+		return score;
 	}
 
-	public void setPscore(Double pscore) {
-		this.pscore = pscore;
+	public void setScore(Double score) {
+		this.score = score;
 	}
 
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
 
 	public int getCollect() {
 		return collect;
@@ -274,6 +273,23 @@ public class ProductInfoForSearch implements Serializable{
 	public void setCollect(int collect) {
 		this.collect = collect;
 	}
+	
+	public BigDecimal getMinPrice() {
+		return minPrice;
+	}
+
+	public void setMinPrice(BigDecimal minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public BigDecimal getMaxPrice() {
+		return maxPrice;
+	}
+
+	public void setMaxPrice(BigDecimal maxPrice) {
+		this.maxPrice = maxPrice;
+	}
+
 
 	public int getCart() {
 		return cart;
