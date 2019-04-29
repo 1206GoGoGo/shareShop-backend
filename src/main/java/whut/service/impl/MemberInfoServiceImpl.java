@@ -17,6 +17,7 @@ import whut.dao.UserLoginDao;
 import whut.pojo.UserInfo;
 import whut.pojo.UserLogin;
 import whut.service.MemberInfoService;
+import whut.utils.EncryptUtil;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
@@ -78,14 +79,14 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		String identityCardNo = user.getIdentityCardNo();
 		map.put("identityCardNo", identityCardNo);
 		if(!dao.searchAllInfoByUserInfo(map).isEmpty()) {
-			return new ResponseData(4064,"identityCardNo is occupied",null);
+			//return new ResponseData(4064,"identityCardNo is occupied",null);
 		}
 		map.put("identityCardNo", null);
 		
 		//添加用户登录表数据
 		UserLogin userLogin = new UserLogin();
 		userLogin.setUsername(username);
-		userLogin.setPassword(password);
+		userLogin.setPassword(EncryptUtil.MD5(password));
 		userLogin.setLevel(1);	//设置用户等级
 		userLogin.setStatus((byte)1);	//设置用户状态
 		

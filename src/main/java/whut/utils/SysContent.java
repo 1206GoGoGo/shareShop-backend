@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  * @author chen cheng
  *
  */
+//@Service
 public class SysContent {
 
     private static RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
@@ -30,6 +32,7 @@ public class SysContent {
     }
 
     public static HttpSession getSession() {
+    	System.out.println("xxxxxxxxxxx");
         return (HttpSession) request.getSession();
     }
     

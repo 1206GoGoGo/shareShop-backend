@@ -9,6 +9,9 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import whut.dao.UserLoginDao;
 import whut.pojo.UserLogin;
@@ -35,7 +38,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 			return new ResponseData(4061,"password error",null);
 		}
 		if( userLogin.getLevel()!=20 ) {
-			return new ResponseData(4063,"inadequate permissions",null);
+			//return new ResponseData(4063,"inadequate permissions",null);
 		}
 		if( userLogin.getStatus()!=1 ) {
 			return new ResponseData(4064,"Administrator status exception",null);
@@ -74,8 +77,9 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		
 		//设置session
 		//用户登录信息
-
-        HttpSession session = SysContent.getSession();
+		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
+		HttpSession session = ((ServletRequestAttributes)requestAttributes).getRequest().getSession();
+        //HttpSession session = SysContent.getSession();
 		session.setAttribute("_tzBDSFRCVID",sercity);
 		session.setMaxInactiveInterval(60*60*24);//有效期1天
 		//用户名
