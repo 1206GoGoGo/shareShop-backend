@@ -9,11 +9,14 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import redis.clients.jedis.Jedis;
 import whut.dao.ProInfoDao;
 import whut.pojo.ProductInfo;
 import whut.service.ProInfoService;
+import whut.utils.JedisUtil;
 import whut.utils.ResponseData;
 import whut.utils.SolrJUtil;
+import whut.utils.SysContent;
 
 
 
@@ -76,7 +79,13 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
-		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
+		
+		Jedis jedis = JedisUtil.getJedis();
+		//jedis.set("searchKey:"+SysContent.getUserId()+"", name);	//开启用户登录功能后再添加【增加或覆盖】
+		//jedis.set("searchKey:1", name);			//测试
+		//System.out.println(jedis.get("searchKey:"+SysContent.getUserId()+""));
+    	JedisUtil.closeJedis(jedis);
+		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
 		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
 
