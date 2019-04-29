@@ -63,7 +63,8 @@
     <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="pscore" jdbcType="DOUBLE" property="pscore"/>
-    <result column="min_price" jdbcType="DOUBLE"  property="price"/>
+    <result column="min_price" jdbcType="DECIMAL" property="minPrice"/>
+    <result column="max_price" jdbcType="DECIMAL"  property="maxPrice"/>
     <result column="collect" jdbcType="INTEGER" property="collect"/>
    	<result column="cart" jdbcType="INTEGER" property="cart"/>
    	<result column="sales" jdbcType="INTEGER" property="sales"/>
@@ -118,11 +119,11 @@
     <select id="getSolrDoucumentList" resultMap="ForSearchResultMap">
     	SELECT pi.product_id,pi.product_name,pi.brand_name,pi.one_category_id,pi.two_category_id,pi.three_category_id,
 		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.audit_status,pi.use_coupon,pi.discount_rate,
-		pi.production_date,pi.description,pi.stock,pi.input_time,pi.modified_time,pc.score,ps.price min_price,IFNULL(uc.collect,0) collect,
+		pi.production_date,pi.description,pi.stock,pi.input_time,pi.modified_time,pc.score,ps.min_price,ps.max_price,IFNULL(uc.collect,0) collect,
 		IFNULL(oc.cart,0) cart,IFNULL(od.sales,0) sales
 		FROM product_info pi
 		LEFT JOIN (SELECT product_id, AVG(grade) score FROM product_comment GROUP BY product_id) pc on pi.product_id = pc.product_id
-		LEFT JOIN (SELECT product_id,min(price) price FROM product_specs GROUP BY product_id) ps on pi.product_id = ps.product_id
+		LEFT JOIN (SELECT product_id,min(price) min_price,max(price) max_price FROM product_specs GROUP BY product_id) ps on pi.product_id = ps.product_id
 		LEFT JOIN (SELECT product_id,count(*) collect FROM user_collect GROUP BY product_id) uc on pi.product_id = uc.product_id
 		LEFT JOIN (SELECT product_id,count(*) cart FROM order_cart GROUP BY product_id) oc on pi.product_id = oc.product_id
 		LEFT JOIN (select od.product_id,sum(od.product_quantity) sales from order_detail od
