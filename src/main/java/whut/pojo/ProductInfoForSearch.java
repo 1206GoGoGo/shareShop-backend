@@ -1,7 +1,5 @@
 package whut.pojo;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -70,14 +68,14 @@ public class ProductInfoForSearch{
 	private int view;//用户浏览记录
 	
 	@Field
-    private Double score;//商品评分
+    private Double pscore;//商品评分
 	
     //price
 	@Field
-    private BigDecimal minPrice;//最低价格
+    private Double minPrice;//最低价格
     
 	@Field
-    private BigDecimal maxPrice;//最高价格
+    private Double maxPrice;//最高价格
     
 	@Field
     private int collect;//收藏数
@@ -93,7 +91,7 @@ public class ProductInfoForSearch{
 	public ProductInfoForSearch(Integer productId, String productName, String brandName, Integer oneCategoryId,
 			Integer twoCategoryId, Integer threeCategoryId, String mainImage, String attributeList, Integer publishStatus,
 			Integer auditStatus, Integer useCoupon, Integer discountRate, Date productionDate, String description,
-			Integer stock, Date inputTime, Date modifiedTime,int view, Double score, BigDecimal minPrice, BigDecimal maxPrice, int collect, int cart, int sales) {
+			Integer stock, Date inputTime, Date modifiedTime,int view, Double pscore, Double minPrice, Double maxPrice, int collect, int cart, int sales) {
 		this.productId = productId;
 		this.productName = productName;
 		this.brandName = brandName;
@@ -112,7 +110,7 @@ public class ProductInfoForSearch{
 		this.inputTime = inputTime;
 		this.modifiedTime = modifiedTime;
 		this.view = view;
-		this.score = score;
+		this.pscore = pscore;
 		this.minPrice = minPrice;
 		this.maxPrice = maxPrice;
 		this.collect = collect;
@@ -258,11 +256,11 @@ public class ProductInfoForSearch{
     
 
     public Double getScore() {
-		return score;
+		return pscore;
 	}
 
-	public void setScore(Double score) {
-		this.score = score;
+	public void setScore(Double pscore) {
+		this.pscore = pscore;
 	}
 
 
@@ -274,19 +272,19 @@ public class ProductInfoForSearch{
 		this.collect = collect;
 	}
 	
-	public BigDecimal getMinPrice() {
+	public Double getMinPrice() {
 		return minPrice;
 	}
 
-	public void setMinPrice(BigDecimal minPrice) {
+	public void setMinPrice(Double minPrice) {
 		this.minPrice = minPrice;
 	}
 
-	public BigDecimal getMaxPrice() {
+	public Double getMaxPrice() {
 		return maxPrice;
 	}
 
-	public void setMaxPrice(BigDecimal maxPrice) {
+	public void setMaxPrice(Double maxPrice) {
 		this.maxPrice = maxPrice;
 	}
 
