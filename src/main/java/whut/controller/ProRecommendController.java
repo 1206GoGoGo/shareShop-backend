@@ -19,13 +19,7 @@ public class ProRecommendController {
 	@Autowired
 	private ProRecommendService proRecommendService;
 	
-	
-	//获取所有商品列表
-	@RequestMapping(value = "/update", method = RequestMethod.GET)
-	public @ResponseBody ResponseData update() {
-		return proRecommendService.updateSolrData();
-	}
-	
+
 	
 }
 	
