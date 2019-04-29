@@ -34,14 +34,20 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		String password = jsonUtils.getStringValue("password");
 
 		UserLogin userLogin = loginDao.getLoginInfo(username);
+		
+		if(userLogin == null) {
+			return new ResponseData(406,"parameters incorrect",null);
+		}
+		
 		if( !EncryptUtil.MD5(password).equals(userLogin.getPassword())) {
 			return new ResponseData(4061,"password error",null);
 		}
-		if( userLogin.getLevel()!=20 ) {
-			//return new ResponseData(4063,"inadequate permissions",null);
-		}
+		//seller登录后台界面需要验证该信息
+//		if( userLogin.getLevel()!=20 ) {
+//			return new ResponseData(4063,"inadequate permissions",null);
+//		}
 		if( userLogin.getStatus()!=1 ) {
-			return new ResponseData(4064,"Administrator status exception",null);
+			return new ResponseData(4064,"status exception",null);
 		}
 		
 		//验证成功创建安全信息sercity及加密
@@ -77,9 +83,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		
 		//设置session
 		//用户登录信息
-		RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
-		HttpSession session = ((ServletRequestAttributes)requestAttributes).getRequest().getSession();
-        //HttpSession session = SysContent.getSession();
+        HttpSession session = SysContent.getSession();
 		session.setAttribute("_tzBDSFRCVID",sercity);
 		session.setMaxInactiveInterval(60*60*24);//有效期1天
 		//用户名

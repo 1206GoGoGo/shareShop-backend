@@ -95,6 +95,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		userLogin = loginDao.getLoginInfo(username);
 		
 		//给user对象赋值
+		user.setName(null);
 		user.setUserId(userLogin.getUserId());
 		user.setUserLogin(userLogin);
 
