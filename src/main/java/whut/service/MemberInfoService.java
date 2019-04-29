@@ -14,7 +14,13 @@ public interface MemberInfoService {
 
 	public ResponseData getDetail();
 
-	public ResponseData getMemberListBySeller(int pagesize, int pageindex, String username);
+	public ResponseData getMemberListBySeller(Integer pagesize, Integer pageindex, Integer status);
 
-	public ResponseData getCountAWeek(int userId);
+	public ResponseData getCountAWeek();
+
+	public ResponseData modifyPhone(String jsonString);
+
+	public ResponseData modifyEmail(String jsonString);
+
+	public ResponseData modifyPassword(String jsonString);
 }

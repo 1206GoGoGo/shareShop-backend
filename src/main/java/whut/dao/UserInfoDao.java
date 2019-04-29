@@ -17,7 +17,7 @@ public interface UserInfoDao {
 	//修改用户信息表
 	void modify(UserInfo user);
 
-	//map包括int pagesize, int pageindex,int superiorId通过上线id获取下线列表，只返回正常状态用户
+	//map包括int pagesize, int pageindex,int superiorId,Integer status通过上线id获取下线列表，status==null查询全部的
 	List<UserInfo> getMemberBySellerId(Map<String, Integer> map);
 	
 	//通过登录表id获取用户信息

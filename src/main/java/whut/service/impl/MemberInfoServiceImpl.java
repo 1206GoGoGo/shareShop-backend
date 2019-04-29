@@ -1,7 +1,6 @@
 package whut.service.impl;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import whut.dao.OrderDao;
 import whut.dao.UserInfoDao;
 import whut.dao.UserLoginDao;
 import whut.pojo.UserInfo;
@@ -29,9 +27,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
 	@Autowired
 	private UserLoginDao loginDao;
-	
-	@Autowired
-	private OrderDao orderDao;
 
 	@Override
 	public ResponseData memberAdd(UserInfo user){
@@ -152,8 +147,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		userOld.setName(user.getName());
 		userOld.setIdentityCardType(user.getIdentityCardType());
 		userOld.setIdentityCardNo(user.getIdentityCardNo());
-		userOld.setPhoneNumber(user.getPhoneNumber());
-		userOld.setEmail(user.getEmail());
 		userOld.setGender(user.getGender());
 		userOld.setBirthday(user.getBirthday());
 		
@@ -173,19 +166,23 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	}
 
 	@Override
-	public ResponseData getMemberListBySeller(int pagesize, int pageindex, String username) {
-		int superiorId;
-		try {
-			superiorId = loginDao.getLoginInfo(username).getUserId();
-		}catch(Exception e) {
-			return new ResponseData(4061,"user does not exist",null);
+	public ResponseData getMemberListBySeller(Integer pagesize, Integer pageindex, Integer status) {
+		
+		if(pagesize == null) {
+			pagesize = 20;
 		}
+		if(pageindex == null) {
+			pageindex = 0;
+		}
+
+		int superiorId = SysContent.getUserId();
 
 		List<UserInfo> list = null;
 		Map<String,Integer> map = new HashMap<>();
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
 		map.put("superiorId", superiorId);
+		map.put("status", status);
 		list = dao.getMemberBySellerId(map);
 		if(list==null || list.isEmpty() ) {
 			return new ResponseData(4062,"promoter has not downline",null);
@@ -215,9 +212,9 @@ public class MemberInfoServiceImpl implements MemberInfoService {
     }
 
 	@Override
-	public ResponseData getCountAWeek(int userId) {
+	public ResponseData getCountAWeek() {
 		Map<String,Object> map = new HashMap<>();
-		map.put("sellerId", userId);
+		map.put("sellerId", SysContent.getUserId());
 		String list = "[";
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal=Calendar.getInstance();
@@ -245,4 +242,82 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		return  new ResponseData(200,"success",list);
 	}
 
+	@Override
+	public ResponseData modifyPhone(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		String phoneNew = jsonUtils.getStringValue("phoneNew");
+		String verify = jsonUtils.getStringValue("verify");
+		
+		UserInfo userOld = dao.getUserInfo( String.valueOf(SysContent.getUserId()) );
+		//修改用户信息，密码、登录名、证件号、账户余额禁止修改(编号识别要修改的用户)。需要判断是否满足指定条件，如果用户状态已经是注销状态禁止修改。
+		
+		//判断当前用户状态
+		if( userOld.getUserLogin().getStatus() == 0 ) {
+			return new ResponseData(4061,"user status exception",null);
+		}
+		
+		//判断验证码
+		
+		//判断占用情况
+		
+		//只处理部分参数的修改
+		userOld.setPhoneNumber(phoneNew);
+		dao.modify(userOld);
+		return new ResponseData(200,"success",null);
+	}
+
+	@Override
+	public ResponseData modifyEmail(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		String emailNew = jsonUtils.getStringValue("emailNew");
+		String verify = jsonUtils.getStringValue("verify");
+		
+		UserInfo userOld = dao.getUserInfo( String.valueOf(SysContent.getUserId()) );
+		//修改用户信息，密码、登录名、证件号、账户余额禁止修改(编号识别要修改的用户)。需要判断是否满足指定条件，如果用户状态已经是注销状态禁止修改。
+		
+		//判断当前用户状态
+		if( userOld.getUserLogin().getStatus() == 0 ) {
+			return new ResponseData(4061,"user status exception",null);
+		}
+		
+		//判断验证码
+		
+		//判断占用情况
+		
+		//只处理部分参数的修改
+		userOld.setEmail(emailNew);
+		dao.modify(userOld);
+		return new ResponseData(200,"success",null);
+	}
+
+	@Override
+	public ResponseData modifyPassword(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		String passwordOld = jsonUtils.getStringValue("passwordOld");
+		String passwordNew = jsonUtils.getStringValue("passwordNew");
+		String verify = jsonUtils.getStringValue("verify");
+		
+		UserLogin userLoginOld = loginDao.getLoginInfoById(SysContent.getUserId());
+		//修改用户信息，密码、登录名、证件号、账户余额禁止修改(编号识别要修改的用户)。需要判断是否满足指定条件，如果用户状态已经是注销状态禁止修改。
+		
+		//判断当前用户状态
+		if(userLoginOld.getStatus() == 0 ) {
+			return new ResponseData(4061,"user status exception",null);
+		}
+		
+		//判断原密码是否正确
+		if( !EncryptUtil.MD5(passwordOld).equals(userLoginOld.getPassword())) {
+			return new ResponseData(4062,"password error",null);
+		}
+		
+		
+		//判断验证码
+		
+		//判断占用情况
+		
+		//只处理部分参数的修改
+		userLoginOld.setPassword(EncryptUtil.MD5(passwordNew));;
+		loginDao.modify(userLoginOld);
+		return new ResponseData(200,"success",null);
+	}
 }

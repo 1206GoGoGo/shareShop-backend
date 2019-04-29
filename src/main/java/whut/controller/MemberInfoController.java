@@ -26,8 +26,8 @@ public class MemberInfoController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getListBySeller", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListBySeller(int pagesize, int pageindex, String username) {
-		return  memberInfoService.getMemberListBySeller(pagesize, pageindex, username);
+	public @ResponseBody ResponseData getListBySeller(Integer pagesize, Integer pageindex, Integer status) {
+		return  memberInfoService.getMemberListBySeller(pagesize, pageindex, status);
 	}
 	
 	
@@ -36,6 +36,20 @@ public class MemberInfoController {
 		return  memberInfoService.modify(user);
 	}
 	
+	@RequestMapping(value = "/modifyPhone", method = RequestMethod.POST)
+	public @ResponseBody ResponseData modifyPhone(@RequestBody String jsonString) {
+		return  memberInfoService.modifyPhone(jsonString);
+	}
+
+	@RequestMapping(value = "/modifyEmail", method = RequestMethod.POST)
+	public @ResponseBody ResponseData modifyEmail(@RequestBody String jsonString) {
+		return  memberInfoService.modifyEmail(jsonString);
+	}
+
+	@RequestMapping(value = "/modifyPassword", method = RequestMethod.POST)
+	public @ResponseBody ResponseData modifyPassword(@RequestBody String jsonString) {
+		return  memberInfoService.modifyPassword(jsonString);
+	}	
 	/**
 	 * 删除该会员（改状态）
 	 * 如果需要真正删除，需要对订单表、地址表等数据进行处理
@@ -53,8 +67,8 @@ public class MemberInfoController {
 	}
 	
 	@RequestMapping(value = "/getCountAWeek", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getCountAWeek(int userId) {
-		return  memberInfoService.getCountAWeek(userId);
+	public @ResponseBody ResponseData getCountAWeek() {
+		return  memberInfoService.getCountAWeek();
 	}
 
 }
