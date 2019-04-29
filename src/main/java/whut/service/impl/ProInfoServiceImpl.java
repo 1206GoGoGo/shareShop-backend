@@ -50,7 +50,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"*:*",new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null));
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"*:*",new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 			pagesize = 20;
 		}
 		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null));
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 		}
 		String searchCondition = "oneCategoryId:"+id+" || twoCategoryId:"+id;
 		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,searchCondition,new String[] {"productId", "productName","discountRate","price","mainImage","oneCategoryId","twoCategoryId"},null,null,null));
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,searchCondition,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
 
 	@Override
