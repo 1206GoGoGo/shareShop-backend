@@ -45,8 +45,8 @@ public class SolrJUtil {
         //设置分页
         solrQuery.setStart((page - 1) * rows);
         solrQuery.setRows(rows);
-        //设置默认搜素域
-        solrQuery.set("df", "Ptitle");
+        //设置默认搜素域，多分词 空格等会用默认查询字段查询
+        solrQuery.set("df", "productName");
 
         if(sortAsc != null ) {solrQuery.setSort(sortAsc, SolrQuery.ORDER.asc);}
         if(sortDesc != null ) {solrQuery.addSort(sortDesc, SolrQuery.ORDER.desc);}
