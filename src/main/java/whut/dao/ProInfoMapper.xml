@@ -19,6 +19,7 @@
     <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
     <result column="pro_description" jdbcType="VARCHAR" property="description" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="html" jdbcType="VARCHAR" property="html" />
     <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="min_price" jdbcType="DECIMAL" property="minPrice"/>
@@ -60,6 +61,7 @@
     <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
     <result column="pro_description" jdbcType="VARCHAR" property="description" />
     <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="html" jdbcType="VARCHAR" property="html" />
     <result column="input_time" jdbcType="TIMESTAMP" property="inputTime" />
     <result column="modified_time" jdbcType="TIMESTAMP" property="modifiedTime" />
     <result column="pscore" jdbcType="DOUBLE" property="pscore"/>
@@ -73,7 +75,7 @@
   	<sql id="proInfo">
   		SELECT pi.product_id,pi.product_name,pi.brand_name,pi.spu,pi.one_category_id,pi.two_category_id,pi.three_category_id,
   		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.use_coupon,
-  		pi.discount_rate,pi.production_date,pi.description pro_description,pi.stock,pi.input_time,pi.modified_time, 
+  		pi.discount_rate,pi.production_date,pi.description pro_description,pi.stock,pi.html,pi.input_time,pi.modified_time, 
   		ps.product_specs_id,ps.name,ps.product_code,ps.specs,ps.specs_sort,ps.pic_url,ps.average_cost,ps.original_price,
   		ps.price,ps.description,ps.product_stock,ps.create_time,ps.update_time,psp.min_price,psp.max_price,pc.score  FROM product_info pi
 		LEFT JOIN product_specs ps on ps.product_id = pi.product_id
@@ -119,7 +121,7 @@
     <select id="getSolrDoucumentList" resultMap="ForSearchResultMap">
     	SELECT pi.product_id,pi.product_name,pi.brand_name,pi.one_category_id,pi.two_category_id,pi.three_category_id,
 		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.audit_status,pi.use_coupon,pi.discount_rate,
-		pi.production_date,pi.description,pi.stock,pi.input_time,pi.modified_time,pc.score,ps.min_price,ps.max_price,IFNULL(uc.collect,0) collect,
+		pi.production_date,pi.description,pi.stock,pi.html,pi.input_time,pi.modified_time,pc.score,ps.min_price,ps.max_price,IFNULL(uc.collect,0) collect,
 		IFNULL(oc.cart,0) cart,IFNULL(od.sales,0) sales
 		FROM product_info pi
 		LEFT JOIN (SELECT product_id, AVG(grade) score FROM product_comment GROUP BY product_id) pc on pi.product_id = pc.product_id

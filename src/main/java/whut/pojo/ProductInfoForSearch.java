@@ -50,10 +50,13 @@ public class ProductInfoForSearch{
     private Date productionDate;//生产日期
 
 	@Field
-    private String description;//商品描述
+    private String description;//商品简介
 
 	@Field
     private Integer stock;//商品库存
+	
+	@Field
+	private String html;//商品详细描述
 
 	@Field
     private Date inputTime;//商品录入时间
@@ -91,7 +94,7 @@ public class ProductInfoForSearch{
 	public ProductInfoForSearch(Integer productId, String productName, String brandName, Integer oneCategoryId,
 			Integer twoCategoryId, Integer threeCategoryId, String mainImage, String attributeList, Integer publishStatus,
 			Integer auditStatus, Integer useCoupon, Integer discountRate, Date productionDate, String description,
-			Integer stock, Date inputTime, Date modifiedTime,int view, Double pscore, Double minPrice, Double maxPrice, int collect, int cart, int sales) {
+			Integer stock, String html,Date inputTime, Date modifiedTime,int view, Double pscore, Double minPrice, Double maxPrice, int collect, int cart, int sales) {
 		this.productId = productId;
 		this.productName = productName;
 		this.brandName = brandName;
@@ -107,6 +110,7 @@ public class ProductInfoForSearch{
 		this.productionDate = productionDate;
 		this.description = description;
 		this.stock = stock;
+		this.html = html;
 		this.inputTime = inputTime;
 		this.modifiedTime = modifiedTime;
 		this.view = view;
@@ -238,7 +242,15 @@ public class ProductInfoForSearch{
         this.stock = stock;
     }
 
-    public Date getInputTime() {
+    public String getHtml() {
+		return html;
+	}
+
+	public void setHtml(String html) {
+		this.html = html;
+	}
+
+	public Date getInputTime() {
         return inputTime;
     }
 
@@ -253,16 +265,14 @@ public class ProductInfoForSearch{
     public void setModifiedTime(Date modifiedTime) {
         this.modifiedTime = modifiedTime;
     }
-    
 
-    public Double getScore() {
+	public Double getPscore() {
 		return pscore;
 	}
 
-	public void setScore(Double pscore) {
+	public void setPscore(Double pscore) {
 		this.pscore = pscore;
 	}
-
 
 	public int getCollect() {
 		return collect;

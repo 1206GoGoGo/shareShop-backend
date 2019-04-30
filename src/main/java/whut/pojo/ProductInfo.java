@@ -45,9 +45,11 @@ public class ProductInfo implements Serializable{
 
     private Date productionDate;//生产日期
 
-    private String description;//商品描述
+    private String description;//商品简介
 
     private Integer stock;//商品库存
+    
+    private String html;//商品详细描述
 
     private Date inputTime;//商品录入时间
 
@@ -215,6 +217,14 @@ public class ProductInfo implements Serializable{
     public void setStock(Integer stock) {
         this.stock = stock;
     }
+    
+    public String getHtml() {
+  		return html;
+  	}
+
+  	public void setHtml(String html) {
+  		this.html = html;
+  	}
 
     public Date getInputTime() {
         return inputTime;
