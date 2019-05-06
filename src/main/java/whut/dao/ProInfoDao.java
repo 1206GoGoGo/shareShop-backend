@@ -29,7 +29,7 @@ public interface ProInfoDao {
 
 	Integer getListNum();	//获取所有商品列表时返回查询结果总数
 
-	Integer getListByCategoryNum();	//根据分类获取商品列表时返回查询结果总数
+	Integer getListByCategoryNum(String id);	//根据分类获取商品列表时返回查询结果总数
 
 	
 

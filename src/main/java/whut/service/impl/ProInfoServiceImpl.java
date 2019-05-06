@@ -107,7 +107,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 		List<ProductInfo> list = proInfoDao.getListByCategory(map);
 		if(list.isEmpty())
 			return new ResponseData(400,"No data",null);
-		Integer num = proInfoDao.getListByCategoryNum();
+		Integer num = proInfoDao.getListByCategoryNum(id);
 		return new ResponseData(200,"success",list,num);
 	}
 	
