@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -38,5 +36,11 @@ public class SysContent {
     	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     	int userId = Integer.parseInt( ((HttpSession) request.getSession()).getAttribute("userId").toString() );
         return userId;
+    }
+    
+    public static String getUserName() {
+    	HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    	String userName = ((HttpSession) request.getSession()).getAttribute("userName").toString();
+        return userName;
     }
 }

@@ -9,14 +9,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
+import redis.clients.jedis.Jedis;
 import whut.dao.UserLoginDao;
 import whut.pojo.UserLogin;
 import whut.service.MemberLoginService;
 import whut.utils.EncryptUtil;
+import whut.utils.JedisUtil;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
@@ -50,12 +49,10 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 			return new ResponseData(4064,"status exception",null);
 		}
 		
-		//验证成功创建安全信息sercity及加密
+		//验证成功创建安全验证信息sercity
 		String sercity = EncryptUtil.MD5(username+new Date());	//每次请求更新，写到过滤器或拦截器中
 		
 		//设置cookie
-		
-		//用户等级。数字
 		Cookie dot = new Cookie("_dotcom_user", userLogin.getLevel().toString());
 		dot.setPath("/");
 		dot.setMaxAge(60*60*24*30);
@@ -81,24 +78,30 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		logininfo.setMaxAge(60*60*24);
 		response.addCookie(logininfo);
 		
-		//设置session
-		//用户登录信息
-        HttpSession session = SysContent.getSession();
-		session.setAttribute("_tzBDSFRCVID",sercity);
-		session.setMaxInactiveInterval(60*60*24);//有效期1天
-		//用户名
-		session.setAttribute("_octouser",username);
-		session.setMaxInactiveInterval(60*60*24);
-		
-		session.setAttribute("userId",userLogin.getUserId());
-		session.setMaxInactiveInterval(60*60*24);
 
+		//将登录状态保存到redis中，session只保存用户id，并且有效期可以短点，减轻服务器负担。redis中登录状态可以保存2天等
+		Jedis jedis = JedisUtil.getJedis();
+		jedis.set("login:"+username+":userid", userLogin.getUserId().toString());	//增加或覆盖用户名
+		jedis.set("login:"+username+":_tzBDSFRCVID", sercity);	//用户身份验证信息
+		jedis.expire("login:"+username+":_tzBDSFRCVID", 60*60*24*2); //保存2天
+    	JedisUtil.closeJedis(jedis);
+    	
+		//设置session
+        HttpSession session = SysContent.getSession();
+		session.setAttribute("userName",userLogin.getUsername());
+		session.setAttribute("userId",userLogin.getUserId());
+		session.setMaxInactiveInterval(60*60*2);//保存2小时
 		return new ResponseData(200,"login success",null);
 	}
 
 	@Override
-	public ResponseData loginout(String username, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseData loginout(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession();
+        
+		//清除redis中的验证信息
+		Jedis jedis = JedisUtil.getJedis();
+		jedis.del("login:"+SysContent.getUserName()+":_tzBDSFRCVID");
+    	JedisUtil.closeJedis(jedis);
         
 		//最近活跃0/1（8个小时内，活跃1，否则不存在）
 		Cookie activity = new Cookie("has_recent_activity", "0");
@@ -112,6 +115,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		response.addCookie(logged);
         //清除session
 		session.invalidate();
+    	
 		return new ResponseData(200,"success",null);
 	}
 

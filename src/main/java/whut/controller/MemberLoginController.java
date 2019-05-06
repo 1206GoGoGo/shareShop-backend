@@ -31,9 +31,9 @@ public class MemberLoginController {
 	}
 	
 	@RequestMapping(value = "/out", method = RequestMethod.GET)
-	public @ResponseBody ResponseData loginout(String username, HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody ResponseData loginout(HttpServletRequest request, HttpServletResponse response) {
 		
-		return  loginService.loginout(username, request, response);
+		return  loginService.loginout(request, response);
 	}
 	
 	@RequestMapping(value = "/getPhoneCode", method = RequestMethod.GET)

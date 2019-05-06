@@ -9,7 +9,7 @@ public interface MemberLoginService {
 
 	ResponseData loginin(String jsonString, HttpServletRequest request, HttpServletResponse response);
 
-	ResponseData loginout(String username, HttpServletRequest request, HttpServletResponse response);
+	ResponseData loginout(HttpServletRequest request, HttpServletResponse response);
 
 	ResponseData getPhoneCode(String phoneCode);
 
