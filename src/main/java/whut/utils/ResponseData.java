@@ -22,6 +22,12 @@ public class ResponseData {
 		this.data = data;
 	}
 
+	public ResponseData(Integer code, String msg, Object data , int numFound){
+		this.code = code;
+		this.msg = msg;	
+		this.data = new THEDATA(numFound, data);
+	}
+
 	public Integer getCode() {
 		return code;
 	}
@@ -45,6 +51,30 @@ public class ResponseData {
 	public void setData(Object data) {
 		this.data = data;
 	}
+}
+
+class THEDATA {
+	private Integer numFound;
+	private Object indata;
 	
-	
+	public THEDATA(Integer numFound, Object indata){
+		this.numFound = numFound;
+		this.indata = indata;
+	}
+
+	public Integer getNumFound() {
+		return numFound;
+	}
+
+	public void setNumFound(Integer numFound) {
+		this.numFound = numFound;
+	}
+
+	public Object getIndata() {
+		return indata;
+	}
+
+	public void setIndata(Object indata) {
+		this.indata = indata;
+	}
 }

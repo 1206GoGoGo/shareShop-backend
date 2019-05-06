@@ -23,7 +23,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 		if(userAddr.isEmpty()) {
 			return new ResponseData(400,"no data satify request",null);
 		}else {
-			return new ResponseData(200,"success",userAddr);
+			return new ResponseData(200,"success",userAddr,userAddr.size());
 		}
 	}
 
