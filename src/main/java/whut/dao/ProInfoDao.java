@@ -25,6 +25,12 @@ public interface ProInfoDao {
 	ProductInfo getDetailByCode(String id);
 
 	//获取全部商品信息solr所有信息【参考ProductInfoForSearch pojo对象】与ProductInfo相比删除了productSpecs，暂时新增6个参数
-	List<ProductInfoForSearch> getSolrDoucumentList();	
+	List<ProductInfoForSearch> getSolrDoucumentList();
+
+	Integer getListNum();	//获取所有商品列表时返回查询结果总数
+
+	Integer getListByCategoryNum();	//根据分类获取商品列表时返回查询结果总数
+
+	
 
 }

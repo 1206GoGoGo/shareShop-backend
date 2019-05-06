@@ -90,6 +90,10 @@
         limit #{pageindex},#{pagesize}  
     </select>
     
+    <select id="getListNum" resultType="Integer">
+        select count(*) from product_info
+    </select>
+    
     <select id="getDetail" parameterType="String" resultMap="BaseResultMap">
     	<include refid="proInfo"/>
     	where pi.product_id = #{id}
