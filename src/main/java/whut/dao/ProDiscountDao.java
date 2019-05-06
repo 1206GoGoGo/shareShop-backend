@@ -17,4 +17,7 @@ public interface ProDiscountDao {
 
 	public void modify(ProductDiscount productDiscount);
 
+	//获取商品折扣列表总数
+	public Integer getListNum();
+
 }

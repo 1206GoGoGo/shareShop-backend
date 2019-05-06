@@ -34,7 +34,8 @@ public class SellerBillServiceImpl implements SellerBillService{
 		map.put("pagesize", pagesize);
 		List<SellerBill> list = sellerBillDao.getList(map);
 		if(list != null) {
-			return new ResponseData(200,"success",list);
+			Integer num = sellerBillDao.getListNum(id);
+			return new ResponseData(200,"success",list,num);
 		}else {
 			return new ResponseData(400,"no data",null);
 		}
@@ -69,7 +70,8 @@ public class SellerBillServiceImpl implements SellerBillService{
 		list = sellerBillDao.getWithdrawList(map);
 		if(list.isEmpty())
 			return new ResponseData(400,"No data",null);
-		return new ResponseData(200,"success",list);
+		Integer num = sellerBillDao.getWithdrawListNum(id);
+		return new ResponseData(200,"success",list,num);
 	}
 
 	@Override
@@ -87,7 +89,8 @@ public class SellerBillServiceImpl implements SellerBillService{
 		list = sellerBillDao.getYieldList(map);
 		if(list.isEmpty())
 			return new ResponseData(400,"No data",null);
-		return new ResponseData(200,"success",list);
+		Integer num = sellerBillDao.getYieldListNum(id);
+		return new ResponseData(200,"success",list,num);
 	}
 	
 }

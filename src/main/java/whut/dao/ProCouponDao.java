@@ -30,6 +30,12 @@ public interface ProCouponDao {
 	//根据优惠券id修改优惠券领取表状态
 	void modifyCouponReceiveStatus(String id);
 
+	//获取所有优惠券信息的数量
+	Integer getListNum();
+
+	//根据用户Id查看用户领取的未使用(状态为0)优惠券信息的数量
+	Integer getCouponByUIdNum();
+
 	
 
 }

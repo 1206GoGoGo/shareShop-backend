@@ -24,4 +24,10 @@ public interface ProCommentDao {
 	//根据评论id查看评论详情
 	public ProductComment getCommentById(String id);
 
+	//根据商品id查询商品评论总数
+	public Integer getListByProductNum(String id);
+
+	//根据用户id查询用户评论总数
+	public Integer getListByUserNum(String id);
+
 }

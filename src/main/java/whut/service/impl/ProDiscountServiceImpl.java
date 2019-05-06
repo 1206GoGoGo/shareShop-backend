@@ -32,7 +32,8 @@ public class ProDiscountServiceImpl implements ProDiscountService{
 		map.put("pagesize", pagesize);
 		List<ProductDiscount> list = proDiscountDao.getList(map);
 		if(list != null) {
-			return new ResponseData(200,"success",list);
+			Integer num = proDiscountDao.getListNum();
+			return new ResponseData(200,"success",list,num);
 		}else {
 			return new ResponseData(400,"no data",null);
 		}

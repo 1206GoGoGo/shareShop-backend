@@ -34,7 +34,8 @@ public class ProCommentServiceImpl implements ProCommentService{
 		map.put("pagesize", pagesize);
 		List<ProductComment> list = proCommentDao.getListByProduct(map);
 		if(list != null) {
-			return new ResponseData(200,"success",list);
+			Integer num = proCommentDao.getListByProductNum(id);
+			return new ResponseData(200,"success",list,num);
 		}else {
 			return new ResponseData(400,"no data",null);
 		}
@@ -55,6 +56,7 @@ public class ProCommentServiceImpl implements ProCommentService{
 		list = proCommentDao.getListByUser(map);
 		if(list == null)
 			return new ResponseData(400,"No Comments",null);
+		Integer num = proCommentDao.getListByUserNum(id);
 		return new ResponseData(200,"success",list);
 	}
 
