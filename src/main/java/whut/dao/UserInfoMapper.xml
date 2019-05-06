@@ -56,7 +56,10 @@
    
   <select id="getMemberBySellerId" parameterType="hashmap" resultMap="BaseResultMap">
        SELECT * FROM user_info ui LEFT JOIN user_login ul on ui.user_id = ul.user_id
-        where ui.superior_id = #{superiorId} and ul.status = 1
+        where ui.superior_id = #{superiorId} 
+        <if test="status != null">
+      		and ul.status = 1
+    	</if>
         limit #{pageindex}, #{pagesize}
    </select>
    

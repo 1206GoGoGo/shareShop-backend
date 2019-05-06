@@ -41,6 +41,10 @@
         SELECT count(*) from user_info where date_format(register_time,'%Y-%m-%d') =#{day}
 		AND superior_id = #{sellerId}
    </select>
+   
+   <select id="modify" parameterType="UserLogin">
+    	UPDATE user_login SET password = #{password} WHERE user_id = #{id}
+    </select>
 
 </mapper>   
       
