@@ -55,7 +55,7 @@
 		second_addr,is_default)      
 		VALUES
 		(#{userId},#{consigneeName},#{postalCode},#{phone},#{state},#{city},#{firstAddr},
-		#{secondAddr},#{isDefault},#{cardNumber})
+		#{secondAddr},#{isDefault})
 	</select>
 	
 	<select id="delete" parameterType="int">
