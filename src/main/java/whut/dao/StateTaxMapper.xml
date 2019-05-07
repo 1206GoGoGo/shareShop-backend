@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.StateTaxDao">
+   <resultMap id="BaseResultMap" type="whut.pojo.StateTax">
+    <id column="state_tax_id" jdbcType="INTEGER" property="stateTaxId" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+  </resultMap>
+  
+  
+   <select id="getStateTaxList" parameterType="hashmap" resultMap="BaseResultMap">
+        SELECT * FROM state_tax
+        limit #{pageindex},#{pagesize} 
+   </select>
+   
+   <select id="getStateTaxById" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM state_tax where state_tax_id = #{id}
+   </select>
+   
+    <select id="getStateTaxByName" parameterType="string" resultMap="BaseResultMap">
+        SELECT * FROM state_tax where state LIKE CONCAT(CONCAT('%',#{name}),'%')
+   </select>
+    
+  
+</mapper>
