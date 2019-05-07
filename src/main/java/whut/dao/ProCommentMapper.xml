@@ -42,5 +42,13 @@
  	<select id="getCommentById" parameterType="String" resultMap="BaseResultMap">
         SELECT * FROM product_comment where comment_id = #{id}
    </select>
+   
+   <select id="getListByProductNum" parameterType="String" resultType="Integer">
+        select count(*) FROM product_comment where product_id = #{id} and audit_status = 1
+   </select>
+   
+   <select id="getListByUserNum" parameterType="String" resultType="Integer">
+        select count(*) FROM product_comment where user_id = #{id}
+   </select>
  
   </mapper>

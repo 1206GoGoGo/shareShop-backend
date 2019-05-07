@@ -52,5 +52,18 @@
     	SELECT * FROM yield_detail where user_id = #{userId} ORDER BY create_time
     	limit #{pageindex},#{pagesize}
     </select>
+    
+     <select id="getListNum" parameterType="String" resultType="Integer">
+         SELECT sum(amount) from (select count(*) amount from withdraw_record where  user_id = #{id}
+ 		 UNION select count(*) amount from yield_detail where user_id = #{id} ) tb
+    </select>
+    
+    <select id="getYieldListNum" parameterType="String" resultType="Integer">
+        select count(*) from yield_detail where user_id = #{id}
+    </select>
+    
+    <select id="getWithdrawListNum" parameterType="String" resultType="Integer">
+        select count(*) from withdraw_record where user_id = #{id}
+    </select>
 
 </mapper>

@@ -32,5 +32,10 @@
     	category_id = #{categoryId},discount_rate = #{discountRate},seller_discount_rate = #{sellerDiscountRate},yield_rate = #{yieldRate} 
         WHERE discount_id = #{discountId}
     </select>
+    
+    <select id="getListNum"  resultType="Integer">
+        SELECT count(*) FROM product_discount
+    </select>
+    
 
 </mapper>

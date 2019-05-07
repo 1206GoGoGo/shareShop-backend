@@ -122,6 +122,13 @@
     	limit #{pageindex},#{pagesize} 
     </select>
     
+     <select id="getListByCategoryNum" parameterType="String"  resultType="Integer">
+    	select count(*) from product_info
+    	where (one_category_id = #{id} or two_category_id = #{id} or three_category_id = #{id})
+    	and publish_status = 1 and audit_status = 1
+    	ORDER BY product_id
+    </select>
+    
     <select id="getSolrDoucumentList" resultMap="ForSearchResultMap">
     	SELECT pi.product_id,pi.product_name,pi.brand_name,pi.one_category_id,pi.two_category_id,pi.three_category_id,
 		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.audit_status,pi.use_coupon,pi.discount_rate,

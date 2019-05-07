@@ -84,4 +84,12 @@
     	UPDATE coupon_receive SET status = 0 where coupon_id = #{id}
     </select>
     
+     <select id="getListNum" resultType="Integer">
+        select count(*) from coupon_info where status = 1
+    </select>
+    
+    <select id="getCouponByUIdNum" parameterType="String" resultType="Integer">
+        select count(*) from coupon_receive where user_id = #{id}
+    </select>
+    
   </mapper>
