@@ -83,11 +83,15 @@
 		LEFT JOIN (SELECT product_id, AVG(grade) score FROM product_comment GROUP BY product_id) pc on pi.product_id = pc.product_id
   	</sql>
   	
+  	<sql id="page">
+    	and pi.product_id in (select temp.product_id from (select product_id from product_info LIMIT #{pageindex},#{pagesize}) temp)
+  	</sql>
+  	
     <select id="getList" parameterType="hashmap" resultMap="BaseResultMap">
         <include refid="proInfo"/>
         where publish_status = 1 and audit_status = 1
+        <include refid="page"/>
         ORDER BY product_id
-        limit #{pageindex},#{pagesize}  
     </select>
     
     <select id="getListNum" resultType="Integer">
@@ -109,8 +113,8 @@
     <select id="search" parameterType="hashmap" resultMap="BaseResultMap">
     	<include refid="proInfo"/>
     	where product_name LIKE CONCAT(CONCAT('%',#{productName}),'%')
+    	<include refid="page"/>
     	ORDER BY product_id
-    	limit #{pageindex},#{pagesize}  
     </select>
     
    
@@ -118,8 +122,8 @@
     	<include refid="proInfo"/> 
     	where (one_category_id = #{oneCategoryId} or two_category_id = #{twoCategoryId} or three_category_id = #{threeCategoryId})
     	and publish_status = 1 and audit_status = 1
+    	<include refid="page"/>
     	ORDER BY product_id
-    	limit #{pageindex},#{pagesize} 
     </select>
     
      <select id="getListByCategoryNum" parameterType="String"  resultType="Integer">
