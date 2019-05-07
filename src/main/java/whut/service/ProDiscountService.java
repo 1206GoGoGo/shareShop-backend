@@ -15,4 +15,6 @@ public interface ProDiscountService {
 
 	ResponseData modify(ProductDiscount productDiscount);
 
+	public Integer getDiscountRateById(String id);
+
 }

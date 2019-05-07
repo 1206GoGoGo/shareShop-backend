@@ -67,7 +67,7 @@ public class ProCouponServiceImpl implements ProCouponService{
 		List<CouponReceive> list = new ArrayList<>();
 		list = proCouponDao.getCouponByUId(map);
 		if(list != null) {
-			Integer num = proCouponDao.getCouponByUIdNum();
+			Integer num = proCouponDao.getCouponByUIdNum(id);
 			return new ResponseData(200,"success",list,num);
 		}else {
 			return new ResponseData(400,"no data",null);
