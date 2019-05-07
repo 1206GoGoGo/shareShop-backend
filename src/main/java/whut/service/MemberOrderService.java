@@ -9,7 +9,7 @@ import whut.utils.ResponseData;
 
 public interface MemberOrderService {
 
-	public ResponseData getListByStatus(int pageindex, int pagesize, int status);
+	public ResponseData getListByStatus(Integer pageindex, Integer pagesize, Integer status);
 	
 	public ResponseData getDetail(int id);
 
@@ -22,5 +22,7 @@ public interface MemberOrderService {
 	public ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen);
 
 	public ResponseData delete(int orderId);
+
+	public ResponseData xadd(String jsonString);
 
 }

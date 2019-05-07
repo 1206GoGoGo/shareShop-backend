@@ -1,5 +1,9 @@
 package whut.service.impl;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,16 +11,21 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 import whut.dao.OrderDao;
 import whut.dao.OrderReturnDao;
-
-import whut.dao.ProCategoryDao;
 import whut.dao.ProSpecsDao;
+import whut.dao.StateTaxDao;
+import whut.dao.UserAddrDao;
 import whut.dao.UserLoginDao;
 import whut.pojo.OrderDetail;
 import whut.pojo.OrderMaster;
+import whut.pojo.ProductSpecs;
 import whut.pojo.SellerBill;
+import whut.pojo.UserAddr;
 import whut.service.MemberOrderService;
+import whut.service.ProDiscountService;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
@@ -28,7 +37,10 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	private OrderDao dao;
 	
 	@Autowired
-	private ProSpecsDao proSpecsDao;
+	private StateTaxDao stateTaxDao;
+	
+	@Autowired
+	private UserAddrDao userAddrDao;
 	
 	@Autowired
 	private UserLoginDao loginDao;
@@ -37,10 +49,16 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	private OrderReturnDao orderReturnDao;
 	
 	@Autowired
-	private ProCategoryDao proCategoryDao;
+	private ProSpecsDao proSpecsDao;
+	
+	@Autowired
+	private ProDiscountService proDiscountService;
 
 	@Override
-	public ResponseData getListByStatus(int pageindex, int pagesize, int status) {
+	public ResponseData getListByStatus(Integer pageindex, Integer pagesize, Integer status) {
+		if(pageindex == null) {pageindex = 0;}
+		if(pagesize == null) {pagesize = 20;}
+		if(status == null) {pageindex = 0;}
 		Map<String, Integer> map = new HashMap<>();
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
@@ -293,5 +311,150 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		dao.modifyOrderStatus(map);
 		
 		return new ResponseData(null);
+	}
+
+	/**
+	 * 
+	 {
+		"addrId": 1,
+		"coupon":{
+			"couponId":1
+		},
+		"products":[
+			{
+				"specsId":1,
+				"quantity":1
+			},
+			...
+		]
+	 }
+	 */
+	@Override
+	public ResponseData xadd(String jsonString) {
+		
+		//单品优惠暂不处理！！！！！
+		//运费收税？
+
+		BigDecimal productMoney = new BigDecimal("0.0");	//所有商品价格和，不含运费，不含税，不打折（算出来的总和）
+		BigDecimal discountMoney = new BigDecimal("0.0");	//打折金额
+		BigDecimal shippingMoney = new BigDecimal("0.0");	//运费
+		BigDecimal orderMoney = new BigDecimal("0.0");	//订单总金额 已打折 不含运费 不含税
+		BigDecimal taxMoney = new BigDecimal("0.0");	//税费
+		BigDecimal paymentMoney = new BigDecimal("0.0");	//最终需要支付的金额 orderMoney+taxMoney
+		BigDecimal couponMoney = new BigDecimal("0.0");	//优惠券金额
+		
+		//productMoney = M pro
+		//discountMoney = M （productMoney * 打折率）  每个商品求和
+		//shippingMoney	默认0
+		//orderMoney = productMoney - discountMoney - couponMoney
+		//taxMoney = orderMoney * 税率
+		//paymentMoney = orderMoney + taxMoney + shippingMoney
+		
+		
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		JsonNode jsonNode = jsonUtils.getJsonRoot();
+		int addrId = jsonUtils.getIntValue("addrId");
+		int couponId = jsonNode.get("coupon").findValue("couponId").asInt(0);
+		
+	    //4.计算优惠券合法性（该用户是否用于，能否正常使用等）
+	    couponMoney = new BigDecimal("0");
+	    if(couponMoney.doubleValue()<0) {
+			return new ResponseData(4001, "优惠券信息异常", null);
+	    }
+		
+		//1.处理收货地址等。初始化订单信息order_master
+		UserAddr userAddr = userAddrDao.getAddrByAddrId(addrId);
+		if(userAddr == null) {
+			return new ResponseData(4002, "地址信息异常", null);
+		}
+		if(userAddr.getUserId()!=SysContent.getUserId()) {
+			return new ResponseData(403, "非法地址信息", null);
+		}
+		OrderMaster orderMaster = new OrderMaster();
+		//生成订单号：订单时间+用户id+随机数
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+		Long orderNumber = Long.parseLong(df.format(new Date())+"001");
+		orderMaster.setOrderNumber(orderNumber);
+		orderMaster.setUserId(SysContent.getUserId());
+		orderMaster.setConsigneeName(userAddr.getConsigneeName());
+		orderMaster.setConsigneePhone(userAddr.getPhone());
+		orderMaster.setPostalCode(userAddr.getPostalCode());
+		orderMaster.setState(userAddr.getState());
+		orderMaster.setCity(userAddr.getCity());
+		orderMaster.setFirstAddr(userAddr.getFirstAddr());
+		orderMaster.setSecondAddr(userAddr.getSecondAddr());
+		
+		orderMaster.setCreateTime(new Date());
+		orderMaster.setState("10");
+		
+		dao.addOrderMaster(orderMaster);
+		
+		int orderId = dao.getOrderIdByOrderNumber(orderNumber);//----------------------------待处理订单id的获取
+		//2.处理商品，计算商品总金额及折扣总金额。处理表order_detail
+		JsonNode productsNode = jsonNode.get("products");
+		int specsId = 0;
+		int quantity = 0;
+		BigDecimal thisProductMoney = new BigDecimal("0");
+		BigDecimal thisDiscountMoney = new BigDecimal("0");
+		BigDecimal thisDiscountRate =  new BigDecimal("0");
+		
+		List<OrderDetail> orderDetailList = new ArrayList<OrderDetail>();
+	    for (JsonNode objNode : productsNode) {
+	    	//处理商品数字中的一个商品
+	    	specsId = objNode.findValue("specsId").asInt();
+	    	quantity = objNode.findValue("quantity").asInt();
+	    	
+	    	//获取商品信息，填入表中
+	    	ProductSpecs productSpecs = proSpecsDao.getProSpecsById(String.valueOf(specsId));
+	    	if(productSpecs == null) {
+	    		return new ResponseData(4003, productSpecs.getName()+"商品已过期", null);
+	    	}
+	    	//商品信息插入订单详情表中
+	    	OrderDetail orderDetail = new OrderDetail();
+	    	orderDetail.setOrderId(orderId);
+	    	orderDetail.setProductId(productSpecs.getProductId());
+	    	orderDetail.setProductSpecsId(productSpecs.getProductSpecsId());
+	    	orderDetail.setProductName(productSpecs.getName());
+	    	orderDetail.setProductQuantity(quantity);
+	    	orderDetail.setProductPrice(productSpecs.getPrice());
+	    	orderDetail.setStatus((byte) 1);
+	    	orderDetailList.add(orderDetail);
+	    	//获取折扣率
+	    	Integer discountRate = proDiscountService.getDiscountRateById(String.valueOf(specsId));
+	    	thisDiscountRate = new BigDecimal(Integer.toString(discountRate)).divide( new BigDecimal("100") );
+	    	thisProductMoney = productSpecs.getPrice();
+	    	thisDiscountMoney = thisProductMoney.multiply(thisDiscountRate);
+	    	productMoney = productMoney.add(thisProductMoney);
+	    	discountMoney = discountMoney.add(thisDiscountMoney);
+	    }
+    	dao.addOrderDetailList(orderDetailList);
+	    
+	    //补充其它需要填充的信息，计算订单中费用、费率、优惠券、优惠等...
+	    //3.计算订单金额（打折后不含优惠券）
+	    orderMoney = productMoney.subtract(discountMoney);
+	    //4.再次计算优惠券(判断条件等信息确定优惠券使用条件)，再计算券后的订单金额
+	    couponMoney = new BigDecimal("0");
+	    orderMoney = orderMoney.subtract(couponMoney);
+	    if(couponMoney.doubleValue()<0) {
+			return new ResponseData(4004, "优惠券不满足使用条件", null);
+	    }
+	    //5.计算运费
+	    shippingMoney = new BigDecimal("0");
+	    //6.通过收货地址(州地址)，计算税
+	    BigDecimal thisTaxRate =  stateTaxDao.getOneStateTaxByName(orderMaster.getState()).getTaxRate();
+	    taxMoney = orderMoney.multiply(thisTaxRate);
+	    //7.计算用户实际需要支付的金额
+	    paymentMoney = orderMoney.add(taxMoney).add(shippingMoney);
+	    //8.将计算结果填入order_master表中
+		//orderMaster.setPaymentMode(paymentMode);
+		orderMaster.setOrderMoeny(orderMoney);
+		orderMaster.setDiscountMoney(discountMoney);
+		orderMaster.setShippingMoney(shippingMoney);
+		orderMaster.setPaymentMoney(paymentMoney);
+		//税费--pojo没有
+		orderMaster.setState("1");
+		dao.modifyOrderAllInfo(orderMaster);
+		
+	    return new ResponseData(addrId+"--------------"+couponId+"----"+specsId+"------"+quantity);
 	}
 }

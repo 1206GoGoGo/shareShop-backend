@@ -37,13 +37,13 @@ public class MemberCollectController {
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody ResponseData add(@RequestBody int productId) {
-		return  memberCollectService.add(productId);
+	public @ResponseBody ResponseData add(@RequestBody String jsonString) {
+		return  memberCollectService.add(jsonString);
 	}
 	
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody int collectId) {
-		return  memberCollectService.delete(collectId);
+	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
+		return  memberCollectService.delete(jsonString);
 	}
 }

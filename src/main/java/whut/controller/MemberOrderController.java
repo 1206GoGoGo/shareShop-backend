@@ -24,7 +24,7 @@ public class MemberOrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getListByStatus", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByStatus(int pageindex, int pagesize, int status) {
+	public @ResponseBody ResponseData getListByStatus(Integer pageindex, Integer pagesize, Integer status) {
 		return memberOrderService.getListByStatus(pageindex, pagesize, status);
 	}
 
@@ -93,5 +93,11 @@ public class MemberOrderController {
 	public @ResponseBody ResponseData delete(@RequestBody int orderId) {
 		return memberOrderService.delete(orderId);
 	}
+	
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public @ResponseBody ResponseData add(@RequestBody String jsonString) {
+		return memberOrderService.xadd(jsonString);
+	}
+	
 
 }

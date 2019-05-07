@@ -10,6 +10,7 @@ import whut.pojo.City;
 import whut.pojo.State;
 import whut.pojo.UserAddr;
 import whut.service.MemberAddressService;
+import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
 @Service
@@ -65,7 +66,9 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 	}
 
 	@Override
-	public ResponseData delete(int userAddrId) {
+	public ResponseData delete(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int userAddrId = jsonUtils.getIntValue("userAddrId");
 		UserAddr userAddrOld = dao.getAddrByAddrId(userAddrId);
 		if(userAddrOld == null) {
 			return new ResponseData(406,"the userAddress does not exist",null);

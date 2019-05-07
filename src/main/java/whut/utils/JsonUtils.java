@@ -27,6 +27,10 @@ public class JsonUtils {
 		}
 	}
 	
+	public JsonNode getJsonRoot() {
+		return rootNode;
+	}
+	
 	public int getIntValue(String key) {
 		return rootNode.findValue(key).asInt();
 	}

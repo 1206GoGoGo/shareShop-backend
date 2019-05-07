@@ -17,5 +17,8 @@ public interface StateTaxDao {
 
 	//根据州的名称查看对应州的税率【getStateTaxByName】
 	List<StateTax> getStateTaxByName(@Param(value = "name") String name);
+	
+	//根据州名查税
+	StateTax getOneStateTaxByName(String name);
 
 }

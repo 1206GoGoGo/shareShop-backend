@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import whut.dao.UserCollectDao;
 import whut.pojo.UserCollect;
 import whut.service.MemberCollectService;
+import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
 @Service
@@ -34,7 +35,11 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	}
 
 	@Override
-	public ResponseData add(int productId) {
+	public ResponseData add(String jsonString) {
+
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int productId = jsonUtils.getIntValue("productId");
+		
 		Map<String, Integer> map = new HashMap<>();
 		map.put("productId", productId);
 		map.put("userId", SysContent.getUserId());
@@ -51,7 +56,11 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	}
 
 	@Override
-	public ResponseData delete(int collectId) {
+	public ResponseData delete(String jsonString) {
+
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int collectId = jsonUtils.getIntValue("collectId");
+		
         UserCollect userCollect = dao.getCollectByCollectId(collectId);
 		if(userCollect==null) {
 			return new ResponseData(406,"the merchandise has not been collected",null);

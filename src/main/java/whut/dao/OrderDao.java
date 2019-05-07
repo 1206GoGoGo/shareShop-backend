@@ -34,4 +34,16 @@ public interface OrderDao {
 
 	//int pageindex, int pagesize, String user, String timebe, String timeen
 	List<SellerBill> getRecordByUser(Map<String, Object> map);
+
+	//添加新订单
+	void addOrderMaster(OrderMaster orderMaster);
+
+	//添加订单详情
+	void addOrderDetailList(List<OrderDetail> orderDetailList);
+
+	//修改订单信息（修改全部字段信息）
+	void modifyOrderAllInfo(OrderMaster orderMaster);
+
+	//通过订单号获取订单id
+	int getOrderIdByOrderNumber(Long orderNumber);
 }

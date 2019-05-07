@@ -11,7 +11,7 @@ public interface MemberAddressService {
 
 	public ResponseData add(UserAddr userAddr);
 
-	public ResponseData delete(int userAddrId);
+	public ResponseData delete(String jsonString);
 
 	public ResponseData getListState();
 

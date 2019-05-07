@@ -34,8 +34,8 @@ public class MemberAddressController {
 	}
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody int userAddrId) {
-		return  memberAddressService.delete(userAddrId);
+	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
+		return  memberAddressService.delete(jsonString);
 	}
 	
 	@RequestMapping(value = "/getListState", method = RequestMethod.GET)
@@ -44,7 +44,7 @@ public class MemberAddressController {
 	}
 	
 	@RequestMapping(value = "/getListCity", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListCity(@RequestBody int id) {
+	public @ResponseBody ResponseData getListCity(int id) {
 		return  memberAddressService.getListCity(id);
 	}
 }
