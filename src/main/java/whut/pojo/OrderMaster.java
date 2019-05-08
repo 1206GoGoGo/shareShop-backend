@@ -40,6 +40,8 @@ public class OrderMaster implements Serializable{
     private BigDecimal shippingMoney;  //运费
 
     private BigDecimal paymentMoney;  //支付金额
+    
+    private BigDecimal taxMoney; //缴税金额
 
     private String expressNumber;  //快递号
 
@@ -181,6 +183,14 @@ public class OrderMaster implements Serializable{
 
     public void setPaymentMoney(BigDecimal paymentMoney) {
         this.paymentMoney = paymentMoney;
+    }
+    
+    public BigDecimal getTaxMoney() {
+        return taxMoney;
+    }
+
+    public void setTaxMoney(BigDecimal taxMoney) {
+        this.taxMoney = taxMoney;
     }
 
     public String getExpressNumber() {

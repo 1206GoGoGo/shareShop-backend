@@ -18,6 +18,7 @@
     <result column="discount_money" jdbcType="DECIMAL" property="discountMoney" />
     <result column="shipping_money" jdbcType="DECIMAL" property="shippingMoney" />
     <result column="payment_money" jdbcType="DECIMAL" property="paymentMoney" />
+    <result column="tax_money" jdbcType="DECIMAL" property="taxMoney" />
     <result column="express_number" jdbcType="VARCHAR" property="expressNumber" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
@@ -66,14 +67,54 @@
    <select id="getOrderDetailByOrderDetailId" parameterType="int" resultMap="OrderDetailResultMap">
        SELECT * FROM order_detail where order_detail_id = #{orderDetailId}
    </select>
-   
-      
-   <select id="modifyOrder" parameterType="orderMaster">
-    	UPDATE order_master SET 
-    	consignee_name = #{consigneeName},consignee_phone = #{consigneePhone},postal_code = #{postalCode},
-    	state = #{state},city = #{city},first_addr = #{firstAddr},second_addr = #{secondAddr}
-        WHERE order_id = #{orderId}
-    </select>
+     
+   <update id="modifyOrder" parameterType="orderMaster">
+      UPDATE order_master 
+      <set>
+	      <if test="consigneeName != null">
+	        consignee_name = #{consigneeName,jdbcType=VARCHAR},
+	      </if>
+	      <if test="consigneePhone != null">
+	        consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+	      </if>
+	      <if test="postalCode != null">
+	        postal_code = #{postalCode,jdbcType=INTEGER},
+	      </if>
+	      <if test="state != null">
+	        state = #{state,jdbcType=VARCHAR},
+	      </if>
+	      <if test="city != null">
+	        city = #{city,jdbcType=VARCHAR},
+	      </if>
+	      <if test="firstAddr != null">
+	        first_addr = #{firstAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="secondAddr != null">
+	        second_addr = #{secondAddr,jdbcType=VARCHAR},
+	      </if>
+	      <if test="paymentMode != null">
+	        payment_mode = #{paymentMode,jdbcType=TINYINT},
+	      </if>
+	      <if test="paymentMoney != null">
+            payment_money = #{paymentMoney,jdbcType=DECIMAL},
+         </if>
+	      <if test="expressNumber != null">
+	        express_number = #{expressNumber,jdbcType=VARCHAR},
+	      </if>
+	      <if test="payTime != null">
+	        pay_time = #{payTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="shippingTime != null">
+	        shipping_time = #{shippingTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="receiveTime != null">
+	        receive_time = #{receiveTime,jdbcType=TIMESTAMP},
+	      </if>
+	      <if test="orderStatus != null">
+	        order_status = #{orderStatus,jdbcType=TINYINT},
+	      </if>
+      </set>
+    </update>
     
    <select id="modifyPro" parameterType="orderDetail">
     	
@@ -97,6 +138,25 @@
     	status = #{status}
         WHERE order_id = #{orderId}
     </select>
+    
+    <insert  id="addOrderMaster" parameterType="OrderMaster" useGeneratedKeys="true" keyProperty="order_id">
+    	INSERT INTO order_master 
+    	(order_number,user_id,consignee_name,consignee_phone,postal_code,state,city,
+    	first_addr,second_addr,payment_mode,order_moeny,discount_money,shipping_money,
+    	payment_money,tax_money,create_time,pay_time)
+    	values
+    	(#{orderNumber},#{userId},#{consigneeName},#{consigneePhone},#{postalCode},#{state},#{city},
+    	#{firstAddr},#{secondAddr},#{paymentMode},#{orderMoeny},#{discountMoney},#{shippingMoney},
+    	#{paymentMoney},#{taxMoney},#{createTime},#{payTime})
+    </insert>
+    
+    <insert id="addOrderDetailList" parameterType="OrderDetail">
+    	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price)
+    	<foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">
+    		SELECT #{item.orderId} as orderId, #{item.productId} as productId,#{item.productSpecsId} as productSpecsId,
+    		#{item.productName} as productName,#{item.productQuantity} as productQuantity,#{item.productPrice} as productPrice,
+  		</foreach>
+    </insert>
 
 
 </mapper>
