@@ -14,12 +14,12 @@
         SELECT * FROM user_login where username = #{username}
    </select>
    
-   <select id="addUser" parameterType="UserLogin">
+   <insert id="addUser" parameterType="UserLogin" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user_login
         (username,password,status,level)
         VALUES
         (#{username},#{password},#{status},#{level})
-   </select>
+   </insert>
    
    <select id="getLoginInfoById" parameterType="int" resultMap="BaseResultMap">
         SELECT * FROM user_login where user_id = #{userId}
