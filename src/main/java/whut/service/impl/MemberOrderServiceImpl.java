@@ -330,7 +330,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	 }
 	 */
 	@Override
-	public ResponseData xadd(String jsonString) {
+	public ResponseData add(String jsonString) {
 		
 		//单品优惠暂不处理！！！！！
 		//运费收税？
@@ -371,9 +371,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			return new ResponseData(403, "非法地址信息", null);
 		}
 		OrderMaster orderMaster = new OrderMaster();
-		//生成订单号：订单时间+用户id+随机数
+		//生成订单号：订单时间+4位随机数
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
-		Long orderNumber = Long.parseLong(df.format(new Date())+"001");
+		Long orderNumber = Long.parseLong(df.format(new Date())+String.valueOf((Math.random()*9+1)*1000).substring(0, 4));
 		orderMaster.setOrderNumber(orderNumber);
 		orderMaster.setUserId(SysContent.getUserId());
 		orderMaster.setConsigneeName(userAddr.getConsigneeName());
@@ -383,13 +383,10 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		orderMaster.setCity(userAddr.getCity());
 		orderMaster.setFirstAddr(userAddr.getFirstAddr());
 		orderMaster.setSecondAddr(userAddr.getSecondAddr());
-		
 		orderMaster.setCreateTime(new Date());
-		orderMaster.setState("10");
+		orderMaster.setOrderStatus((byte) 1);
 		
-		dao.addOrderMaster(orderMaster);
-		
-		int orderId = dao.getOrderIdByOrderNumber(orderNumber);//----------------------------待处理订单id的获取
+		//int orderId = dao.getOrderIdByOrderNumber(orderNumber);//----------------------------待处理订单id的获取
 		//2.处理商品，计算商品总金额及折扣总金额。处理表order_detail
 		JsonNode productsNode = jsonNode.get("products");
 		int specsId = 0;
@@ -403,7 +400,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	//处理商品数字中的一个商品
 	    	specsId = objNode.findValue("specsId").asInt();
 	    	quantity = objNode.findValue("quantity").asInt();
-	    	
 	    	//获取商品信息，填入表中
 	    	ProductSpecs productSpecs = proSpecsDao.getProSpecsById(String.valueOf(specsId));
 	    	if(productSpecs == null) {
@@ -411,7 +407,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	}
 	    	//商品信息插入订单详情表中
 	    	OrderDetail orderDetail = new OrderDetail();
-	    	orderDetail.setOrderId(orderId);
+	    	//orderDetail.setOrderId(orderId);
 	    	orderDetail.setProductId(productSpecs.getProductId());
 	    	orderDetail.setProductSpecsId(productSpecs.getProductSpecsId());
 	    	orderDetail.setProductName(productSpecs.getName());
@@ -427,7 +423,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	productMoney = productMoney.add(thisProductMoney);
 	    	discountMoney = discountMoney.add(thisDiscountMoney);
 	    }
-    	dao.addOrderDetailList(orderDetailList);
 	    
 	    //补充其它需要填充的信息，计算订单中费用、费率、优惠券、优惠等...
 	    //3.计算订单金额（打折后不含优惠券）
@@ -439,9 +434,12 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			return new ResponseData(4004, "优惠券不满足使用条件", null);
 	    }
 	    //5.计算运费
-	    shippingMoney = new BigDecimal("0");
+	    shippingMoney = new BigDecimal("8");
 	    //6.通过收货地址(州地址)，计算税
-	    BigDecimal thisTaxRate =  stateTaxDao.getOneStateTaxByName(orderMaster.getState()).getTaxRate();
+	    BigDecimal thisTaxRate =  stateTaxDao.getOneStateTaxByName(orderMaster.getState()).divide( new BigDecimal("100") );
+	    if(thisTaxRate == null) {
+	    	return new ResponseData(4003, "地址信息异常，无法获取税率", null);
+	    }
 	    taxMoney = orderMoney.multiply(thisTaxRate);
 	    //7.计算用户实际需要支付的金额
 	    paymentMoney = orderMoney.add(taxMoney).add(shippingMoney);
@@ -451,10 +449,15 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		orderMaster.setDiscountMoney(discountMoney);
 		orderMaster.setShippingMoney(shippingMoney);
 		orderMaster.setPaymentMoney(paymentMoney);
-		//税费--pojo没有
-		orderMaster.setState("1");
-		dao.modifyOrderAllInfo(orderMaster);
-		
-	    return new ResponseData(addrId+"--------------"+couponId+"----"+specsId+"------"+quantity);
+		orderMaster.setTaxMoney(taxMoney);
+		//9.提交订单
+		dao.addOrderMaster(orderMaster);
+		Integer orderId = orderMaster.getOrderId();
+		//10.填充订单详情信息，并插入
+		for(OrderDetail orderDetail:orderDetailList) {
+			orderDetail.setOrderId(orderId);
+		}
+    	dao.addOrderDetailList(orderDetailList);		
+	    return new ResponseData(null);
 	}
 }

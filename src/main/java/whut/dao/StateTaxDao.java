@@ -1,5 +1,6 @@
 package whut.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,6 @@ public interface StateTaxDao {
 	List<StateTax> getStateTaxByName(@Param(value = "name") String name);
 	
 	//根据州名查税
-	StateTax getOneStateTaxByName(String name);
+	BigDecimal getOneStateTaxByName(String name);
 
 }

@@ -23,6 +23,6 @@ public interface MemberOrderService {
 
 	public ResponseData delete(int orderId);
 
-	public ResponseData xadd(String jsonString);
+	public ResponseData add(String jsonString);
 
 }

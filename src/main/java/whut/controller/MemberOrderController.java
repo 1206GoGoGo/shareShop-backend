@@ -96,7 +96,7 @@ public class MemberOrderController {
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody ResponseData add(@RequestBody String jsonString) {
-		return memberOrderService.xadd(jsonString);
+		return memberOrderService.add(jsonString);
 	}
 	
 
