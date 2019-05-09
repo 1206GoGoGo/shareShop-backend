@@ -21,6 +21,11 @@
     <select id="getStateTaxByName" parameterType="string" resultMap="BaseResultMap">
         SELECT * FROM state_tax where state LIKE CONCAT(CONCAT('%',#{name}),'%')
    </select>
+   
+    <select id="getOneStateTaxByName" parameterType="string" resultType="java.lang.Double">
+        SELECT tax_rate FROM state_tax WHERE state = #{name}
+   </select>
+    
     
   
 </mapper>
