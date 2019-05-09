@@ -23,16 +23,17 @@ public interface OrderDao {
 	//int orderId, Byte status
 	void modifyOrderStatus(Map<String, String> map);
 
+	//通过订单id修改订单下所有商品对应的状态
+	//int orderId, Byte status
+	void modifyProStatusByOrderId(Map<String, String> map);
+	
 	//int orderDetailId, Byte status
 	void modifyProStatus(Map<String, String> map);
 
 	OrderDetail getOrderDetailByOrderDetailId(Integer orderDetailId);
 
-	//通过订单号修改订单下所有商品对应的状态
-	//int orderId, Byte status
-	void modifyProStatusByOrderId(Map<String, String> map);
 
-	//int pageindex, int pagesize, String user, String timebe, String timeen
+	//int pageindex, int pagesize, int id（用户id）, String timebe, String timeen(20180101格式)   time=null查询所有数据
 	List<SellerBill> getRecordByUser(Map<String, Object> map);
 
 	//添加新订单
@@ -41,6 +42,4 @@ public interface OrderDao {
 	//添加订单详情
 	void addOrderDetailList(List<OrderDetail> orderDetailList);
 
-	//通过订单号获取订单id
-	int getOrderIdByOrderNumber(Long orderNumber);
 }

@@ -18,7 +18,6 @@ import whut.dao.OrderReturnDao;
 import whut.dao.ProSpecsDao;
 import whut.dao.StateTaxDao;
 import whut.dao.UserAddrDao;
-import whut.dao.UserLoginDao;
 import whut.pojo.OrderDetail;
 import whut.pojo.OrderMaster;
 import whut.pojo.ProductSpecs;
@@ -41,10 +40,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	
 	@Autowired
 	private UserAddrDao userAddrDao;
-	
-	@Autowired
-	private UserLoginDao loginDao;
-	
+
 	@Autowired
 	private OrderReturnDao orderReturnDao;
 	
@@ -58,7 +54,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	public ResponseData getListByStatus(Integer pageindex, Integer pagesize, Integer status) {
 		if(pageindex == null) {pageindex = 0;}
 		if(pagesize == null) {pagesize = 20;}
-		if(status == null) {pageindex = 0;}
+		if(status == null) {status = 0;}
 		Map<String, Integer> map = new HashMap<>();
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
@@ -99,9 +95,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			return new ResponseData(403,"illegally accessed",null);
 		}
 		//判断当前订单状态
-		if( orderMasterOld.getOrderStatus()==1 ||  orderMasterOld.getOrderStatus()==2) {
-			//满足条件可以修改
-		}else {
+		if( orderMasterOld.getOrderStatus()!=1) {
+			//不满足条件不可修改
 			return new ResponseData(4061,"current status prohibits modification",null);
 		}
 
@@ -265,13 +260,13 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	}
 
 	@Override
-	public ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen) {
-		int id = 0;
-		try {
-			id = loginDao.getLoginInfo(user).getUserId();
-		}catch(Exception e) {
-			return new ResponseData(4001,"the user does not exist",null);
-		}
+	public ResponseData getRecordByUser(Integer pageindex, Integer pagesize, String timebe, String timeen) {
+		if(pageindex == null) {pageindex = 0;}
+		if(pagesize == null) {pagesize = 20;}
+		if(timebe == "") {timebe = null;}
+		if(timeen == "") {timeen = null;}
+		
+		int id = SysContent.getUserId();
 		
 		Map<String, Object> map = new HashMap<>();
 		map.put("pageindex", pageindex);
@@ -289,7 +284,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	}
 
 	@Override
-	public ResponseData delete(int orderId) {
+	public ResponseData delete(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		Integer orderId = jsonUtils.getIntValue("orderId");
 		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
 		if(orderMaster==null) {
 			return new ResponseData(406,"order does not exist",null);
@@ -299,7 +296,7 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		}
 		
 		//9,12,13,14,25,29,35,39才允许删除
-		int s = Integer.parseInt(orderMaster.getState());
+		int s = orderMaster.getOrderStatus();
 		if(s!=9 && s!=12 && s!=13 && s!=14 && s!=25 && s!=29 && s!=35 && s!=39) {
 			//禁止删除
 			return new ResponseData(4061,"Current status prohibits deletion",null);
@@ -459,5 +456,31 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		}
     	dao.addOrderDetailList(orderDetailList);		
 	    return new ResponseData(null);
+	}
+
+	@Override
+	public ResponseData modifyPay(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		Integer orderId = jsonUtils.getIntValue("orderId");
+		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
+		if(orderMaster==null) {
+			return new ResponseData(406,"order does not exist",null);
+		}
+		if(orderMaster.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		
+		//1才允许支付
+		int s = orderMaster.getOrderStatus();
+		if(s!=1) {
+			return new ResponseData(4061,"Current status prohibits pay",null);
+		}
+		//============================================处理支付
+		Map<String, String> map = new HashMap<>();
+		map.put("orderId", String.valueOf(orderId));
+		map.put("status", "2");
+		dao.modifyOrderStatus(map);
+		dao.modifyProStatusByOrderId(map);
+		return new ResponseData(null);
 	}
 }

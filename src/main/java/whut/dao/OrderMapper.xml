@@ -122,7 +122,7 @@
     
     <select id="modifyOrderStatus" parameterType="hashmap">
     	UPDATE order_master SET 
-    	order_status = #{orderStatus}
+    	order_status = #{status}
         WHERE order_id = #{orderId}
     </select>
     

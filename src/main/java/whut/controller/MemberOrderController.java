@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import whut.pojo.OrderDetail;
 import whut.pojo.OrderMaster;
 import whut.service.MemberOrderService;
 import whut.utils.ResponseData;
@@ -52,7 +51,8 @@ public class MemberOrderController {
 	 */
 	@RequestMapping(value = "/modifyOrder", method = RequestMethod.POST)
 	public @ResponseBody ResponseData modifyOrder(@RequestBody OrderMaster orderMaster) {
-		return memberOrderService.modifyOrder(orderMaster);
+		//return memberOrderService.modifyOrder(orderMaster);
+		return null;
 	}
 	
 	/**
@@ -85,13 +85,13 @@ public class MemberOrderController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getRecord", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen) {
-		return memberOrderService.getRecordByUser(pageindex, pagesize, user, timebe, timeen);
+	public @ResponseBody ResponseData getRecordByUser(Integer pageindex, Integer pagesize, String timebe, String timeen) {
+		return memberOrderService.getRecordByUser(pageindex, pagesize, timebe, timeen);
 	}
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody int orderId) {
-		return memberOrderService.delete(orderId);
+	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
+		return memberOrderService.delete(jsonString);
 	}
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
@@ -99,5 +99,9 @@ public class MemberOrderController {
 		return memberOrderService.add(jsonString);
 	}
 	
+	@RequestMapping(value = "/modifyPay", method = RequestMethod.POST)
+	public @ResponseBody ResponseData modifyPay(@RequestBody String jsonString) {
+		return memberOrderService.modifyPay(jsonString);
+	}
 
 }

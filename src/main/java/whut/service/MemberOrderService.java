@@ -3,7 +3,6 @@ package whut.service;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-import whut.pojo.OrderDetail;
 import whut.pojo.OrderMaster;
 import whut.utils.ResponseData;
 
@@ -19,10 +18,12 @@ public interface MemberOrderService {
 
 	public ResponseData modifyProStatus(@RequestBody String jsonString);
 
-	public ResponseData getRecordByUser(int pageindex, int pagesize, String user, String timebe, String timeen);
+	public ResponseData getRecordByUser(Integer pageindex, Integer pagesize, String timebe, String timeen);
 
-	public ResponseData delete(int orderId);
+	public ResponseData delete(String jsonString);
 
 	public ResponseData add(String jsonString);
+
+	public ResponseData modifyPay(String jsonString);
 
 }
