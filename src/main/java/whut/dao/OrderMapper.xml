@@ -139,7 +139,7 @@
         WHERE order_id = #{orderId}
     </select>
     
-    <insert  id="addOrderMaster" parameterType="OrderMaster" useGeneratedKeys="true" keyProperty="order_id">
+    <insert  id="addOrderMaster" parameterType="OrderMaster" useGeneratedKeys="true" keyProperty="orderId">
     	INSERT INTO order_master 
     	(order_number,user_id,consignee_name,consignee_phone,postal_code,state,city,
     	first_addr,second_addr,payment_mode,order_moeny,discount_money,shipping_money,
@@ -151,11 +151,10 @@
     </insert>
     
     <insert id="addOrderDetailList" parameterType="OrderDetail">
-    	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price)
-    	<foreach collection="list" item="item" index="index" open="(" close=")" separator="union all">
-    		SELECT #{item.orderId} as orderId, #{item.productId} as productId,#{item.productSpecsId} as productSpecsId,
-    		#{item.productName} as productName,#{item.productQuantity} as productQuantity,#{item.productPrice} as productPrice,
-  		</foreach>
+    	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price) values
+    	<foreach collection="list" item="item" index="index" separator=",">
+        (#{item.orderId},#{item.productId},#{item.productSpecsId},#{item.productName},#{item.productQuantity},#{item.productPrice})
+        </foreach>
     </insert>
 
 
