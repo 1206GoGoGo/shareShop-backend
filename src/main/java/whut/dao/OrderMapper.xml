@@ -139,6 +139,20 @@
         WHERE order_id = #{orderId}
     </select>
     
+    <select id="getRecordByUser" parameterType="hashmap" resultMap="SellerBill">
+        SELECT return_money as money, create_time as createTime, 'income' as type FROM return_record where user_id = #{id} and status = 1
+        <if test="timebe != null and timeen != null">
+      		and date_format(create_time,'%Y%m%d') BETWEEN #{timebe} AND DATE_ADD(#{timeen},INTERVAL 1 DAY)
+    	</if>
+		union
+		SELECT payment_money as money , pay_time as createTime ,'expend' as type FROM order_master where user_id = #{id} order_status = 5
+		<if test="timebe != null and timeen != null"> 
+      		and date_format(pay_time,'%Y%m%d') BETWEEN #{timebe} AND DATE_ADD(#{timeen},INTERVAL 1 DAY)
+    	</if>
+		ORDER BY createTime
+		limit #{pageindex},#{pagesize}
+   </select>
+    
     <insert  id="addOrderMaster" parameterType="OrderMaster" useGeneratedKeys="true" keyProperty="orderId">
     	INSERT INTO order_master 
     	(order_number,user_id,consignee_name,consignee_phone,postal_code,state,city,
