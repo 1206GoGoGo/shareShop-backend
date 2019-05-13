@@ -139,7 +139,7 @@
         WHERE order_id = #{orderId}
     </select>
     
-    <select id="getRecordByUser" parameterType="hashmap" resultMap="SellerBill">
+    <select id="getRecordByUser" parameterType="hashmap" resultType="SellerBill">
         SELECT return_money as money, create_time as createTime, 'income' as type FROM return_record where user_id = #{id} and status = 1
         <if test="timebe != null and timeen != null">
       		and date_format(create_time,'%Y%m%d') BETWEEN #{timebe} AND DATE_ADD(#{timeen},INTERVAL 1 DAY)
