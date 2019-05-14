@@ -39,8 +39,8 @@ public class MemberShopCartController {
 	
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public @ResponseBody ResponseData delete(@RequestBody int cartId) {
-		return  memberShopCartService.delete(cartId);
+	public @ResponseBody ResponseData delete(@RequestBody String jsonString) {
+		return  memberShopCartService.delete(jsonString);
 	}
 	
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)

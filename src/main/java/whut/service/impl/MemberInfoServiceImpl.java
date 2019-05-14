@@ -10,6 +10,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import whut.dao.UserInfoDao;
 import whut.dao.UserLoginDao;
 import whut.pojo.UserInfo;
@@ -29,7 +33,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	private UserLoginDao loginDao;
 
 	@Override
-	public ResponseData memberAdd(UserInfo user){
+	public ResponseData add(UserInfo user){
 
 		String username = user.getUserLogin().getUsername();
 		String password = user.getUserLogin().getPassword();
@@ -71,13 +75,6 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		}
 		map.put("email", null);
 		
-		String identityCardNo = user.getIdentityCardNo();
-		map.put("identityCardNo", identityCardNo);
-		if(!dao.searchAllInfoByUserInfo(map).isEmpty()) {
-			//return new ResponseData(4064,"identityCardNo is occupied",null);
-		}
-		map.put("identityCardNo", null);
-		
 		//添加用户登录表数据
 		UserLogin userLogin = new UserLogin();
 		userLogin.setUsername(username);
@@ -86,21 +83,13 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		userLogin.setStatus((byte)1);	//设置用户状态
 		
 		loginDao.addUser(userLogin);
-		
-		userLogin = loginDao.getLoginInfo(username);
-		
+
 		//给user对象赋值
 		user.setName(null);
 		user.setUserId(userLogin.getUserId());
-		user.setUserLogin(userLogin);
+		
+		dao.add(user);
 
-		//添加用户
-		try {
-			dao.add(user);
-		}catch(Exception e) {
-			loginDao.deleteUserLoginForError(userLogin.getUserId());
-			return new ResponseData(5001,"system registration exception",null);
-		}
 		return new ResponseData(200,"success",null);
 	}
 
@@ -213,33 +202,33 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
 	@Override
 	public ResponseData getCountAWeek() {
+		ObjectMapper mapper = new ObjectMapper();
+		//生成数组结点
+		ArrayNode arrNode = mapper.createArrayNode();
+		
 		Map<String,Object> map = new HashMap<>();
-		map.put("sellerId", SysContent.getUserId());
-		String list = "[";
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal=Calendar.getInstance();
 		Date d=cal.getTime();
 		for(int i=0;i<7;i++) {
 			String day = df.format(d);
-			list += "{\"data\":\""+day+"\",\"user\":";
 			map.put("day", day);
-			list += loginDao.getCountADay( map ) + ",\"member\":";
-
-			map.put("day", day);
-			list += loginDao.getCountADay( map );
-
-			if(i<6) {
-				list += "},";
-			}
-
+			//生成对象结点
+			ObjectNode objNode = mapper.createObjectNode();
+			objNode.put("date", day);    /*在jdk1.8中，简单值用put设置*/
+			map.put("level", 1);
+			objNode.put("user", loginDao.getCountADay(map) );
+			map.put("level", 2);
+			objNode.put("member", loginDao.getCountADay(map) );
+			map.put("level", 3);
+			objNode.put("seller", loginDao.getCountADay(map) );
+			arrNode.add(objNode);    /*数组结点添加元素不做简单值和结点类的区分*/
+			
 	        cal.add(Calendar.DATE,-1);
 	        d=cal.getTime();
 		}
-		list += "}]";
-        
-		//System.out.println(list);
 		
-		return  new ResponseData(200,"success",list);
+		return  new ResponseData(200,"success",arrNode);
 	}
 
 	@Override

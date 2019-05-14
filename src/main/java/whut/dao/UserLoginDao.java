@@ -25,9 +25,6 @@ public interface UserLoginDao {
 	//获取seller新增推广用户的数量
 	int getCountADay(Map<String, Object> map);
 
-	//删除id为userId的用户登录表信息，调用该方法一定是由于用户信息表或seller信息表的数据没用正常插入！
-	void deleteUserLoginForError(Integer userId);
-
 	//修改密码
 	void modify(UserLogin userLoginOld);
 }

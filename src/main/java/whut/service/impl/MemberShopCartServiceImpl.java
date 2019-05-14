@@ -6,11 +6,13 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import whut.dao.OrderCartDao;
 import whut.dao.ProSpecsDao;
 import whut.pojo.OrderCart;
 import whut.service.MemberShopCartService;
+import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
 @Service
@@ -38,7 +40,10 @@ public class MemberShopCartServiceImpl implements MemberShopCartService {
 	}
 
 	@Override
-	public ResponseData delete(int cartId) {
+	public ResponseData delete(@RequestBody String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int cartId = jsonUtils.getIntValue("cartId");
+		
 		OrderCart orderCart = dao.getCartByCartId(cartId);
 		if(orderCart==null) {
 			return new ResponseData(406,"the cart_goods does not exist",null);

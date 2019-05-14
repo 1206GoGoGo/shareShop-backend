@@ -58,7 +58,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 			//设置默认，同时取消其它默认值
 			dao.modifyDefault(userAddr.getUserAddrId());
 		}
-		userAddr.setUserId(userAddr.getUserAddrId());
+		userAddr.setUserId(SysContent.getUserId());
 		java.util.Date modifiedTime = new java.util.Date();
 		userAddr.setModifiedTime(modifiedTime);
 		dao.addAddr(userAddr);

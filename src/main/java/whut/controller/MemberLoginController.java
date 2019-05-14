@@ -51,6 +51,6 @@ public class MemberLoginController {
 	
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody ResponseData add(@RequestBody UserInfo user){
-		return  memberInfoService.memberAdd(user);
+		return  memberInfoService.add(user);
 	}
 }
