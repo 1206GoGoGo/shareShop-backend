@@ -75,7 +75,8 @@ public class JedisUtil{
         config.setTestOnBorrow(testOnBorrow);
 
         //config.setTestOnReturn(Boolean.valueOf(props.getProperty("jedis.pool.testOnReturn")));
-        jedisPool = new JedisPool(config, addr, port);
+        //jedisPool = new JedisPool(config, addr, port);
+        jedisPool = new JedisPool(config, addr, port,maxWait,auth);
     }
     
 
