@@ -21,7 +21,7 @@ public class SolrJUtil {
 	private static HttpSolrClient solrClient;
 	private static String coreName =  "products_core";//创建的内核名
 	static {
-		String serverUrl = "http://localhost:8888/solr";
+		String serverUrl = "http://112.74.165.55:8983/solr";
 		solrClient = new HttpSolrClient.Builder(serverUrl).withConnectionTimeout(10000).withSocketTimeout(60000).build();
 	}
 	
