@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import redis.clients.jedis.Jedis;
 import whut.utils.EncryptUtil;
 import whut.utils.JedisUtil;
-import whut.utils.SysContent;
 
 public class LoginFilter implements Filter{
 
@@ -26,10 +25,14 @@ public class LoginFilter implements Filter{
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * 默认知道当前会话，如果前端不能传递sessionId需要进行识别。（这块还没有处理），否则每次请求都会建立一个新的session--或者完全不用session<很快过期>
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		
+
+
 		//用户登录不过滤
 		if( ((HttpServletRequest)request).getRequestURI().indexOf("/member/login")>-1 ) {
 			//继续执行
@@ -37,22 +40,22 @@ public class LoginFilter implements Filter{
 			return;
 		}
 		
+		boolean useCookie = true;	//判断cookie决定是否使用cookie
+
+
 		String userId = null;
         String userName = null;
-        String sercityOldCookie = null;
+        String sercityOldCookieOrToken = null;
 		String sercityOldRedis = null;
-        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-        
-		//获取cookie中的验证信息，不存在直接验证失败
-		if(cookies!=null) {
-			for(Cookie cookie:cookies) {
-				if(cookie.getName().equals("_tzBDSFRCVID")) {
-					sercityOldCookie = cookie.getValue();
-					break;
-				}
-			}
+       
+        //获取token或cookie中的验证信息------------------------------------------------------------------------------------------------------------------------------------①
+		sercityOldCookieOrToken = getCookieVerify((HttpServletRequest) request);
+		if(sercityOldCookieOrToken == null) {
+			useCookie = false;
+			sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
 		}
-		if(sercityOldCookie == null) {
+		
+		if(sercityOldCookieOrToken == null) {
 			response.setContentType("application/json;charset=UTF-8");
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
         	return;
@@ -62,19 +65,18 @@ public class LoginFilter implements Filter{
         
 		//判断session存储的用户信息是否失效,获取用户id及用户名
 		try {
-			userId = String.valueOf(SysContent.getUserId());
-			userName = SysContent.getUserName();
+			userId = ((HttpServletRequest) request).getSession().getAttribute("userId").toString();
+			userName =  ((HttpServletRequest) request).getSession().getAttribute("userName").toString();
 		}catch(Exception e) {
 			//session登录信息已清除
-			//获取cookie中的用户名
-			if(cookies!=null) {
-				for(Cookie cookie:cookies) {
-					if(cookie.getName().equals("_octouser")) {
-						userName = cookie.getValue();
-						break;
-					}
-				}
+			//获取cookie中的用户名----------------------------------------------------------------------------------------------------------------------------------------②
+			if(useCookie) {
+				userName = getCookieUserName((HttpServletRequest) request);
+			}else {
+				userName = getTokenUserName((HttpServletRequest) request);
 			}
+			
+
 			if(userName == null) {
 				response.setContentType("application/json;charset=UTF-8");
 	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
@@ -103,7 +105,7 @@ public class LoginFilter implements Filter{
 
 		
 		//判断客户端发送的安全验证是否符合条件
-        if(!sercityOldCookie.equals(sercityOldRedis)) {
+        if(!sercityOldCookieOrToken.equals(sercityOldRedis)) {
 			JedisUtil.closeJedis(jedis);
 			response.setContentType("application/json;charset=UTF-8");
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
@@ -111,32 +113,89 @@ public class LoginFilter implements Filter{
         }
 		//验证成功，生成安全验证信息，并转发
 		//获取session中的验证信息（暂时不用session存储登录信息）
-        HttpSession session = ((HttpServletRequest) request).getSession();
-        String sercity = EncryptUtil.MD5(userName+new Date());
-		session.setAttribute("userId",userId);
-		session.setAttribute("userName",userName);
-		session.setMaxInactiveInterval(60*60*1);//session保存1小时
-		
-		jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
-		jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-		jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
-    	JedisUtil.closeJedis(jedis);
-		
-		//同步更新cookie
-		Cookie logininfo = new Cookie("_tzBDSFRCVID", sercity);
-		logininfo.setPath("/");
-		logininfo.setMaxAge(60*60*24);
-		( (HttpServletResponse)response ).addCookie(logininfo);
-		//最近活跃0/1（8个小时内，活跃1，否则不存在）
-		Cookie activity = new Cookie("has_recent_activity", "1");
-		activity.setPath("/");
-		activity.setMaxAge(60*60*8);
-		( (HttpServletResponse)response ).addCookie(activity);
+        if(useCookie) {
+	        HttpSession session = ((HttpServletRequest) request).getSession();
+	        String sercity = EncryptUtil.MD5(userName+new Date());
+			session.setAttribute("userId",userId);
+			session.setAttribute("userName",userName);
+			session.setMaxInactiveInterval(60*60*1);//session保存1小时
+			
+			jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
+			jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
+			jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
+	    	JedisUtil.closeJedis(jedis);
+			
+			//同步更新cookie----------------------------------------------------------------------------------------③
+    		setCookie(sercity,(HttpServletResponse) response);
+    	}else {
+    		//对于登录模式仅登录需要返回token值
+    		//setToken(userName, sercity,(HttpServletResponse) response);
+    	}
 
 		chain.doFilter(request,response);
 
 	}
 
+	private void setCookie(String sercity, HttpServletResponse response) {
+		Cookie logininfo = new Cookie("_tzBDSFRCVID", sercity);
+		logininfo.setPath("/");
+		logininfo.setMaxAge(60*60*24);
+		response.addCookie(logininfo);
+		//最近活跃0/1（8个小时内，活跃1，否则不存在）
+		Cookie activity = new Cookie("has_recent_activity", "1");
+		activity.setPath("/");
+		activity.setMaxAge(60*60*8);
+		response.addCookie(activity);
+		
+	}
+	private void setToken(String username, String sercity, HttpServletResponse response) {
+		response.addHeader("Authorization", username+"q=my_"+sercity);
+	}
+
+	private String getCookieUserName(HttpServletRequest request) {
+		String userName= null;
+		Cookie[] cookies = request.getCookies();
+		if(cookies!=null) {
+			for(Cookie cookie:cookies) {
+				if(cookie.getName().equals("_octouser")) {
+					userName = cookie.getValue();
+					break;
+				}
+			}
+		}
+		return userName;
+	}
+	private String getTokenUserName(HttpServletRequest request) {
+		String userName= null;
+		try{
+			userName = request.getHeader("Authorization").split("q=my_", 2)[0];
+		}catch(Exception e) { }
+		return userName;
+	}
+
+	private String getCookieVerify(HttpServletRequest request) {
+		String sercityOldCookie= null;
+		Cookie[] cookies = request.getCookies();
+		//获取cookie中的验证信息，不存在直接验证失败
+		if(cookies!=null) {
+			for(Cookie cookie:cookies) {
+				if(cookie.getName().equals("_tzBDSFRCVID")) {
+					sercityOldCookie = cookie.getValue();
+					break;
+				}
+			}
+		}
+		return sercityOldCookie;
+	}
+
+	private String getTokenVerify(HttpServletRequest request) {
+		String sercityOldToken= null;
+		try{
+			sercityOldToken = request.getHeader("Authorization").split("q=my_", 2)[1];
+		}catch(Exception e) { }
+		return sercityOldToken;
+	}
+	
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub

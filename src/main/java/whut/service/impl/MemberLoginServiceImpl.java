@@ -3,7 +3,6 @@ package whut.service.impl;
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -31,7 +30,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 	private UserLoginLogDao loginLogDao;
 	
 	@Override
-	public ResponseData loginin(String jsonString, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseData loginin(String jsonString) {
 		
 		JsonUtils jsonUtils = new JsonUtils(jsonString);
 		String username = jsonUtils.getStringValue("username");
@@ -59,14 +58,40 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		
 		UserLoginLog userLoginLog = new UserLoginLog("111.111.111.111", 1, userLogin.getUserId());
 		loginLogDao.addLoginLog(userLoginLog);
+		//---------------------------------------------------------------------------------------设置客户端验证信息token或cookie-----两种方式
+		logininSetCookie(userLogin,sercity);
+		//logininSetToken(userLogin,sercity);
+
+		//将登录状态保存到redis中，session只保存用户id，并且有效期可以短点，减轻服务器负担。redis中登录状态可以保存2天等
+		Jedis jedis = JedisUtil.getJedis();
+		jedis.set("login:"+username+":userid", userLogin.getUserId().toString());	//增加或覆盖用户名
+		jedis.set("login:"+username+":_tzBDSFRCVID", sercity);	//用户身份验证信息
+		jedis.expire("login:"+username+":_tzBDSFRCVID", 60*60*24*2); //保存2天
+    	JedisUtil.closeJedis(jedis);
+    	
+		//设置session
+        HttpSession session = SysContent.getSession();
+		session.setAttribute("userName",userLogin.getUsername());
+		session.setAttribute("userId",userLogin.getUserId());
+		session.setMaxInactiveInterval(60*60*2);//保存2小时
+		return new ResponseData(200,"login success",userLogin.getUsername()+"q=my_"+sercity);
+	}
+	
+	private void logininSetToken(UserLogin userLogin, String sercity) {
+		HttpServletResponse response = SysContent.getResponse();
+		response.addHeader("Authorization", userLogin.getUsername()+"q=my_"+sercity);
+	}
+	
+	private void logininSetCookie(UserLogin userLogin, String sercity) {
 		
+		HttpServletResponse response = SysContent.getResponse();
 		//设置cookie
 		Cookie dot = new Cookie("_dotcom_user", userLogin.getLevel().toString());
 		dot.setPath("/");
 		dot.setMaxAge(60*60*24*30);
 		response.addCookie(dot);
 		//用户名（每次请求前端带到后台）
-		Cookie userna = new Cookie("_octouser", username);
+		Cookie userna = new Cookie("_octouser", userLogin.getUsername());
 		userna.setPath("/");
 		userna.setMaxAge(60*60*24*30);
 		response.addCookie(userna);
@@ -85,46 +110,36 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		logininfo.setPath("/");
 		logininfo.setMaxAge(60*60*24);
 		response.addCookie(logininfo);
-		
-
-		//将登录状态保存到redis中，session只保存用户id，并且有效期可以短点，减轻服务器负担。redis中登录状态可以保存2天等
-		Jedis jedis = JedisUtil.getJedis();
-		jedis.set("login:"+username+":userid", userLogin.getUserId().toString());	//增加或覆盖用户名
-		jedis.set("login:"+username+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-		jedis.expire("login:"+username+":_tzBDSFRCVID", 60*60*24*2); //保存2天
-    	JedisUtil.closeJedis(jedis);
-    	
-		//设置session
-        HttpSession session = SysContent.getSession();
-		session.setAttribute("userName",userLogin.getUsername());
-		session.setAttribute("userId",userLogin.getUserId());
-		session.setMaxInactiveInterval(60*60*2);//保存2小时
-		return new ResponseData(200,"login success",null);
 	}
 
 	@Override
-	public ResponseData loginout(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
+	public ResponseData loginout() {
+        HttpSession session = SysContent.getRequest().getSession();
         
 		//清除redis中的验证信息
 		Jedis jedis = JedisUtil.getJedis();
 		jedis.del("login:"+SysContent.getUserName()+":_tzBDSFRCVID");
     	JedisUtil.closeJedis(jedis);
         
-		//最近活跃0/1（8个小时内，活跃1，否则不存在）
-		Cookie activity = new Cookie("has_recent_activity", "0");
-		activity.setPath("/");
-		activity.setMaxAge(60*60*8);
-		response.addCookie(activity);
-		//登录状态0/1（24小时为1，否则不存在）
-		Cookie logged = new Cookie("logged_in", "0");
-		logged.setPath("/");
-		logged.setMaxAge(60*60*24);
-		response.addCookie(logged);
+    	//----移除cookie信息
+    	loginoutRemoveCookie();
         //清除session
 		session.invalidate();
     	
 		return new ResponseData(200,"success",null);
+	}
+	
+	private void loginoutRemoveCookie() {
+		//最近活跃0/1（8个小时内，活跃1，否则不存在）
+		Cookie activity = new Cookie("has_recent_activity", "0");
+		activity.setPath("/");
+		activity.setMaxAge(60*60*8);
+		SysContent.getResponse().addCookie(activity);
+		//登录状态0/1（24小时为1，否则不存在）
+		Cookie logged = new Cookie("logged_in", "0");
+		logged.setPath("/");
+		logged.setMaxAge(60*60*24);
+		SysContent.getResponse().addCookie(logged);
 	}
 
 	@Override

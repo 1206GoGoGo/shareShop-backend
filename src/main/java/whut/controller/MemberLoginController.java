@@ -1,8 +1,5 @@
 package whut.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,14 +23,14 @@ public class MemberLoginController {
 	private MemberInfoService memberInfoService;
 	
 	@RequestMapping(value = "/in", method = RequestMethod.POST)
-	public @ResponseBody ResponseData loginin(@RequestBody String jsonString, HttpServletRequest request, HttpServletResponse response) {
-		return  loginService.loginin(jsonString, request, response);
+	public @ResponseBody ResponseData loginin(@RequestBody String jsonString) {
+		return  loginService.loginin(jsonString);
 	}
 	
 	@RequestMapping(value = "/out", method = RequestMethod.GET)
-	public @ResponseBody ResponseData loginout(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody ResponseData loginout() {
 		
-		return  loginService.loginout(request, response);
+		return  loginService.loginout();
 	}
 	
 	@RequestMapping(value = "/getPhoneCode", method = RequestMethod.GET)
