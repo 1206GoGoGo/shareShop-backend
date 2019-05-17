@@ -63,6 +63,15 @@ public class ProInfoServiceImpl implements ProInfoService{
 		// TODO Auto-generated method stub
 		ProductInfo productInfo = proInfoDao.getDetail(id);
 		if(productInfo != null) {
+			//用户点击一个商品详情则记录到Redis浏览信息中（view:商品id）是键，（次数）是值
+			Jedis jedis = JedisUtil.getJedis();
+			if(jedis.get("view:"+id) == null) {		//获取商品id对应的次数,如果为空说明未存过
+				jedis.set("view:"+id, "1");		//第一次存1
+			}else {
+				jedis.incr("view:"+id);		//对查询到的商品id对应的值，即次数，自增1
+			}
+			//System.out.println(jedis.get("view:"+id));	//测试输出，根据键（view：商品id）查值（次数）
+	    	JedisUtil.closeJedis(jedis);
 			return new ResponseData(200,"success",productInfo);
 		}else {
 			return new ResponseData(400,"no data",null);
@@ -82,12 +91,15 @@ public class ProInfoServiceImpl implements ProInfoService{
 			pagesize = 20;
 		}
 		
-		Jedis jedis = JedisUtil.getJedis();
-		//jedis.set("searchKey:"+SysContent.getUserId()+"", name);	//开启用户登录功能后再添加【增加或覆盖】
-		//jedis.set("searchKey:1", name);			//测试
-		//System.out.println(jedis.get("searchKey:"+SysContent.getUserId()+""));
-    	JedisUtil.closeJedis(jedis);
-		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
+		try {
+			Jedis jedis = JedisUtil.getJedis();
+			jedis.lpush("searchKey:"+SysContent.getUserId()+"", name);	//开启用户登录功能后再添加【增加或覆盖】		
+			JedisUtil.closeJedis(jedis);
+			//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			
+		}
 		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
 
