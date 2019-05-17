@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
 import whut.dao.UserLoginDao;
+import whut.dao.UserLoginLogDao;
 import whut.pojo.UserLogin;
+import whut.pojo.UserLoginLog;
 import whut.service.MemberLoginService;
 import whut.utils.EncryptUtil;
 import whut.utils.JedisUtil;
@@ -24,6 +26,9 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 	
 	@Autowired
 	private UserLoginDao loginDao;
+	
+	@Autowired
+	private UserLoginLogDao loginLogDao;
 	
 	@Override
 	public ResponseData loginin(String jsonString, HttpServletRequest request, HttpServletResponse response) {
@@ -51,6 +56,9 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		
 		//验证成功创建安全验证信息sercity
 		String sercity = EncryptUtil.MD5(username+new Date());	//每次请求更新，写到过滤器或拦截器中
+		
+		UserLoginLog userLoginLog = new UserLoginLog("111.111.111.111", 1, userLogin.getUserId());
+		loginLogDao.addLoginLog(userLoginLog);
 		
 		//设置cookie
 		Cookie dot = new Cookie("_dotcom_user", userLogin.getLevel().toString());

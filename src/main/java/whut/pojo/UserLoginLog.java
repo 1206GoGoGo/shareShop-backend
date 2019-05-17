@@ -19,6 +19,13 @@ public class UserLoginLog implements Serializable {
     private Byte loginType;  //是否登录成功
 
     private Integer userId;  //登录用户ID
+    
+    public UserLoginLog(String loginIp, int loginType, Integer userId){
+    	this.loginTime = new Date();
+    	this.loginIp = loginIp;
+    	this.loginType = (byte) loginType;
+    	this.userId = userId;
+    }
 
     public Integer getLogId() {
         return logId;

@@ -25,6 +25,7 @@ import whut.pojo.SellerBill;
 import whut.pojo.UserAddr;
 import whut.service.MemberOrderService;
 import whut.service.ProDiscountService;
+import whut.trade.TradeRequest;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SysContent;
@@ -32,6 +33,9 @@ import whut.utils.SysContent;
 @Service
 public class MemberOrderServiceImpl implements MemberOrderService {
 
+	@Autowired
+	private TradeRequest tradeRequest;
+	
 	@Autowired
 	private OrderDao dao;
 	
@@ -475,7 +479,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		if(s!=1) {
 			return new ResponseData(4061,"Current status prohibits pay",null);
 		}
-		//============================================处理支付
+		tradeRequest.tradePay(String.valueOf(orderMaster.getOrderNumber()), "phone", "订单支付", orderMaster.getPaymentMoney(),
+				(byte) 1, orderMaster.getOrderId(), "用户支付", "pay way card", String.valueOf(orderMaster.getUserId()), "60*60*2");
 		Map<String, String> map = new HashMap<>();
 		map.put("orderId", String.valueOf(orderId));
 		map.put("status", "2");
