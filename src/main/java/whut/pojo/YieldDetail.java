@@ -27,7 +27,9 @@ public class YieldDetail implements Serializable{
 
     private Integer purchaserId;  //买方用户id
 
-    private Date createTime;  //收益时间
+    private Date finishTime; //完成时间
+
+    private Date createTime;  //创建时间
     
     private Byte status;//收益转态
 
@@ -93,6 +95,14 @@ public class YieldDetail implements Serializable{
 
     public void setPurchaserId(Integer purchaserId) {
         this.purchaserId = purchaserId;
+    }
+
+    public Date getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(Date finishTime) {
+        this.finishTime = finishTime;
     }
 
     public Date getCreateTime() {
