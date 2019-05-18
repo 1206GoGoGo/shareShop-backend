@@ -92,12 +92,13 @@ public class ProInfoServiceImpl implements ProInfoService{
 		}
 		try {
 			Jedis jedis = JedisUtil.getJedis();
-			jedis.lrem("searchKey:"+SysContent.getUserId()+"", 0, name);
-			if(jedis.llen("searchKey:"+SysContent.getUserId()+"") < 20) {	//获取set集合长度,从0开始保存20条
-				jedis.lpush("searchKey:"+SysContent.getUserId()+"",name);		//如果用户登录了就把用户id和搜索内容存入Redis				
+			String key = "searchKey:"+SysContent.getUserId()+"";
+			jedis.lrem(key, 0, name);
+			if(jedis.llen(key) < 20) {	//获取set集合长度,从0开始保存20条
+				jedis.lpush(key,name);		//如果用户登录了就把用户id和搜索内容存入Redis				
 			}else {
-				jedis.rpop("searchKey:"+SysContent.getUserId()+"");		//删除最先加入的一个值
-				jedis.lpush("searchKey:"+SysContent.getUserId()+"",name);
+				jedis.rpop(key);		//删除最先加入的一个值
+				jedis.lpush(key,name);
 			}
 			JedisUtil.closeJedis(jedis);
 			//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
