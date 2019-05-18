@@ -33,4 +33,7 @@ public interface SellerBillDao {
 	//获取某一seller所有的体现记录总数
 	public Integer getWithdrawListNum(String id);
 
+	//插入一个列表
+	public void addYieldDetailList(List<YieldDetail> yieldDetailList);
+
 }
