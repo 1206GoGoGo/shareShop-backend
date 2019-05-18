@@ -33,6 +33,7 @@
     	<result column="product_name" jdbcType="VARCHAR" property="productName" />
     	<result column="product_quantity" jdbcType="INTEGER" property="productQuantity" />
     	<result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    	 <result column="actual_paid_money" jdbcType="DECIMAL" property="actualPaidMoney" />
     	<result column="status" jdbcType="TINYINT" property="status" />
     </collection>
   </resultMap>
@@ -45,6 +46,7 @@
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="product_quantity" jdbcType="INTEGER" property="productQuantity" />
     <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+     <result column="actual_paid_money" jdbcType="DECIMAL" property="actualPaidMoney" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
    
@@ -165,9 +167,9 @@
     </insert>
     
     <insert id="addOrderDetailList" parameterType="OrderDetail">
-    	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price) values
+    	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price,actual_paid_money) values
     	<foreach collection="list" item="item" index="index" separator=",">
-        (#{item.orderId},#{item.productId},#{item.productSpecsId},#{item.productName},#{item.productQuantity},#{item.productPrice})
+        (#{item.orderId},#{item.productId},#{item.productSpecsId},#{item.productName},#{item.productQuantity},#{item.productPrice},#{actualPaidMoney})
         </foreach>
     </insert>
 

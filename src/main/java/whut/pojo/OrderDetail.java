@@ -23,6 +23,8 @@ public class OrderDetail implements Serializable{
 
     private BigDecimal productPrice;  //商品价格
     
+    private BigDecimal actualPaidMoney;//实际付款金额
+    
     private Byte status; //订单商品状态
 
     public Integer getOrderDetailId() {
@@ -79,6 +81,14 @@ public class OrderDetail implements Serializable{
 
     public void setProductPrice(BigDecimal productPrice) {
         this.productPrice = productPrice;
+    }
+    
+    public BigDecimal getActualPaidMoney() {
+        return actualPaidMoney;
+    }
+
+    public void setActualPaidMoney(BigDecimal actualPaidMoney) {
+        this.actualPaidMoney = actualPaidMoney;
     }
     
     public Byte getStatus() {

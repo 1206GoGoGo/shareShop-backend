@@ -16,12 +16,14 @@ public class YieldDetail implements Serializable{
     private Integer userId;  //店主id
 
     private Integer orderId;  //订单id
+    
+    private Integer orderDetailId;//商品详情id
 
-    private String yieldMoney;  //收益金额
+    private BigDecimal actualPaidMoney;//用户实际付款金额
     
     private BigDecimal receivedMoney; //实际所得金额
 
-    private BigDecimal taxMoney; //缴税金额
+    private Byte yieldRate; //当前收益率
 
     private Integer purchaserId;  //买方用户id
 
@@ -52,15 +54,23 @@ public class YieldDetail implements Serializable{
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
-
-    public String getYieldMoney() {
-        return yieldMoney;
-    }
-
-    public void setYieldMoney(String yieldMoney) {
-        this.yieldMoney = yieldMoney == null ? null : yieldMoney.trim();
-    }
     
+    public Integer getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(Integer orderDetailId) {
+        this.orderDetailId = orderDetailId;
+    }
+
+    public BigDecimal getActualPaidMoney() {
+        return actualPaidMoney;
+    }
+
+    public void setActualPaidMoney(BigDecimal actualPaidMoney) {
+        this.actualPaidMoney = actualPaidMoney;
+    }
+
     public BigDecimal getReceivedMoney() {
         return receivedMoney;
     }
@@ -68,13 +78,13 @@ public class YieldDetail implements Serializable{
     public void setReceivedMoney(BigDecimal receivedMoney) {
         this.receivedMoney = receivedMoney;
     }
-
-    public BigDecimal getTaxMoney() {
-        return taxMoney;
+    
+    public Byte getYieldRate() {
+        return yieldRate;
     }
 
-    public void setTaxMoney(BigDecimal taxMoney) {
-        this.taxMoney = taxMoney;
+    public void setYieldRate(Byte yieldRate) {
+        this.yieldRate = yieldRate;
     }
 
     public Integer getPurchaserId() {

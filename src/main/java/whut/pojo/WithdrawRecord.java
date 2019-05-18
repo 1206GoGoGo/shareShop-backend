@@ -16,6 +16,8 @@ public class WithdrawRecord implements Serializable{
 
     private BigDecimal withdrawMoney;  //提现金额
     
+    private BigDecimal taxMoney;//缴税金额
+    
     private String notes;//备注
 
     private Date createTime; //提现时间
@@ -44,6 +46,14 @@ public class WithdrawRecord implements Serializable{
 
     public void setWithdrawMoney(BigDecimal withdrawMoney) {
         this.withdrawMoney = withdrawMoney;
+    }
+    
+    public BigDecimal getTaxMoney() {
+        return taxMoney;
+    }
+
+    public void setTaxMoney(BigDecimal taxMoney) {
+        this.taxMoney = taxMoney;
     }
     
     public String getNotes() {
