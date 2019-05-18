@@ -75,13 +75,14 @@ public class ProDiscountServiceImpl implements ProDiscountService{
 	}
 
 	
-	//根据商品规格id查询商品的折扣率并返回，先查询商品信息表--再到商品折扣表，折扣表中如果分类id为0则表示全场打折
+	//根据商品id查询商品的折扣率并返回，先查询商品信息表--再到商品折扣表，折扣表中如果分类id为0则表示全场打折
 	@Override
 	public Integer getDiscountRateById(String id) {
 		// TODO Auto-generated method stub
 		//定义返回的折扣率
 		Integer result = null;
-		Integer proId = proSpecsDao.getProSpecsById(id).getProductId();	//通过商品规格id得到商品id
+		//Integer proId = proSpecsDao.getProSpecsById(id).getProductId();	//通过商品规格id得到商品id
+		Integer proId = Integer.parseInt(id);	//直接传递商品ID进来
 		if(proInfoDao.getDetail(proId.toString()).getDiscountRate() == null || proInfoDao.getDetail(proId.toString()).getDiscountRate() == 0) {//通过商品id得到商品折扣率，先判断商品是否打折，如果折扣率为空即无折扣
 			//如果未设置商品折扣则去折扣表查看，要知道折扣得先知道商品所属分类
 			//先判断商品所属的二级分类是否打折
@@ -136,6 +137,25 @@ public class ProDiscountServiceImpl implements ProDiscountService{
 		else
 			result = proInfoDao.getDetail(proId.toString()).getDiscountRate();
 		return result;
+	}
+
+	//根据商品id查询收益率
+	@Override
+	public Integer getYieldRateById(String id) {
+		// TODO Auto-generated method stub
+		Integer twoCategory = proInfoDao.getDetail(id).getTwoCategoryId();
+		Integer oneCategory = proInfoDao.getDetail(id).getOneCategoryId();
+		String result = null;
+		if(proDiscountDao.search(twoCategory.toString()) == null) {
+			if(proDiscountDao.search(oneCategory.toString()) == null) {	
+				result = proDiscountDao.search("0").getYieldRate().toString();	//分类ID为0表示全场商品
+			}else {
+				result = proDiscountDao.search(oneCategory.toString()).getYieldRate().toString();
+			}
+		}else {
+			result = proDiscountDao.search(twoCategory.toString()).getYieldRate().toString();
+		}
+		return Integer.parseInt(result);
 	}
 
 }

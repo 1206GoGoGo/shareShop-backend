@@ -17,4 +17,6 @@ public interface ProDiscountService {
 
 	public Integer getDiscountRateById(String id);
 
+	public Integer getYieldRateById(String id);
+
 }
