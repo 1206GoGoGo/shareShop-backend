@@ -12,4 +12,6 @@ public interface MemberOrderReturnService {
 
 	ResponseData getListByReturnType(int pageindex, int pagesize, int type);
 
+	ResponseData addReturn(String jsonString);
+
 }

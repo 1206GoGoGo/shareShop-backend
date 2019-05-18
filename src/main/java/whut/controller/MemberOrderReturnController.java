@@ -2,6 +2,7 @@ package whut.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,5 +39,11 @@ public class MemberOrderReturnController {
 	@RequestMapping(value = "/getListByReturnType", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getListByReturnType(int pageindex, int pagesize, int type) {
 		return memberOrderReturnService.getListByReturnType(pageindex, pagesize, type);
+	}
+	
+	
+	@RequestMapping(value = "/addReturn", method = RequestMethod.GET)
+	public @ResponseBody ResponseData addReturn(@RequestBody String jsonString) {
+		return memberOrderReturnService.addReturn(jsonString);
 	}
 }

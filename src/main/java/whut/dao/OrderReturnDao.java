@@ -23,5 +23,8 @@ public interface OrderReturnDao {
 
 	//int pageindex, int pagesize, int type
 	List<ReturnRecord> getListByReturnType(Map<String, Integer> map);
+
+	//新增退货信息
+	void addReturn(ReturnRecord returnRecord);
 	
 }
