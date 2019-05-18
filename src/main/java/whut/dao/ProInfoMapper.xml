@@ -15,7 +15,7 @@
     <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
     <result column="audit_status" jdbcType="TINYINT" property="auditStatus" />
     <result column="use_coupon" jdbcType="TINYINT" property="useCoupon" />
-    <result column="discount_rate" jdbcType="INTEGER" property="discountRate" />
+    <result column="discount_rate" jdbcType="DECIMAL" property="discountRate" />
     <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
     <result column="pro_description" jdbcType="VARCHAR" property="description" />
     <result column="stock" jdbcType="INTEGER" property="stock" />

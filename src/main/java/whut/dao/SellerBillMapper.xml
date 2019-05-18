@@ -18,7 +18,7 @@
     <result column="order_detail_id" jdbcType="INTEGER" property="orderDetailId" />
     <result column="actual_paid_money" jdbcType="DECIMAL" property="actualPaidMoney" />
     <result column="received_money" jdbcType="DECIMAL" property="receivedMoney" />
-    <result column="yield_rate" jdbcType="TINYINT" property="yieldRate" />
+    <result column="yield_rate" jdbcType="DECIMAL" property="yieldRate" />
     <result column="purchaser_id" jdbcType="INTEGER" property="purchaserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>

@@ -1,6 +1,7 @@
 package whut.pojo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 商品折扣
@@ -12,11 +13,11 @@ public class ProductDiscount implements Serializable{
 
     private Integer categoryId;  //商品分类id
 
-    private Byte discountRate;  //折扣率
+    private BigDecimal discountRate;  //折扣率
     
-    private Byte sellerDiscountRate; //seller折扣率
+    private BigDecimal sellerDiscountRate; //seller折扣率
 
-    private Byte yieldRate;  //收益率
+    private BigDecimal yieldRate;  //收益率
 
     public Integer getDiscountId() {
         return discountId;
@@ -34,27 +35,27 @@ public class ProductDiscount implements Serializable{
         this.categoryId = categoryId;
     }
 
-    public Byte getDiscountRate() {
+    public BigDecimal getDiscountRate() {
         return discountRate;
     }
 
-    public void setDiscountRate(Byte discountRate) {
+    public void setDiscountRate(BigDecimal discountRate) {
         this.discountRate = discountRate;
     }
-    
-    public Byte getSellerDiscountRate() {
+
+    public BigDecimal getSellerDiscountRate() {
         return sellerDiscountRate;
     }
 
-    public void setSellerDiscountRate(Byte sellerDiscountRate) {
+    public void setSellerDiscountRate(BigDecimal sellerDiscountRate) {
         this.sellerDiscountRate = sellerDiscountRate;
     }
 
-    public Byte getYieldRate() {
+    public BigDecimal getYieldRate() {
         return yieldRate;
     }
 
-    public void setYieldRate(Byte yieldRate) {
+    public void setYieldRate(BigDecimal yieldRate) {
         this.yieldRate = yieldRate;
     }
 }

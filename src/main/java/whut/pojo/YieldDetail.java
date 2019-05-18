@@ -23,7 +23,7 @@ public class YieldDetail implements Serializable{
     
     private BigDecimal receivedMoney; //实际所得金额
 
-    private Byte yieldRate; //当前收益率
+    private BigDecimal yieldRate; //当前收益率
 
     private Integer purchaserId;  //买方用户id
 
@@ -79,11 +79,11 @@ public class YieldDetail implements Serializable{
         this.receivedMoney = receivedMoney;
     }
     
-    public Byte getYieldRate() {
+    public BigDecimal getYieldRate() {
         return yieldRate;
     }
 
-    public void setYieldRate(Byte yieldRate) {
+    public void setYieldRate(BigDecimal yieldRate) {
         this.yieldRate = yieldRate;
     }
 

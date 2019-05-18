@@ -6,9 +6,9 @@
 <resultMap id="BaseResultMap" type="whut.pojo.ProductDiscount">
     <id column="discount_id" jdbcType="INTEGER" property="discountId" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
-    <result column="discount_rate" jdbcType="TINYINT" property="discountRate" />
-    <result column="seller_discount_rate" jdbcType="TINYINT" property="sellerDiscountRate" />
-    <result column="yield_rate" jdbcType="TINYINT" property="yieldRate" />
+    <result column="discount_rate" jdbcType="DECIMAL" property="discountRate" />
+    <result column="seller_discount_rate" jdbcType="DECIMAL" property="sellerDiscountRate" />
+    <result column="yield_rate" jdbcType="DECIMAL" property="yieldRate" />
 </resultMap>
 
 	<select id="getList"  parameterType="hashmap"  resultMap="BaseResultMap">

@@ -35,7 +35,7 @@ public class ProductInfo implements Serializable{
 
     private Byte useCoupon;//是否可以使用优惠券
 
-    private Integer discountRate;//折扣比率
+    private BigDecimal discountRate;//折扣比率
     
     private BigDecimal minPrice;//最低价格
     
@@ -162,11 +162,11 @@ public class ProductInfo implements Serializable{
         this.useCoupon = useCoupon;
     }
 
-    public Integer getDiscountRate() {
+    public BigDecimal getDiscountRate() {
         return discountRate;
     }
 
-    public void setDiscountRate(Integer discountRate) {
+    public void setDiscountRate(BigDecimal discountRate) {
         this.discountRate = discountRate;
     }
 
