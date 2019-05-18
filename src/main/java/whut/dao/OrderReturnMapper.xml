@@ -15,7 +15,7 @@
     <result column="reason" property="reason" jdbcType="VARCHAR" />
   </resultMap>
   
-  <select id="addOrderReturn" parameterType="ReturnRecord">
+  <select id="addReturn" parameterType="ReturnRecord">
     	INSERT INTO return_record
     	(user_id,order_id,order_detail_id,product_specs_id,return_type,return_money,
     	create_time,status,reason)      
@@ -53,5 +53,14 @@
         SELECT * FROM return_record where return_type = #{type}
         limit #{pageindex}, #{pagesize}
    </select>
+  
+  <select id="addOrderReturn" parameterType="ReturnRecord">
+    	INSERT INTO return_record
+    	(user_id,order_id,order_detail_id,product_specs_id,return_type,return_money,
+    	create_time,status,reason)      
+        VALUES
+    	(#{userId},#{orderId},#{orderDetailId},#{productSpecsId},#{returnType},#{returnMoney},
+    	now(),#{status},#{reason})
+  </select>
   
   </mapper>

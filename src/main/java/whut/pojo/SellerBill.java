@@ -11,6 +11,8 @@ public class SellerBill implements Serializable{
 	
 	private String type;  //支出 收入
 	
+	private Byte status;  //状态
+	
 	
 	public BigDecimal getMoney() {
 	      return money;
@@ -34,6 +36,14 @@ public class SellerBill implements Serializable{
 
 	public void setType(String type) {
 	    this.type = type == null ? null : type.trim();
+	}
+	
+	public Byte getStatus() {
+		return status;
+	}
+
+	public void setStatus(Byte status) {
+		this.status = status;
 	}
 	
 }

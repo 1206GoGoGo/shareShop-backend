@@ -21,12 +21,14 @@
     <result column="yield_rate" jdbcType="DECIMAL" property="yieldRate" />
     <result column="purchaser_id" jdbcType="INTEGER" property="purchaserId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
 
 	<select id="getList" parameterType="hashmap" resultType="SellerBill">
-    	SELECT withdraw_money as money, create_time as createTime, 'withdraw_money' as type FROM withdraw_record where user_id = #{userId}
+    	SELECT withdraw_money as money, create_time as createTime, 'withdraw_money' as type, status FROM withdraw_record where user_id = #{userId}
 		union
-		SELECT received_money as money , create_time as createTime ,'yield_money' as type FROM yield_detail where user_id = #{userId}
+		SELECT received_money as money , create_time as createTime ,'yield_money' as type, status FROM yield_detail where user_id = #{userId}
 		ORDER BY createTime
 		limit #{pageindex},#{pagesize}
     </select>
@@ -67,5 +69,12 @@
     <select id="getWithdrawListNum" parameterType="String" resultType="Integer">
         select count(*) from withdraw_record where user_id = #{id}
     </select>
+    
+     <insert id="addYieldDetailList" parameterType="YieldDetail">
+    	INSERT INTO yield_detail(user_id,order_id,order_detail_id,actual_paid_money,received_money,yield_rate,purchaser_id,create_time) values
+    	<foreach collection="list" item="item" index="index" separator=",">
+        (#{item.userId},#{item.orderId},#{item.orderDetailId},#{item.actualPaidMoney},#{item.receivedMoney},#{yieldRate},#{purchaserId},#{createTime})
+        </foreach>
+    </insert>
 
 </mapper>
