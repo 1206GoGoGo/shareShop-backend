@@ -90,15 +90,20 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
-		
 		try {
 			Jedis jedis = JedisUtil.getJedis();
-			jedis.lpush("searchKey:"+SysContent.getUserId()+"", name);	//开启用户登录功能后再添加【增加或覆盖】		
+			jedis.lrem("searchKey:"+SysContent.getUserId()+"", 0, name);
+			if(jedis.llen("searchKey:"+SysContent.getUserId()+"") < 20) {	//获取set集合长度,从0开始保存20条
+				jedis.lpush("searchKey:"+SysContent.getUserId()+"",name);		//如果用户登录了就把用户id和搜索内容存入Redis				
+			}else {
+				jedis.rpop("searchKey:"+SysContent.getUserId()+"");		//删除最先加入的一个值
+				jedis.lpush("searchKey:"+SysContent.getUserId()+"",name);
+			}
 			JedisUtil.closeJedis(jedis);
 			//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			
+			//如果用户未登录，则获取不到用户ID，SysContent.getUserId()方法会抛出异常，这里不做处理
 		}
 		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
 	}
