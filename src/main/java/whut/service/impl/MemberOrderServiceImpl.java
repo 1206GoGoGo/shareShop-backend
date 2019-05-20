@@ -553,8 +553,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	orderDetail.setStatus((byte) 1);
 	    	orderDetailList.add(orderDetail);
 	    	//根据商品id（不是单品id）获取折扣率
-	    	Integer discountRate = proDiscountService.getDiscountRateById(String.valueOf(productSpecs.getProductId()));
-	    	thisDiscountRate = new BigDecimal(Integer.toString(discountRate)).divide( new BigDecimal("100") );
+	    	BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(productSpecs.getProductId()));
+	    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
 	    	thisProductMoney = productSpecs.getPrice().multiply(BigDecimal.valueOf(quantity));//多个商品的总价格
 	    	thisDiscountMoney = thisProductMoney.multiply(thisDiscountRate);
 	    	productMoney = productMoney.add(thisProductMoney);
@@ -599,8 +599,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			//计算商品打折并使用优惠券后实际支付的金额
 			//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
 	    	//根据商品id（不是单品id）获取折扣率
-	    	Integer discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
-	    	thisDiscountRate = new BigDecimal(Integer.toString(discountRate)).divide( new BigDecimal("100") );
+			BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
+	    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
 	    	//计算
 	    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
 	    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
@@ -609,8 +609,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	
 	    	//向收益表中添加数据
 	    	//根据商品id（不是单品id）获取返现率
-	    	Integer yieldRate = proDiscountService.getYieldRateById(String.valueOf(orderDetail.getProductId()));
-	    	thisYieldRate =  new BigDecimal(Integer.toString(yieldRate)).divide( new BigDecimal("100") );
+	    	BigDecimal yieldRate = proDiscountService.getYieldRateById(String.valueOf(orderDetail.getProductId()));
+	    	thisYieldRate =  yieldRate.divide( new BigDecimal("100") );
 	    	YieldDetail yieldDetail = new YieldDetail();
 	    	yieldDetail.setUserId(superiorId);
 	    	yieldDetail.setOrderId(orderId);
