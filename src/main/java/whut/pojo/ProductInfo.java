@@ -40,6 +40,10 @@ public class ProductInfo implements Serializable{
     private BigDecimal minPrice;//最低价格
     
     private BigDecimal maxPrice;//最高价格
+   
+   private BigDecimal minPriceVip;//会员最低价格
+    
+    private BigDecimal maxPriceVip;//会员最高价格
     
     private Double score;//商品评分
 
@@ -184,6 +188,22 @@ public class ProductInfo implements Serializable{
 
 	public void setMaxPrice(BigDecimal maxPrice) {
 		this.maxPrice = maxPrice;
+	}
+	
+	public BigDecimal getMinPriceVip() {
+		return minPriceVip;
+	}
+
+	public void setMinPriceVip(BigDecimal minPriceVip) {
+		this.minPriceVip = minPriceVip;
+	}
+
+	public BigDecimal getMaxPriceVip() {
+		return maxPriceVip;
+	}
+
+	public void setMaxPriceVip(BigDecimal maxPriceVip) {
+		this.maxPriceVip = maxPriceVip;
 	}
 
 	public Double getScore() {

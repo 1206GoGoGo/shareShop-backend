@@ -1,5 +1,6 @@
 package whut.pojo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import org.apache.solr.client.solrj.beans.Field;
 
@@ -79,6 +80,12 @@ public class ProductInfoForSearch{
     
 	@Field
     private Double maxPrice;//最高价格
+	
+	@Field
+	private BigDecimal minPriceVip;//会员最低价格
+	
+	@Field
+	private BigDecimal maxPriceVip;//会员最高价格
     
 	@Field
     private int collect;//收藏数
@@ -298,6 +305,21 @@ public class ProductInfoForSearch{
 		this.maxPrice = maxPrice;
 	}
 
+	public BigDecimal getMinPriceVip() {
+		return minPriceVip;
+	}
+
+	public void setMinPriceVip(BigDecimal minPriceVip) {
+		this.minPriceVip = minPriceVip;
+	}
+
+	public BigDecimal getMaxPriceVip() {
+		return maxPriceVip;
+	}
+
+	public void setMaxPriceVip(BigDecimal maxPriceVip) {
+		this.maxPriceVip = maxPriceVip;
+	}
 
 	public int getCart() {
 		return cart;
