@@ -1,5 +1,7 @@
 package whut.service;
 
+import java.math.BigDecimal;
+
 import whut.pojo.ProductDiscount;
 import whut.utils.ResponseData;
 
@@ -15,8 +17,8 @@ public interface ProDiscountService {
 
 	ResponseData modify(ProductDiscount productDiscount);
 
-	public Integer getDiscountRateById(String id);
+	public BigDecimal getDiscountRateById(String id);
 
-	public Integer getYieldRateById(String id);
+	public BigDecimal getYieldRateById(String id);
 
 }

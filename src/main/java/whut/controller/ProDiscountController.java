@@ -2,6 +2,8 @@ package whut.controller;
 
 
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,13 +35,13 @@ public class ProDiscountController {
 	
 	//根据商品id查询商品的折扣率并返回，先查询商品信息表--再到商品折扣表，折扣表中如果分类id为0则表示全场打折
 	@RequestMapping(value = "/getDiscountRateById", method = RequestMethod.GET)
-	public @ResponseBody Integer getDiscountRateById(String id){
+	public @ResponseBody BigDecimal getDiscountRateById(String id){
 		return proDiscountService.getDiscountRateById(id);
 	}
 	
 	//根据商品id查询收益率
 	@RequestMapping(value = "/getYieldRateById", method = RequestMethod.GET)
-	public @ResponseBody Integer getYieldRateById(String id){
+	public @ResponseBody BigDecimal getYieldRateById(String id){
 		return proDiscountService.getYieldRateById(id);
 	}
 	
