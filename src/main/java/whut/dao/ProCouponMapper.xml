@@ -40,7 +40,7 @@
   </resultMap>
   
   <select id="getList"  parameterType="hashmap" resultMap="CouponInfoResultMap">
-        SELECT * FROM coupon_info where status = 1
+        SELECT * FROM coupon_info where status = 1 or status = 0
         limit #{pageindex},#{pagesize}
    </select>
     
@@ -81,7 +81,7 @@
     </select>
     
      <select id="getListNum" resultType="Integer">
-        select count(*) from coupon_info where status = 1
+        select count(*)  from coupon_info where status = 1 or status = 0
     </select>
     
     <select id="getCouponByUIdNum" parameterType="String" resultType="Integer">
