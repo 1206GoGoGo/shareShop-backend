@@ -81,7 +81,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 	
 
 	@Override
-	public ResponseData search(String name,Integer pageindex, Integer pagesize) {
+	public ResponseData search(String name,Integer pageindex, Integer pagesize,String field,Byte judge) {
 		// TODO Auto-generated method stub
 		//pageindex从1开始
 		if(pageindex == null) {
@@ -90,6 +90,8 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
+		if(judge == null)
+			judge = 0;
 		try {
 			Jedis jedis = JedisUtil.getJedis();
 			String key = "searchKey:"+SysContent.getUserId()+"";
@@ -106,7 +108,8 @@ public class ProInfoServiceImpl implements ProInfoService{
 			// TODO Auto-generated catch block
 			//如果用户未登录，则获取不到用户ID，SysContent.getUserId()方法会抛出异常，这里不做处理
 		}
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
+		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
+		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,"productName:"+name,queryItem,field,judge,null));
 	}
 
 	@Override
@@ -139,8 +142,10 @@ public class ProInfoServiceImpl implements ProInfoService{
 			pagesize = 20;
 		}
 		String searchCondition = "oneCategoryId:"+id+" || twoCategoryId:"+id;
+		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
+
 		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,searchCondition,new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
+		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,searchCondition,queryItem,null,null,null));
 	}
 
 	@Override

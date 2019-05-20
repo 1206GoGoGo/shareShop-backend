@@ -9,7 +9,7 @@ public interface ProInfoService {
 
 	public ResponseData getDetail(String id);
 
-	public ResponseData search(String name,Integer pageindex, Integer pagesize);
+	public ResponseData search(String name,Integer pageindex, Integer pagesize,String field,Byte judge);
 
 	public ResponseData getListByCategory(String id,Integer pageindex, Integer pagesize);
 

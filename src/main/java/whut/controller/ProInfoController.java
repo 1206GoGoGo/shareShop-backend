@@ -47,8 +47,8 @@ public class ProInfoController {
 	
 	//根据商品名称通过搜索服务器solr查找商品（修改给前台）
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public @ResponseBody ResponseData search(String name,Integer pageindex, Integer pagesize){
-		return proInfoService.search(name,pageindex, pagesize);
+	public @ResponseBody ResponseData search(String name,Integer pageindex, Integer pagesize,String field,Byte judge){
+		return proInfoService.search(name,pageindex, pagesize,field,judge);
 	}
 		
 	
