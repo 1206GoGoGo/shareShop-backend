@@ -15,9 +15,9 @@ public interface ProInfoService {
 
 	public ResponseData getDetailByCode(String id);
 
-	public ResponseData getListSearch(Integer pageindex, Integer pagesize);
+	public ResponseData getListSearch(Integer pageindex, Integer pagesize,String field,Byte judge);
 
-	public ResponseData getListByCategorySearch(String id, Integer pageindex, Integer pagesize);
+	public ResponseData getListByCategorySearch(String id, Integer pageindex, Integer pagesize,String field,Byte judge);
 
 
 }

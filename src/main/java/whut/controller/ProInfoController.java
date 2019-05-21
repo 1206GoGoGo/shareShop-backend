@@ -27,8 +27,8 @@ public class ProInfoController {
 	
 	//获取所有商品搜索服务器的所有商品列表（新增给前台）
 	@RequestMapping(value = "/getListSearch", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListSearch(Integer pageindex, Integer pagesize) {
-		return proInfoService.getListSearch(pageindex, pagesize);
+	public @ResponseBody ResponseData getListSearch(Integer pageindex, Integer pagesize,String field,Byte judge) {
+		return proInfoService.getListSearch(pageindex, pagesize,field,judge);
 
 	}
 	
@@ -60,8 +60,8 @@ public class ProInfoController {
 	
 	//根据分类通过搜索服务器solr查找商品（新增给前台）
 	@RequestMapping(value = "/getListByCategorySearch", method = RequestMethod.GET)
-	public @ResponseBody ResponseData getListByCategorySearch(String id,Integer pageindex, Integer pagesize){
-		return proInfoService.getListByCategorySearch(id,pageindex, pagesize);	
+	public @ResponseBody ResponseData getListByCategorySearch(String id,Integer pageindex, Integer pagesize,String field,Byte judge){
+		return proInfoService.getListByCategorySearch(id,pageindex, pagesize,field,judge);	
 	}
 	
 }

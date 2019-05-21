@@ -47,7 +47,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 	}
 	
 	@Override
-	public ResponseData getListSearch(Integer pageindex, Integer pagesize) {
+	public ResponseData getListSearch(Integer pageindex, Integer pagesize,String field,Byte judge) {
 		// TODO Auto-generated method stub
 		if(pageindex == null) {
 			pageindex = 1;
@@ -55,7 +55,14 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,"*:*",new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"},null,null,null));
+		if(judge == null) {			
+			judge = 0;		//不传judge的状态默认无序（不按照递增递减排序）
+		}	
+		if(field == "sales" || field =="pscore" || field == "inputTime") {
+			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
+		}	
+		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"}; 
+		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,"*:*",queryItem,field,judge,null));
 	}
 
 	@Override
@@ -90,8 +97,12 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
-		if(judge == null)
-			judge = 0;
+		if(judge == null) {			
+			judge = 0;		//不传judge的状态默认无序（不按照递增递减排序）
+		}	
+		if(field == "sales" || field =="pscore" || field == "inputTime") {
+			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
+		}	
 		try {
 			Jedis jedis = JedisUtil.getJedis();
 			String key = "searchKey:"+SysContent.getUserId()+"";
@@ -133,7 +144,7 @@ public class ProInfoServiceImpl implements ProInfoService{
 	}
 	
 	@Override
-	public ResponseData getListByCategorySearch(String id, Integer pageindex, Integer pagesize) {
+	public ResponseData getListByCategorySearch(String id, Integer pageindex, Integer pagesize,String field,Byte judge) {
 		// TODO Auto-generated method stub
 		if(pageindex == null) {
 			pageindex = 1;
@@ -141,11 +152,16 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(pagesize == null){
 			pagesize = 20;
 		}
+		if(judge == null) {			
+			judge = 0;		//不传judge的状态默认无序（不按照递增递减排序）
+		}	
+		if(field == "sales" || field =="pscore" || field == "inputTime") {
+			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
+		}
 		String searchCondition = "oneCategoryId:"+id+" || twoCategoryId:"+id;
 		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
-
 		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
-		return new ResponseData(200,"success",SolrJUtil.search(pageindex,pagesize,searchCondition,queryItem,null,null,null));
+		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,searchCondition,queryItem,field,judge,null));
 	}
 
 	@Override
