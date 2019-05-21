@@ -84,7 +84,7 @@ public class ProDiscountServiceImpl implements ProDiscountService{
 		BigDecimal result = null;
 		//Integer proId = proSpecsDao.getProSpecsById(id).getProductId();	//通过商品规格id得到商品id
 		Integer proId = Integer.parseInt(id);	//直接传递商品ID进来
-		if(proInfoDao.getDetail(proId.toString()).getDiscountRate() == null) {//通过商品id得到商品折扣率，先判断商品是否打折，如果折扣率为空即无折扣
+		if(proInfoDao.getDetail(proId.toString()).getDiscountRate() == null || proInfoDao.getDetail(proId.toString()).getDiscountRate().compareTo(BigDecimal.ZERO)==0) {//通过商品id得到商品折扣率，先判断商品是否打折，如果折扣率为空即无折扣
 			//如果未设置商品折扣则去折扣表查看，要知道折扣得先知道商品所属分类
 			//先判断商品所属的二级分类是否打折
 			if(proInfoDao.getDetail(proId.toString()).getTwoCategoryId() != null) {		//如果商品属于二级分类下

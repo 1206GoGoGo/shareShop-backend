@@ -1,6 +1,7 @@
 package whut.service.impl;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import whut.dao.ProInfoDao;
 import whut.pojo.ProductInfo;
+import whut.service.ProDiscountService;
 import whut.service.ProInfoService;
 import whut.utils.JedisUtil;
 import whut.utils.ResponseData;
@@ -25,6 +27,9 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Autowired
 	private ProInfoDao proInfoDao;
+	
+	@Autowired
+	private ProDiscountService proDiscountService;
 	
 	@Override
 	public ResponseData getList(Integer pageindex, Integer pagesize) {
@@ -79,6 +84,11 @@ public class ProInfoServiceImpl implements ProInfoService{
 			}
 			//System.out.println(jedis.get("view:"+id));	//测试输出，根据键（view：商品id）查值（次数）
 	    	JedisUtil.closeJedis(jedis);
+	    	BigDecimal rate = new BigDecimal(100).subtract(proDiscountService.getDiscountRateById(id));	//算出普通会员的折扣率
+			/*System.out.println(rate);
+			System.out.println(productInfo.getMinPrice());*/
+	    	productInfo.setMinPriceVip(productInfo.getMinPrice().multiply(rate).divide(new BigDecimal(100)));
+			productInfo.setMaxPriceVip(productInfo.getMaxPrice().multiply(rate).divide(new BigDecimal(100)));
 			return new ResponseData(200,"success",productInfo);
 		}else {
 			return new ResponseData(400,"no data",null);
