@@ -56,28 +56,6 @@ public class MemberOrderController {
 	}
 	
 	/**
-	 * 修改整个订单信息（物流等）//订单id
-	 * 需要修改下面子商品的信息（退换货等）
-	 * @param orderId
-	 * @return
-	 */
-	@RequestMapping(value = "/modifyOrderStatus", method = RequestMethod.POST)
-	public @ResponseBody ResponseData modifyOrderStatus(@RequestBody String jsonString) {
-		return memberOrderService.modifyOrderStatus(jsonString);
-	}
-	
-	/**
-	 * 修改单个商品状态（退货中等）//订单详情id
-	 * 需要同步修改整个订单的状态（退换货等）
-	 * @param orderDetailId
-	 * @return
-	 */
-	@RequestMapping(value = "/modifyProStatus", method = RequestMethod.POST)
-	public @ResponseBody ResponseData modifyProStatus(@RequestBody String jsonString) {
-		return memberOrderService.modifyProStatus(jsonString);
-	}
-	
-	/**
 	 * 获取某用户的消费记录
 	 * @param pageindex
 	 * @param pagesize
@@ -102,6 +80,26 @@ public class MemberOrderController {
 	@RequestMapping(value = "/modifyPay", method = RequestMethod.POST)
 	public @ResponseBody ResponseData modifyPay(@RequestBody String jsonString) {
 		return memberOrderService.modifyPay(jsonString);
+	}
+	
+	@RequestMapping(value = "/receipt", method = RequestMethod.POST)
+	public @ResponseBody ResponseData receipt(@RequestBody String jsonString) {
+		return memberOrderService.receipt(jsonString);
+	}
+	
+	/**
+	 * 整个订单退货（款）
+	 * @param jsonString
+	 * @return
+	 */
+	@RequestMapping(value = "/applyReturnForOrder", method = RequestMethod.POST)
+	public @ResponseBody ResponseData applyReturnForOrder(@RequestBody String jsonString) {
+		return memberOrderService.applyReturnForOrder(jsonString);
+	}
+	
+	@RequestMapping(value = "/applyReturnForDetail", method = RequestMethod.POST)
+	public @ResponseBody ResponseData applyReturnForDetail(@RequestBody String jsonString) {
+		return memberOrderService.applyReturnForDetail(jsonString);
 	}
 
 }

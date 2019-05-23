@@ -35,5 +35,11 @@ public interface SellerBillDao {
 
 	//插入一个列表
 	public void addYieldDetailList(List<YieldDetail> yieldDetailList);
+	
+	//将orderDetailId的收益记录状态改为status. 	
+	public void modifyStatusByOrderDetailId(Map<String, Integer> map);
+	
+	//将orderId的收益记录状态改为status. 
+	public void modifyStatusByOrderId(Map<String, Integer> map);
 
 }

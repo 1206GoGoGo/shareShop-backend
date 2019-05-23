@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import whut.dao.OrderDao;
 import whut.dao.OrderReturnDao;
+import whut.dao.ProInfoDao;
 import whut.dao.ProSpecsDao;
 import whut.dao.SellerBillDao;
 import whut.dao.StateTaxDao;
@@ -24,6 +25,7 @@ import whut.dao.UserLoginDao;
 import whut.pojo.OrderDetail;
 import whut.pojo.OrderMaster;
 import whut.pojo.ProductSpecs;
+import whut.pojo.ReturnRecord;
 import whut.pojo.SellerBill;
 import whut.pojo.UserAddr;
 import whut.pojo.UserInfo;
@@ -56,6 +58,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	
 	@Autowired
 	private ProSpecsDao proSpecsDao;
+	
+	@Autowired
+	private ProInfoDao proInfoDao;
 	
 	@Autowired
 	private ProDiscountService proDiscountService;
@@ -135,147 +140,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	
 	}
 
-	/**
-	 * 单向：不能从异常修改回来
-	 * 待处理、发货、确认收货
-	 */
-	@Override
-	public ResponseData modifyOrderStatus(String jsonString) {
-		JsonUtils jsonUtils = new JsonUtils(jsonString);
-		String orderId = jsonUtils.getStringValue("orderId");
-		int status = jsonUtils.getIntValue("status");
-		
-		OrderMaster orderMaster = dao.getMasterByOrderId(Integer.parseInt(orderId));
-
-		if(orderMaster.getUserId() != SysContent.getUserId()) {
-			return new ResponseData(403,"illegally accessed",null);
-		}
-		
-		int statusOld;
-		try {
-			statusOld = orderMaster.getOrderStatus();
-		}catch(Exception e) {
-			return new ResponseData(406,"order does not exist",null);
-		}
-		
-		//若订单下商品状态不同则禁止修改
-		List<OrderDetail> proList = dao.getDetailListByOrderId(Integer.parseInt(orderId));
-		
-		int tempStatus = proList.get(0).getStatus();
-		for( int i = 1 ; i < proList.size() ; i++) {
-			//获取详情状态
-			if(proList.get(i).getStatus() != tempStatus) {
-				return new ResponseData(4061,"当前订单中子商品状态不一致禁止整单操作",null);
-			}
-		}
-		
-		if(tempStatus != statusOld) {
-			return new ResponseData(4062,"订单状态和订单下商品状态不一致禁止整单修改",null);	
-		}
-		
-		
-		int newStatus = 0;
-		int returnStatus = 0;
-		
-		
-		//未确认收货，申请退货4——21
-		if(statusOld == 4 && status == 21) {
-			newStatus = 21;
-			returnStatus = 21;
-		}
-		//确认收货后申请退货5——21
-		if(statusOld == 5 && status == 21) {
-			newStatus = 21;
-			returnStatus = 21;
-		}
-
-		if(newStatus==0) {
-			return new ResponseData(4063,"当前订单状态禁止修改或无法从原有状态修改到指定状态",null);
-		}
-
-		
-		//修改订单状态和子订单状态
-		Map<String, String> map = new HashMap<>();
-		map.put("orderId", orderId);
-		map.put("status", String.valueOf(status));
-		dao.modifyOrderStatus(map);
-		dao.modifyProStatusByOrderId(map);
-		
-		//处理退货，同时处理退货表数据
-		if(returnStatus!=0) {
-			orderReturnDao.modifyStatusByOrderId(map);
-		}
-		
-		//修改全部子账单状态
-		return new ResponseData(200,"success",null);
-	
-	}
-
-	/**
-	 * 判断条件
-	 */
-	@Override
-	public ResponseData modifyProStatus(String jsonString) {
-		JsonUtils jsonUtils = new JsonUtils(jsonString);
-		String orderDetailId = jsonUtils.getStringValue("orderDetailId");
-		String status = jsonUtils.getStringValue("status");
-		
-		OrderDetail orderDetailOld = dao.getOrderDetailByOrderDetailId(Integer.parseInt(orderDetailId));
-
-		
-		int getStatus = Integer.parseInt(status);	//	传入的新status
-		int statusOld;
-		try {
-			statusOld = orderDetailOld.getStatus();
-		}catch(Exception e) {
-			return new ResponseData(406,"order does not exist",null);
-		}
-
-		if(dao.getMasterByOrderId(orderDetailOld.getOrderId()).getUserId() != SysContent.getUserId()) {
-			return new ResponseData(403,"illegally accessed",null);
-		}
-		
-		
-		int newStatus = 0;
-		int returnStatus = 0;
-		//判断当前状态，修改单个状态及整单状态
-
-		//未确认收货，申请退货4——21
-		if(statusOld == 4 && statusOld == 21) {
-			newStatus = 21;
-			returnStatus = 21;
-		}
-		//确认收货后申请退货5——21
-		if(statusOld == 5 && statusOld == 21) {
-			newStatus = 21;
-			returnStatus = 21;
-		}
-		
-		
-		if(newStatus==0) {
-			return new ResponseData(4061,"当前订单状态禁止修改或无法从原有状态修改到指定状态",null);
-		}
-		
-		//修改单个商品状态
-		Map<String, String> map = new HashMap<>();
-		map.put("orderDetailId", orderDetailId);
-		map.put("status", status);
-		dao.modifyProStatus(map);
-		
-		//修改退货相关信息
-		if(returnStatus!=0) {
-			orderReturnDao.modifyStatusByOrderDetailId(map);
-		}
-		
-		//修改整个订单状态
-		Map<String, String> mapOrder = new HashMap<>();
-		mapOrder.put("orderId", String.valueOf(orderDetailOld.getOrderId()) );
-		mapOrder.put("status", status);
-		dao.modifyOrderStatus(mapOrder);
-
-		return new ResponseData(200,"success",null);
-	
-	}
 
 	@Override
 	public ResponseData getRecordByUser(Integer pageindex, Integer pagesize, String timebe, String timeen) {
@@ -320,9 +184,9 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			return new ResponseData(4061,"Current status prohibits deletion",null);
 		}
 		
-		Map<String, String> map = new HashMap<>();
-		map.put("orderId", orderMaster.getState());
-		map.put("status", "19");
+		Map<String, Integer> map = new HashMap<>();
+		map.put("orderId", Integer.valueOf(orderMaster.getState()));
+		map.put("status", 19);
 		dao.modifyOrderStatus(map);
 		
 		return new ResponseData(null);
@@ -349,15 +213,14 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		
 		//单品优惠暂不处理！！！！！
 		//运费收税？
-
-		//BigDecimal productMoney = new BigDecimal("0.0");	//所有商品价格和，不含运费，不含税，不打折（算出来的总和）
-		//BigDecimal discountMoney = new BigDecimal("0.0");	//打折金额
-		//BigDecimal shippingMoney = new BigDecimal("0.0");	//运费
-		//BigDecimal orderMoney = new BigDecimal("0.0");	//订单总金额 已打折 不含运费 不含税 已减优惠券
-		//BigDecimal taxMoney = new BigDecimal("0.0");	//税费
-		//BigDecimal paymentMoney = new BigDecimal("0.0");	//最终需要支付的金额 orderMoney+taxMoney
+		BigDecimal productMoney = new BigDecimal("0.0");	//所有商品价格和，不含运费，不含税，不打折（算出来的总和）
+		BigDecimal discountMoney = new BigDecimal("0.0");	//打折金额
+		BigDecimal shippingMoney = new BigDecimal("0.0");	//运费
+		BigDecimal orderMoney = new BigDecimal("0.0");	//订单总金额 已打折 不含运费 不含税 已减优惠券
+		BigDecimal taxMoney = new BigDecimal("0.0");	//税费
+		BigDecimal paymentMoney = new BigDecimal("0.0");	//最终需要支付的金额 orderMoney+taxMoney
 		BigDecimal couponMoney = new BigDecimal("0.0");	//优惠券金额
-		
+
 		//productMoney = M pro
 		//discountMoney = M （productMoney * 打折率）  每个商品求和
 		//shippingMoney	默认0
@@ -404,122 +267,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		//1表示普通用户  2表示会员用户  3表示店主 
 		UserLogin userLogin = userLoginDao.getLoginInfoById(SysContent.getUserId());
 		int level = userLogin.getLevel();
-		if(level == 1) {
-			return addOrderForCommon(orderMaster, jsonNode);
-		}else {
-			int superiorId = 0;
-			if(level == 3) {
-				superiorId = userLogin.getUserId();
-			}else {
-				superiorId = userInfoDao.getUserInfo(String.valueOf(SysContent.getUserId())).getSuperiorId();
-			}
-			
-			return addOrderForMemberOrSeller(superiorId, orderMaster, jsonNode);
-		}
+		//********************************************************************************************
 
-	}
-	
-	private ResponseData addOrderForCommon(OrderMaster orderMaster, JsonNode jsonNode) {
-		BigDecimal productMoney = new BigDecimal("0.0");	//所有商品价格和，不含运费，不含税，不打折（算出来的总和）
-		//BigDecimal discountMoney = new BigDecimal("0.0");	//打折金额
-		BigDecimal shippingMoney = new BigDecimal("0.0");	//运费
-		BigDecimal orderMoney = new BigDecimal("0.0");	//订单总金额 已打折 不含运费 不含税 已减优惠券
-		BigDecimal taxMoney = new BigDecimal("0.0");	//税费
-		BigDecimal paymentMoney = new BigDecimal("0.0");	//最终需要支付的金额 orderMoney+taxMoney
-		BigDecimal couponMoney = new BigDecimal("0.0");	//优惠券金额
-		
-		//int orderId = dao.getOrderIdByOrderNumber(orderNumber);//----------------------------待处理订单id的获取
-		//2.处理商品，计算商品总金额及折扣总金额。处理表order_detail
-		JsonNode productsNode = jsonNode.get("products");
-		int specsId = 0;
-		int quantity = 0;
-		BigDecimal thisProductMoney = new BigDecimal("0");
-//		BigDecimal thisDiscountMoney = new BigDecimal("0");
-//		BigDecimal thisDiscountRate =  new BigDecimal("0");
-//		BigDecimal thisYieldMoney =  new BigDecimal("0");
-//		BigDecimal thisYieldRate =  new BigDecimal("0");
-		
-		List<OrderDetail> orderDetailList = new ArrayList<OrderDetail>();
-	    for (JsonNode objNode : productsNode) {
-	    	//处理商品数字中的一个商品
-	    	specsId = objNode.findValue("specsId").asInt();
-	    	quantity = objNode.findValue("quantity").asInt();
-	    	//获取商品信息，填入表中
-	    	ProductSpecs productSpecs = proSpecsDao.getProSpecsById(String.valueOf(specsId));
-	    	if(productSpecs == null) {
-	    		return new ResponseData(4003, "商品已过期", null);
-	    	}
-	    	//商品信息插入订单详情表中
-	    	OrderDetail orderDetail = new OrderDetail();
-	    	//orderDetail.setOrderId(orderId);
-	    	orderDetail.setProductId(productSpecs.getProductId());
-	    	orderDetail.setProductSpecsId(productSpecs.getProductSpecsId());
-	    	orderDetail.setProductName(productSpecs.getName());
-	    	orderDetail.setProductQuantity(quantity);
-	    	orderDetail.setProductPrice(productSpecs.getPrice());
-	    	orderDetail.setStatus((byte) 1);
-	    	orderDetailList.add(orderDetail);
-	    	//获取该单品的价格（*quantity）
-	    	thisProductMoney = productSpecs.getPrice().multiply(BigDecimal.valueOf(quantity));
-
-	    	productMoney = productMoney.add(thisProductMoney);
-	    }
-	    
-	    //补充其它需要填充的信息，计算订单中费用、费率、优惠券、优惠等...
-	    //3.计算订单金额（打折后不含优惠券）
-	    orderMoney = productMoney; //.subtract(discountMoney);
-	    //4.再次计算优惠券(判断条件等信息确定优惠券使用条件)，再计算券后的订单金额
-	    couponMoney = new BigDecimal("0");
-	    if(couponMoney.doubleValue()<0) {
-			return new ResponseData(4004, "优惠券不满足使用条件", null);
-	    }
-	    orderMoney = orderMoney.subtract(couponMoney);
-	    //5.计算运费
-	    shippingMoney = new BigDecimal("8");
-	    //6.通过收货地址(州地址)，计算税
-	    BigDecimal thisTaxRate =  stateTaxDao.getOneStateTaxByName(orderMaster.getState()).divide( new BigDecimal("100") );
-	    if(thisTaxRate == null) {
-	    	return new ResponseData(4003, "地址信息异常，无法获取税率", null);
-	    }
-	    taxMoney = orderMoney.multiply(thisTaxRate);
-	    //7.计算用户实际需要支付的金额
-	    paymentMoney = orderMoney.add(taxMoney).add(shippingMoney);
-	    //8.将计算结果填入order_master表中
-		//orderMaster.setPaymentMode(paymentMode);
-		orderMaster.setOrderMoeny(orderMoney);
-		orderMaster.setDiscountMoney(new BigDecimal("0"));
-		orderMaster.setShippingMoney(shippingMoney);
-		orderMaster.setPaymentMoney(paymentMoney);
-		orderMaster.setTaxMoney(taxMoney);
-		//9.提交订单
-		dao.addOrderMaster(orderMaster);
-		Integer orderId = orderMaster.getOrderId();
-		//10.填充订单详情信息，并插入。同时计算单品价格。
-		for(OrderDetail orderDetail:orderDetailList) {
-			orderDetail.setOrderId(orderId);
-			
-			//计算商品打折并使用优惠券后实际支付的金额
-			//orderDetail.getProductPrice()*orderDetail.getProductQuantity()/(orderMoney+couponMoney) * orderMoney
-	    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
-	    			divide(orderMoney.add(couponMoney)).multiply(orderMoney);
-	    	
-	    	orderDetail.setActualPaidMoney(realPay);
-	    	
-	    	//无需向收益表中添加数据
-			
-		}
-
-    	dao.addOrderDetailList(orderDetailList);
-	    return new ResponseData(null);
-	}
-	private ResponseData addOrderForMemberOrSeller(int superiorId, OrderMaster orderMaster, JsonNode jsonNode) {
-		BigDecimal productMoney = new BigDecimal("0.0");	//所有商品价格和，不含运费，不含税，不打折（算出来的总和）
-		BigDecimal discountMoney = new BigDecimal("0.0");	//打折金额
-		BigDecimal shippingMoney = new BigDecimal("0.0");	//运费
-		BigDecimal orderMoney = new BigDecimal("0.0");	//订单总金额 已打折 不含运费 不含税 已减优惠券
-		BigDecimal taxMoney = new BigDecimal("0.0");	//税费
-		BigDecimal paymentMoney = new BigDecimal("0.0");	//最终需要支付的金额 orderMoney+taxMoney
-		BigDecimal couponMoney = new BigDecimal("0.0");	//优惠券金额
 		
 		//int orderId = dao.getOrderIdByOrderNumber(orderNumber);//----------------------------待处理订单id的获取
 		//2.处理商品，计算商品总金额及折扣总金额。处理表order_detail
@@ -529,8 +278,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		BigDecimal thisProductMoney = new BigDecimal("0");
 		BigDecimal thisDiscountMoney = new BigDecimal("0");
 		BigDecimal thisDiscountRate =  new BigDecimal("0");
-		BigDecimal thisYieldMoney =  new BigDecimal("0");
-		BigDecimal thisYieldRate =  new BigDecimal("0");
 		
 		List<OrderDetail> orderDetailList = new ArrayList<OrderDetail>();
 	    for (JsonNode objNode : productsNode) {
@@ -553,7 +300,12 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    	orderDetail.setStatus((byte) 1);
 	    	orderDetailList.add(orderDetail);
 	    	//根据商品id（不是单品id）获取折扣率
-	    	BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(productSpecs.getProductId()));
+	    	BigDecimal discountRate = BigDecimal.valueOf(0);
+	    	if(level == 1) {
+	    		discountRate = proInfoDao.getDetail(String.valueOf(productSpecs.getProductId())).getDiscountRate();
+	    	}else if(level ==2 || level == 3){
+	    		discountRate = proDiscountService.getDiscountRateById(String.valueOf(productSpecs.getProductId()));
+	    	}
 	    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
 	    	thisProductMoney = productSpecs.getPrice().multiply(BigDecimal.valueOf(quantity));//多个商品的总价格
 	    	thisDiscountMoney = thisProductMoney.multiply(thisDiscountRate);
@@ -567,9 +319,10 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 	    orderMoney = productMoney.subtract(discountMoney);
 	    //4.再次计算优惠券(判断条件等信息确定优惠券使用条件)，再计算券后的订单金额
 	    couponMoney = new BigDecimal("0");
-	    orderMoney = orderMoney.subtract(couponMoney);
 	    if(couponMoney.doubleValue()<0) {
 			return new ResponseData(4004, "优惠券不满足使用条件", null);
+	    }else {
+	    	orderMoney = orderMoney.subtract(couponMoney);
 	    }
 	    //5.计算运费
 	    shippingMoney = new BigDecimal("8");
@@ -592,43 +345,71 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		dao.addOrderMaster(orderMaster);
 		Integer orderId = orderMaster.getOrderId();
 		//10.填充订单详情信息，并插入。同时计算单品价格，及收益表信息。
-		List<YieldDetail> yieldDetailList = new ArrayList<YieldDetail>();
-		for(OrderDetail orderDetail:orderDetailList) {
-			orderDetail.setOrderId(orderId);
-			
-			//计算商品打折并使用优惠券后实际支付的金额
-			//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
-	    	//根据商品id（不是单品id）获取折扣率
-			BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
-	    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
-	    	//计算
-	    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
-	    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
-	    	
-	    	orderDetail.setActualPaidMoney(realPay);
-	    	
-	    	//向收益表中添加数据
-	    	//根据商品id（不是单品id）获取返现率
-	    	BigDecimal yieldRate = proDiscountService.getYieldRateById(String.valueOf(orderDetail.getProductId()));
-	    	thisYieldRate =  yieldRate.divide( new BigDecimal("100") );
-	    	YieldDetail yieldDetail = new YieldDetail();
-	    	yieldDetail.setUserId(superiorId);
-	    	yieldDetail.setOrderId(orderId);
-	    	yieldDetail.setOrderDetailId(orderDetail.getOrderDetailId());
-	    	yieldDetail.setActualPaidMoney(realPay);
-	    	yieldDetail.setYieldRate(yieldRate);
-	    	yieldDetail.setReceivedMoney(realPay.multiply(thisYieldRate));//实际得到的金额
-	    	yieldDetail.setPurchaserId(SysContent.getUserId());
-	    	yieldDetail.setCreateTime(orderMaster.getCreateTime());
-	    	yieldDetail.setStatus((byte) 2);
-	    
-	    	yieldDetailList.add(yieldDetail);
-			
+		if(level == 1) {
+			//普通用户不用处理收益信息
+			for(OrderDetail orderDetail:orderDetailList) {
+				orderDetail.setOrderId(orderId);
+				//计算商品打折并使用优惠券后实际支付的金额
+				//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
+		    	//根据商品id（不是单品id）获取折扣率
+				BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
+		    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
+		    	//计算
+		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
+		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
+		    	orderDetail.setActualPaidMoney(realPay);
+			}
+		}else {
+			int superiorId = 0;
+			if(level == 3) {
+				superiorId = userLogin.getUserId();
+			}else {
+				superiorId = userInfoDao.getUserInfo(String.valueOf(SysContent.getUserId())).getSuperiorId();
+			}
+			//计算收益信息
+			BigDecimal thisYieldRate =  new BigDecimal("0");
+			List<YieldDetail> yieldDetailList = new ArrayList<YieldDetail>();
+			for(OrderDetail orderDetail:orderDetailList) {
+				orderDetail.setOrderId(orderId);
+				
+				//计算商品打折并使用优惠券后实际支付的金额
+				//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
+		    	//根据商品id（不是单品id）获取折扣率
+				BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
+		    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
+		    	//计算
+		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
+		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
+		    	
+		    	orderDetail.setActualPaidMoney(realPay);
+		    	
+		    	//向收益表中添加数据
+		    	//根据商品id（不是单品id）获取返现率
+		    	BigDecimal yieldRate = proDiscountService.getYieldRateById(String.valueOf(orderDetail.getProductId()));
+		    	thisYieldRate =  yieldRate.divide( new BigDecimal("100") );
+		    	YieldDetail yieldDetail = new YieldDetail();
+		    	yieldDetail.setUserId(superiorId);
+		    	yieldDetail.setOrderId(orderId);
+		    	yieldDetail.setOrderDetailId(orderDetail.getOrderDetailId());
+		    	yieldDetail.setActualPaidMoney(realPay);
+		    	yieldDetail.setYieldRate(yieldRate);
+		    	yieldDetail.setReceivedMoney(realPay.multiply(thisYieldRate));//实际得到的金额
+		    	yieldDetail.setPurchaserId(SysContent.getUserId());
+		    	yieldDetail.setCreateTime(orderMaster.getCreateTime());
+		    	yieldDetail.setStatus((byte) 2);
+		    	yieldDetailList.add(yieldDetail);
+			}
+			sellerBillDao.addYieldDetailList(yieldDetailList);
 		}
-		
-		sellerBillDao.addYieldDetailList(yieldDetailList);
+		//添加订单详情
     	dao.addOrderDetailList(orderDetailList);
 	    return new ResponseData(null);
+		
+	}
+	
+	
+	private void addYieldDetailListForMemberOrSeller(int superiorId, OrderMaster orderMaster) {
+
 	}
 
 	@Override
@@ -650,11 +431,172 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		}
 		tradeRequest.tradePay(String.valueOf(orderMaster.getOrderNumber()), "phone", "订单支付", orderMaster.getPaymentMoney(),
 				(byte) 1, orderMaster.getOrderId(), "用户支付", "pay way card", String.valueOf(orderMaster.getUserId()), "60*60*2");
-		Map<String, String> map = new HashMap<>();
-		map.put("orderId", String.valueOf(orderId));
-		map.put("status", "2");
+		Map<String, Integer> map = new HashMap<>();
+		map.put("orderId", orderId);
+		map.put("status", 2);
 		dao.modifyOrderStatus(map);
 		dao.modifyProStatusByOrderId(map);
 		return new ResponseData(null);
+	}
+
+	@Override
+	public ResponseData receipt(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int orderId = jsonUtils.getIntValue("orderId");
+		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
+		
+		if(orderMaster == null) {
+			return new ResponseData(4061,"order does not exist",null);
+		}
+
+		if(orderMaster.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		
+		if(orderMaster.getOrderStatus()!=4) {
+			return new ResponseData(4062,"未发货无法确认收货",null);
+		}
+		
+		//修改订单状态和子订单状态
+		Map<String, Integer> map = new HashMap<>();
+		map.put("orderId", orderId);
+		map.put("status", 5);
+		dao.modifyOrderStatus(map);
+
+		Map<String, Integer> mapBill = new HashMap<>();
+		mapBill.put("orderId", orderId);
+		mapBill.put("status", 1);
+
+		//将该订单下正常订单（没有退货请求的）进行处理，由发货状态4改为确认收货5
+		List<OrderDetail> proList = dao.getDetailListByOrderId(orderId);
+		for(OrderDetail tempOrderDetail : proList) {
+			if(tempOrderDetail.getStatus() == 4) {
+				dao.modifyProStatus(map);
+				//处理收益表
+				sellerBillDao.modifyStatusByOrderDetailId(mapBill);
+			}
+		}
+		
+		return new ResponseData(200,"success",null);
+	
+	}
+
+	@Override
+	public ResponseData applyReturnForOrder(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int orderId = jsonUtils.getIntValue("orderId");
+		OrderMaster orderMaster = dao.getMasterByOrderId(orderId);
+		
+		if(orderMaster == null) {
+			return new ResponseData(4061,"order does not exist",null);
+		}
+
+		if(orderMaster.getUserId() != SysContent.getUserId()) {
+			return new ResponseData(403,"illegally accessed",null);
+		}
+		
+		//判断订单状态和子订单状态是否都一致。
+		int statusDetail = orderMaster.getOrderStatus();
+		List<OrderDetail> proList = dao.getDetailListByOrderId(orderId);
+		for(OrderDetail tempOrderDetail : proList) {
+			if(tempOrderDetail.getStatus() != statusDetail) {
+				return new ResponseData(4062,"订单状态不一致，禁止整单操作",null);
+			}
+		}
+		
+
+		Map<String, Integer> map = new HashMap<>();
+		map.put("orderId", orderId);
+		//未付款1->13
+		if(statusDetail == 1) {
+			map.put("status", 13);
+			dao.modifyOrderStatus(map);
+			dao.modifyProStatusByOrderId(map);
+			//修改收益表
+			map.put("status", -1);
+			sellerBillDao.modifyStatusByOrderId(map);
+		}
+		
+		//付款未发货2->11
+		if(statusDetail == 2) {
+			map.put("status", 11);
+			dao.modifyOrderStatus(map);
+			dao.modifyProStatusByOrderId(map);
+			ReturnRecord returnRecord = new ReturnRecord();
+			returnRecord.setUserId(orderMaster.getUserId());
+			returnRecord.setOrderId(orderMaster.getOrderId());
+			returnRecord.setOrderDetailId(0);
+			returnRecord.setProductSpecsId(0);
+			returnRecord.setReturnType((byte) 1);
+			returnRecord.setReturnMoney(orderMaster.getPaymentMoney());
+			returnRecord.setCreateTime(new Date());
+			returnRecord.setStatus((byte) 11);
+			returnRecord.setReason("未发货申请退款");
+			orderReturnDao.addReturn(returnRecord);
+		}
+		//已发货4->21
+		if(statusDetail == 4 || statusDetail == 5) {
+			map.put("status", 21);
+			dao.modifyOrderStatus(map);
+			dao.modifyProStatusByOrderId(map);
+			ReturnRecord returnRecord = new ReturnRecord();
+			returnRecord.setUserId(orderMaster.getUserId());
+			returnRecord.setOrderId(orderMaster.getOrderId());
+			returnRecord.setOrderDetailId(0);
+			returnRecord.setProductSpecsId(0);
+			returnRecord.setReturnType((byte) 1);
+			returnRecord.setReturnMoney(orderMaster.getPaymentMoney());
+			returnRecord.setCreateTime(new Date());
+			returnRecord.setStatus((byte) 21);
+			returnRecord.setReason("未发货申请退款");
+			orderReturnDao.addReturn(returnRecord);
+		}
+
+		return new ResponseData(200,"success",null);
+	}
+
+	@Override
+	public ResponseData applyReturnForDetail(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int orderDetailId = jsonUtils.getIntValue("orderDetailId");
+		OrderDetail orderDetail = dao.getOrderDetailByOrderDetailId(orderDetailId);
+		
+
+		Map<String, Integer> map = new HashMap<>();
+		map.put("orderDetailId", orderDetailId);
+		//付款未发货2->11
+		if(orderDetail.getStatus() == 2) {
+			map.put("status", 11);
+			dao.modifyProStatus(map);
+			ReturnRecord returnRecord = new ReturnRecord();
+			returnRecord.setUserId(SysContent.getUserId());
+			returnRecord.setOrderId(orderDetail.getOrderId());
+			returnRecord.setOrderDetailId(orderDetailId);
+			returnRecord.setProductSpecsId(orderDetail.getProductSpecsId());
+			returnRecord.setReturnType((byte) 0);
+			returnRecord.setReturnMoney(orderDetail.getActualPaidMoney());
+			returnRecord.setCreateTime(new Date());
+			returnRecord.setStatus((byte) 11);
+			returnRecord.setReason("未发货申请退款");
+			orderReturnDao.addReturn(returnRecord);
+		}
+		//已发货4->21
+		if(orderDetail.getStatus() == 4 || orderDetail.getStatus() == 5) {
+			map.put("status", 21);
+			dao.modifyProStatus(map);
+			ReturnRecord returnRecord = new ReturnRecord();
+			returnRecord.setUserId(SysContent.getUserId());
+			returnRecord.setOrderId(orderDetail.getOrderId());
+			returnRecord.setOrderDetailId(orderDetailId);
+			returnRecord.setProductSpecsId(orderDetail.getProductSpecsId());
+			returnRecord.setReturnType((byte) 0);
+			returnRecord.setReturnMoney(orderDetail.getActualPaidMoney());
+			returnRecord.setCreateTime(new Date());
+			returnRecord.setStatus((byte) 21);
+			returnRecord.setReason("未发货申请退款");
+			orderReturnDao.addReturn(returnRecord);
+		}
+
+
 	}
 }
