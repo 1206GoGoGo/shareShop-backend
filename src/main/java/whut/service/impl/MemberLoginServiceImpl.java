@@ -3,6 +3,7 @@ package whut.service.impl;
 import java.util.Date;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -53,10 +54,12 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 			return new ResponseData(4064,"status exception",null);
 		}
 		
+		String ip = getIp(SysContent.getRequest());
+		
 		//验证成功创建安全验证信息sercity
 		String sercity = EncryptUtil.MD5(username+new Date());	//每次请求更新，写到过滤器或拦截器中
 		
-		UserLoginLog userLoginLog = new UserLoginLog("111.111.111.111", 1, userLogin.getUserId());
+		UserLoginLog userLoginLog = new UserLoginLog(ip, 1, userLogin.getUserId());
 		loginLogDao.addLoginLog(userLoginLog);
 		//---------------------------------------------------------------------------------------设置客户端验证信息token或cookie-----两种方式
 		logininSetCookie(userLogin,sercity);
@@ -75,6 +78,29 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		session.setAttribute("userId",userLogin.getUserId());
 		session.setMaxInactiveInterval(60*60*2);//保存2小时
 		return new ResponseData(200,"login success",userLogin.getUsername()+"q=my_"+sercity);
+	}
+
+	private String getIp(HttpServletRequest request) {
+		//request为HttpServletRequest对象
+	    String ip = request.getHeader("X-Real-IP");
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+	        ip = request.getHeader("X-Forwarded-For");
+	    }
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+	        ip = request.getHeader("Proxy-Client-IP");
+	    }
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+	        ip = request.getHeader("WL-Proxy-Client-IP");
+	    }
+	    if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+	        ip = request.getRemoteAddr();
+	    }
+	    // 处理多IP的情况（只取第一个IP）
+	    if (ip != null && ip.contains(",")) {
+	        String[] ipArray = ip.split(",");
+	        ip = ipArray[0];
+	    }
+		return ip;
 	}
 	
 	private void logininSetToken(UserLogin userLogin, String sercity) {
