@@ -73,7 +73,7 @@
      <insert id="addYieldDetailList" parameterType="YieldDetail">
     	INSERT INTO yield_detail(user_id,order_id,order_detail_id,actual_paid_money,received_money,yield_rate,purchaser_id,create_time) values
     	<foreach collection="list" item="item" index="index" separator=",">
-        (#{item.userId},#{item.orderId},#{item.orderDetailId},#{item.actualPaidMoney},#{item.receivedMoney},#{yieldRate},#{purchaserId},#{createTime})
+        (#{item.userId},#{item.orderId},#{item.orderDetailId},#{item.actualPaidMoney},#{item.receivedMoney},#{item.yieldRate},#{item.purchaserId},#{item.createTime})
         </foreach>
     </insert>
 

@@ -360,6 +360,8 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		    			multiply(thisDiscountRate).multiply(orderMoney).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP);
 		    	orderDetail.setActualPaidMoney(realPay);
 			}
+			//添加订单详情
+	    	dao.addOrderDetailList(orderDetailList);
 		}else {
 			int superiorId = 0;
 			if(level == 3) {
@@ -367,9 +369,6 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 			}else {
 				superiorId = userInfoDao.getUserInfo(String.valueOf(SysContent.getUserId())).getSuperiorId();
 			}
-			//计算收益信息
-			BigDecimal thisYieldRate =  new BigDecimal("0");
-			List<YieldDetail> yieldDetailList = new ArrayList<YieldDetail>();
 			for(OrderDetail orderDetail:orderDetailList) {
 				orderDetail.setOrderId(orderId);
 				
@@ -380,9 +379,28 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		    	thisDiscountRate = BigDecimal.valueOf(1).subtract( discountRate.divide(new BigDecimal("100")) );
 		    	//计算
 		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
-		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP).multiply(orderMoney);
+		    			multiply(thisDiscountRate).multiply(orderMoney).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP);
 		    	
 		    	orderDetail.setActualPaidMoney(realPay);
+			}
+			//添加订单详情
+	    	dao.addOrderDetailList(orderDetailList);    	
+
+	    	
+			//计算收益信息
+			BigDecimal thisYieldRate =  new BigDecimal("0");
+			List<YieldDetail> yieldDetailList = new ArrayList<YieldDetail>();
+			orderDetailList = dao.getDetailListByOrderId(orderId);
+			for(OrderDetail orderDetail:orderDetailList) {
+				
+				//计算商品打折并使用优惠券后实际支付的金额
+				//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
+		    	//根据商品id（不是单品id）获取折扣率
+				BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
+		    	thisDiscountRate = BigDecimal.valueOf(1).subtract( discountRate.divide(new BigDecimal("100")) );
+		    	//计算
+		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
+		    			multiply(thisDiscountRate).multiply(orderMoney).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP);
 		    	
 		    	//向收益表中添加数据
 		    	//根据商品id（不是单品id）获取返现率
@@ -401,18 +419,13 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 		    	yieldDetailList.add(yieldDetail);
 			}
 			sellerBillDao.addYieldDetailList(yieldDetailList);
+	    	
 		}
-		//添加订单详情
-    	dao.addOrderDetailList(orderDetailList);
+
 	    return new ResponseData(null);
 		
 	}
 	
-	
-	private void addYieldDetailListForMemberOrSeller(int superiorId, OrderMaster orderMaster) {
-
-	}
-
 	@Override
 	public ResponseData modifyPay(String jsonString) {
 		JsonUtils jsonUtils = new JsonUtils(jsonString);
