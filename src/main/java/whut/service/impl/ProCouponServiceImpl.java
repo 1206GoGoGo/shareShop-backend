@@ -14,6 +14,7 @@ import whut.pojo.CouponLogs;
 import whut.pojo.CouponReceive;
 import whut.service.ProCouponService;
 import whut.utils.ResponseData;
+import whut.utils.SysContent;
 
 @Service
 public class ProCouponServiceImpl implements ProCouponService{
@@ -77,7 +78,12 @@ public class ProCouponServiceImpl implements ProCouponService{
 	@Override
 	public ResponseData addCouponLogs(CouponLogs couponLogs) {
 		// TODO Auto-generated method stub
-		proCouponDao.addCouponLogs(couponLogs);
+		CouponLogs couponLogs1 = new CouponLogs();
+		couponLogs1.setCouponId(couponLogs.getCouponId());
+		couponLogs1.setUserId(SysContent.getUserId());
+		couponLogs1.setOrderId(couponLogs.getOrderId());
+		couponLogs1.setStatus((byte) 1);	//1表示消费成功，0表示消费失败
+		proCouponDao.addCouponLogs(couponLogs1);
 		return new ResponseData(200,"success",null);
 	}
 
@@ -104,7 +110,11 @@ public class ProCouponServiceImpl implements ProCouponService{
 	@Override
 	public ResponseData addCouponReceive(CouponReceive couponReceive) {
 		// TODO Auto-generated method stub
-		proCouponDao.addCouponReceive(couponReceive);
+		CouponReceive couponReceive1 = new CouponReceive();
+		couponReceive1.setCouponId(couponReceive.getCouponId());
+		couponReceive1.setUserId(SysContent.getUserId());
+		couponReceive1.setStatus((byte) 1);		//0表示已使用，1表示未使用
+		proCouponDao.addCouponReceive(couponReceive1);
 		return new ResponseData(200,"success",null);
 	}
 
