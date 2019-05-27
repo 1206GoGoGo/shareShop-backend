@@ -16,7 +16,7 @@ public class CouponInfo implements Serializable{
 
     private Byte type;   //类型
 
-    private BigDecimal faceValue;//优惠券面值
+    private BigDecimal couponMoney;//优惠券面值
 
     private BigDecimal useCondition; //金额满多少
 
@@ -62,12 +62,12 @@ public class CouponInfo implements Serializable{
         this.type = type;
     }
 
-    public BigDecimal getFaceValue() {
-        return faceValue;
+    public BigDecimal getCouponMoney() {
+        return couponMoney;
     }
 
-    public void setFaceValue(BigDecimal faceValue) {
-        this.faceValue = faceValue;
+    public void setCouponMoney(BigDecimal couponMoney) {
+        this.couponMoney = couponMoney;
     }
 
     public BigDecimal getUseCondition() {

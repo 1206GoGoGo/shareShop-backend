@@ -6,7 +6,7 @@
     <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="TINYINT" property="type" />
-    <result column="face_value" jdbcType="DECIMAL" property="faceValue" />
+    <result column="coupon_money" jdbcType="DECIMAL" property="couponMoney" />
     <result column="use_condition" jdbcType="DECIMAL" property="useCondition" />
     <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -48,23 +48,33 @@
    </select>
     
    <select id="getCouponDetailById" parameterType="string" resultMap="CouponInfoResultMap">
-        SELECT * FROM coupon_info where coupon_id = #{id}
+        SELECT ci.coupon_id,ci.name,ci.type,ci.face_value,ci.use_condition,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
+		LEFT JOIN product_category pc on pc.category_id = ci.category_id
+		where coupon_id = #{id}
     </select>
     
     <select id="getCouponByUId" parameterType="hashmap" resultMap="CouponReceiveResultMap">
-        SELECT * FROM coupon_receive where user_id = #{userId}
+        SELECT cr.id,cr.user_id,cr.coupon_id,cr.receive_time,cr.status,
+ 		ci.coupon_money,ci.full_money
+ 		FROM coupon_receive  cr
+		LEFT JOIN coupon_info ci on ci.coupon_id = cr.coupon_id
+		where user_id = #{userId}
         limit #{pageindex},#{pagesize}
     </select>
     
     <select id="addCouponLogs" parameterType="couponLogs">
     	INSERT INTO coupon_logs
-    	(user_id,coupon_id,order_id,coupon_money,time,status)      
+    	(user_id,coupon_id,order_id,time,status)      
         VALUES
-    	(#{userId},#{couponId},#{orderId},#{couponMoney},#{fullMoney},now(),#{status})
+    	(#{userId},#{couponId},#{orderId},now(),#{status})
     </select>
     
    <select id="getCouponLogsListByStatus" parameterType="hashmap" resultMap="CouponLogsResultMap">
-        SELECT * FROM coupon_logs where status = #{status}
+        SELECT cl.id,cl.user_id,cl.coupon_id,cl.order_id,cl.time,cl.status,
+ 		ci.coupon_money,ci.full_money
+ 		FROM coupon_logs  cl
+ 		LEFT JOIN coupon_info ci on ci.coupon_id = cl.coupon_id
+        where cl.status = #{status}
         limit #{pageindex},#{pagesize}
     </select>
     
@@ -74,9 +84,9 @@
     
    <select id="addCouponReceive" parameterType="couponReceive">
     	INSERT INTO coupon_receive
-    	(user_id,coupon_id,coupon_money,full_money,receive_time,status)      
+    	(user_id,coupon_id,receive_time,status)      
         VALUES
-    	(#{userId},#{couponId},#{couponMoney},#{fullMoney},now(),#{status})
+    	(#{userId},#{couponId},now(),#{status})
     </select>
     
     <select id="modifyCouponReceiveStatus" parameterType="string">
