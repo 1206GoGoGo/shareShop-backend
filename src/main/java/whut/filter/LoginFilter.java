@@ -1,7 +1,6 @@
 package whut.filter;
 
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import redis.clients.jedis.Jedis;
-import whut.utils.EncryptUtil;
 import whut.utils.JedisUtil;
 
 public class LoginFilter implements Filter{
@@ -63,7 +61,7 @@ public class LoginFilter implements Filter{
 				return;
 			}
 			response.setContentType("application/json;charset=UTF-8");
-        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
+        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录1\",\"data\": null}");
         	return;
 		}
         
@@ -90,7 +88,7 @@ public class LoginFilter implements Filter{
 					return;
 				}
 				response.setContentType("application/json;charset=UTF-8");
-	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
+	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录2\",\"data\": null}");
 	        	return;
 			}
 			try{
@@ -103,7 +101,7 @@ public class LoginFilter implements Filter{
 					return;
 				}
 				response.setContentType("application/json;charset=UTF-8");
-	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
+	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录3\",\"data\": null}");
 	        	return;
 			}
 		}
@@ -120,7 +118,7 @@ public class LoginFilter implements Filter{
 				return;
 			}
 			response.setContentType("application/json;charset=UTF-8");
-        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
+        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录4\",\"data\": null}");
         	return;
 		}
 
@@ -134,32 +132,34 @@ public class LoginFilter implements Filter{
 				return;
 			}
 			response.setContentType("application/json;charset=UTF-8");
-        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
+        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录5\",\"data\": "+sercityOldRedis+"之间"+sercityOldCookieOrToken+"}");
         	return;
         }
-//		//验证成功，生成安全验证信息，并转发
-//		//获取session中的验证信息（暂时不用session存储登录信息）
-//        if(useCookie) {
-//	        HttpSession session = ((HttpServletRequest) request).getSession();
-//	        String sercity = EncryptUtil.MD5(userName+new Date());
-//			session.setAttribute("userId",userId);
-//			session.setAttribute("userName",userName);
-//			session.setMaxInactiveInterval(60*60*1);//session保存1小时
-//			
-//			jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
-//			jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-//			jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
-//	    	JedisUtil.closeJedis(jedis);
-//			
-//			//同步更新cookie----------------------------------------------------------------------------------------③
-//    		setCookie(sercity,(HttpServletResponse) response);
-//    	}else {
-//    		//对于登录模式仅登录需要返回token值
-//    		//setToken(userName, sercity,(HttpServletResponse) response);
-//    	}
+		//验证成功，生成安全验证信息，并转发
+		//获取session中的验证信息（暂时不用session存储登录信息）
+        if(useCookie) {
+	        HttpSession session = ((HttpServletRequest) request).getSession();
+	        //String sercity = EncryptUtil.MD5(userName+new Date());
+			session.setAttribute("userId",userId);
+			session.setAttribute("userName",userName);
+			session.setMaxInactiveInterval(60*60*1);//session保存1小时
+			
+			//同步更新cookie----------------------------------------------------------------------------------------③
+    		setCookie(sercityOldRedis,(HttpServletResponse) response);
+    	}else {
+    		//对于登录模式仅登录需要返回token值
+    		//setToken(userName, sercity,(HttpServletResponse) response);
+    		HttpSession session = ((HttpServletRequest) request).getSession();
+			session.setMaxInactiveInterval(60*30);//session保存30分钟
+    	}
+		
+        //jedis刷新过期时间
+		//jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
+		//jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
+		jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
+    	JedisUtil.closeJedis(jedis);
 
 		chain.doFilter(request,response);
-
 	}
 
 	//true表示可以不登录

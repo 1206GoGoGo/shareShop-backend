@@ -352,11 +352,12 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 				//计算商品打折并使用优惠券后实际支付的金额
 				//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
 		    	//根据商品id（不是单品id）获取折扣率
-				BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
-		    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
+				//BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
+				BigDecimal discountRate = proInfoDao.getDetail(String.valueOf(orderDetail.getProductId())).getDiscountRate();
+		    	thisDiscountRate = BigDecimal.valueOf(1).subtract( discountRate.divide(new BigDecimal("100")) );
 		    	//计算
 		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
-		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
+		    			multiply(thisDiscountRate).multiply(orderMoney).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP);
 		    	orderDetail.setActualPaidMoney(realPay);
 			}
 		}else {
@@ -376,10 +377,10 @@ public class MemberOrderServiceImpl implements MemberOrderService {
 				//orderDetail.getProductPrice()*orderDetail.getProductQuantity()*thisDiscountRate/(orderMoney+couponMoney) * orderMoney
 		    	//根据商品id（不是单品id）获取折扣率
 				BigDecimal discountRate = proDiscountService.getDiscountRateById(String.valueOf(orderDetail.getProductId()));
-		    	thisDiscountRate = discountRate.divide( new BigDecimal("100") );
+		    	thisDiscountRate = BigDecimal.valueOf(1).subtract( discountRate.divide(new BigDecimal("100")) );
 		    	//计算
 		    	BigDecimal realPay = orderDetail.getProductPrice().multiply(BigDecimal.valueOf(orderDetail.getProductQuantity())).
-		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney)).multiply(orderMoney);
+		    			multiply(thisDiscountRate).divide(orderMoney.add(couponMoney),2,BigDecimal.ROUND_HALF_UP).multiply(orderMoney);
 		    	
 		    	orderDetail.setActualPaidMoney(realPay);
 		    	
