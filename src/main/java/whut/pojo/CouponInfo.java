@@ -35,6 +35,8 @@ public class CouponInfo implements Serializable{
     private Integer categoryId;//商品类别id
 
     private Byte status;//状态
+    
+    private String categoryName; //商品类别名称
 
     public Integer getCouponId() {
         return couponId;
@@ -139,4 +141,12 @@ public class CouponInfo implements Serializable{
     public void setStatus(Byte status) {
         this.status = status;
     }
+    
+    public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
 }

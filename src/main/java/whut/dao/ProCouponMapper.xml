@@ -16,6 +16,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
   </resultMap>
   
   <resultMap id="CouponReceiveResultMap" type="whut.pojo.CouponReceive">
@@ -40,7 +41,9 @@
   </resultMap>
   
   <select id="getList"  parameterType="hashmap" resultMap="CouponInfoResultMap">
-        SELECT * FROM coupon_info where status = 1 or status = 0
+        SELECT ci.coupon_id,ci.name,ci.type,ci.face_value,ci.use_condition,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
+		LEFT JOIN product_category pc on pc.category_id = ci.category_id
+		where ci.status = 1 or ci.status = 0
         limit #{pageindex},#{pagesize}
    </select>
     
