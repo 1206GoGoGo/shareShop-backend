@@ -137,26 +137,26 @@ public class LoginFilter implements Filter{
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录\",\"data\": null}");
         	return;
         }
-		//验证成功，生成安全验证信息，并转发
-		//获取session中的验证信息（暂时不用session存储登录信息）
-        if(useCookie) {
-	        HttpSession session = ((HttpServletRequest) request).getSession();
-	        String sercity = EncryptUtil.MD5(userName+new Date());
-			session.setAttribute("userId",userId);
-			session.setAttribute("userName",userName);
-			session.setMaxInactiveInterval(60*60*1);//session保存1小时
-			
-			jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
-			jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-			jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
-	    	JedisUtil.closeJedis(jedis);
-			
-			//同步更新cookie----------------------------------------------------------------------------------------③
-    		setCookie(sercity,(HttpServletResponse) response);
-    	}else {
-    		//对于登录模式仅登录需要返回token值
-    		//setToken(userName, sercity,(HttpServletResponse) response);
-    	}
+//		//验证成功，生成安全验证信息，并转发
+//		//获取session中的验证信息（暂时不用session存储登录信息）
+//        if(useCookie) {
+//	        HttpSession session = ((HttpServletRequest) request).getSession();
+//	        String sercity = EncryptUtil.MD5(userName+new Date());
+//			session.setAttribute("userId",userId);
+//			session.setAttribute("userName",userName);
+//			session.setMaxInactiveInterval(60*60*1);//session保存1小时
+//			
+//			jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
+//			jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
+//			jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
+//	    	JedisUtil.closeJedis(jedis);
+//			
+//			//同步更新cookie----------------------------------------------------------------------------------------③
+//    		setCookie(sercity,(HttpServletResponse) response);
+//    	}else {
+//    		//对于登录模式仅登录需要返回token值
+//    		//setToken(userName, sercity,(HttpServletResponse) response);
+//    	}
 
 		chain.doFilter(request,response);
 
