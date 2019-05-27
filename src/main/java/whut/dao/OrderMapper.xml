@@ -169,7 +169,7 @@
     <insert id="addOrderDetailList" parameterType="OrderDetail">
     	INSERT INTO order_detail(order_id,product_id,product_specs_id,product_name,product_quantity,product_price,actual_paid_money) values
     	<foreach collection="list" item="item" index="index" separator=",">
-        (#{item.orderId},#{item.productId},#{item.productSpecsId},#{item.productName},#{item.productQuantity},#{item.productPrice},#{actualPaidMoney})
+        (#{item.orderId},#{item.productId},#{item.productSpecsId},#{item.productName},#{item.productQuantity},#{item.productPrice},#{item.actualPaidMoney} )
         </foreach>
     </insert>
 
