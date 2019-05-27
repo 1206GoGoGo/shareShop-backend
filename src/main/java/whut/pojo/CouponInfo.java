@@ -18,7 +18,7 @@ public class CouponInfo implements Serializable{
 
     private BigDecimal couponMoney;//优惠券面值
 
-    private BigDecimal useCondition; //金额满多少
+    private BigDecimal fullMoney; //金额满多少
 
     private String imageUrl;//图片
 
@@ -70,12 +70,12 @@ public class CouponInfo implements Serializable{
         this.couponMoney = couponMoney;
     }
 
-    public BigDecimal getUseCondition() {
-        return useCondition;
+    public BigDecimal getFullMoney() {
+        return fullMoney;
     }
 
-    public void setUseCondition(BigDecimal useCondition) {
-        this.useCondition = useCondition;
+    public void setFullMoney(BigDecimal fullMoney) {
+        this.fullMoney = fullMoney;
     }
 
     public String getImageUrl() {
