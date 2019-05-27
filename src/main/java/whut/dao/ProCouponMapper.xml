@@ -7,7 +7,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="TINYINT" property="type" />
     <result column="coupon_money" jdbcType="DECIMAL" property="couponMoney" />
-    <result column="use_condition" jdbcType="DECIMAL" property="useCondition" />
+    <result column="full_money" jdbcType="DECIMAL" property="fullMoney" />
     <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
@@ -41,14 +41,14 @@
   </resultMap>
   
   <select id="getList"  parameterType="hashmap" resultMap="CouponInfoResultMap">
-        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.use_condition,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
+        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.full_money,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
 		LEFT JOIN product_category pc on pc.category_id = ci.category_id
 		where ci.status = 1 or ci.status = 0
         limit #{pageindex},#{pagesize}
    </select>
     
    <select id="getCouponDetailById" parameterType="string" resultMap="CouponInfoResultMap">
-        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.use_condition,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
+        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.full_money,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
 		LEFT JOIN product_category pc on pc.category_id = ci.category_id
 		where coupon_id = #{id}
     </select>
