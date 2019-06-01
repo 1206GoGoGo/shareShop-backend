@@ -132,7 +132,7 @@ public class LoginFilter implements Filter{
 				return;
 			}
 			response.setContentType("application/json;charset=UTF-8");
-        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录5\",\"data\": "+sercityOldRedis+"之间"+sercityOldCookieOrToken+"}");
+        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录5\",\"data\": null}");
         	return;
         }
 		//验证成功，生成安全验证信息，并转发
