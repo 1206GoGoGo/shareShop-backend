@@ -71,4 +71,9 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 		dao.delete(collectId);
 		return new ResponseData(null);
 	}
+	
+	@Override
+	public Integer getCollectAmountByUser() {
+		return dao.getCollectAmountByUser(SysContent.getUserId());
+	}
 }

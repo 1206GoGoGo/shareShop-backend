@@ -124,6 +124,12 @@ public class ProCouponServiceImpl implements ProCouponService{
 		proCouponDao.modifyCouponReceiveStatus(id);
 		return new ResponseData(200,"success",null);
 	}
+
+
+	@Override
+	public Integer getCouponAmountByUser() {
+		return proCouponDao.getCouponAmountByUser(SysContent.getUserId());
+	}
 	
 	
 }

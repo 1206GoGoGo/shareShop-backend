@@ -24,5 +24,8 @@ public interface UserCollectDao {
 	//通过collectId获取收藏
 	UserCollect getCollectByCollectId(int collectId);
 
+	//获取某用户收藏商品数量
+	Integer getCollectAmountByUser(int userId);
+
 
 }

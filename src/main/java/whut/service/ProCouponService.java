@@ -19,5 +19,8 @@ public interface ProCouponService {
 	ResponseData addCouponReceive(CouponReceive couponReceive);
 
 	ResponseData modifyCouponReceiveStatus(String id);
+	
+	//获取当前用户领取优惠券数量
+	Integer getCouponAmountByUser();
 
 }

@@ -18,7 +18,9 @@ import whut.dao.UserInfoDao;
 import whut.dao.UserLoginDao;
 import whut.pojo.UserInfo;
 import whut.pojo.UserLogin;
+import whut.service.MemberCollectService;
 import whut.service.MemberInfoService;
+import whut.service.ProCouponService;
 import whut.utils.EncryptUtil;
 import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
@@ -31,6 +33,12 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 
 	@Autowired
 	private UserLoginDao loginDao;
+	
+	@Autowired
+	private MemberCollectService memberCollectService;
+	
+	@Autowired
+	private ProCouponService proCouponService;
 
 	@Override
 	public ResponseData add(UserInfo user){
@@ -87,6 +95,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		//给user对象赋值
 		user.setName(null);
 		user.setUserId(userLogin.getUserId());
+		user.setRegisterTime(new Date());
 		
 		dao.add(user);
 
@@ -147,8 +156,33 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 	@Override
 	public ResponseData getDetail() {
 		UserInfo info = dao.getUserInfo(String.valueOf(SysContent.getUserId()));
-		if(info != null) {
-			return new ResponseData(200,"success",info);
+		if(info != null) {		
+			//重新封装成指定格式数据
+			ObjectMapper mapper = new ObjectMapper();
+		    //生成对象结点
+		  	ObjectNode objNode = mapper.createObjectNode();
+		  	//放总数
+		  	objNode.put("userId", info.getUserId());
+		  	objNode.put("username", info.getUserLogin().getUsername());
+		  	objNode.put("status", info.getUserLogin().getStatus());
+		  	objNode.put("level", info.getUserLogin().getLevel());
+		  	if(info.getGender().isEmpty()) objNode.set("gender", null); else objNode.put("gender", info.getGender());
+		  	objNode.put("superiorId", info.getSuperiorId());
+		  	if(info.getPhoneNumber()==null) objNode.set("phoneNumber", null); else objNode.put("phoneNumber", info.getPhoneNumber());
+		  	if(info.getEmail()==null) objNode.set("email", null); else objNode.put("email", info.getEmail());	
+		  	objNode.put("userMoney", info.getUserMoney());
+		  
+		  	objNode.put("collectionNum", memberCollectService.getCollectAmountByUser());
+		  	objNode.put("couponNum", proCouponService.getCouponAmountByUser());
+		  	
+		  	if(info.getName()==null) objNode.set("name", null); else objNode.put("name", info.getName());	
+		  	if(info.getIdentityCardType()==null) objNode.set("identityCardType", null); else objNode.put("identityCardType", info.getIdentityCardType());
+		  	if(info.getIdentityCardNo()==null) objNode.set("identityCardNo", null); else objNode.put("identityCardNo", info.getIdentityCardNo());
+		  	if(info.getBirthday()==null) objNode.set("birthday", null); else objNode.put("birthday", info.getBirthday().toString());	
+		  	if(info.getRegisterTime()==null) objNode.set("registerTime", null); else objNode.put("registerTime", info.getRegisterTime().toString());	
+		  	
+
+			return new ResponseData(200,"success",objNode);
 		}else {
 			return new ResponseData(400,"no data satify request",null);
 		}
