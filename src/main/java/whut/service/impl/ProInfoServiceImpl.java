@@ -76,14 +76,23 @@ public class ProInfoServiceImpl implements ProInfoService{
 		ProductInfo productInfo = proInfoDao.getDetail(id);
 		if(productInfo != null) {
 			//用户点击一个商品详情则记录到Redis浏览信息中（view:商品id）是键，（次数）是值
-			Jedis jedis = JedisUtil.getJedis();
-			if(jedis.get("view:"+id) == null) {		//获取商品id对应的次数,如果为空说明未存过
-				jedis.set("view:"+id, "1");		//第一次存1
-			}else {
-				jedis.incr("view:"+id);		//对查询到的商品id对应的值，即次数，自增1
+			Jedis jedis = null;
+			try {
+				jedis = JedisUtil.getJedis();
+				if(jedis.get("view:"+id) == null) {		//获取商品id对应的次数,如果为空说明未存过
+					jedis.set("view:"+id, "1");		//第一次存1
+				}else {
+					jedis.incr("view:"+id);		//对查询到的商品id对应的值，即次数，自增1
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
 			}
 			//System.out.println(jedis.get("view:"+id));	//测试输出，根据键（view：商品id）查值（次数）
-	    	JedisUtil.closeJedis(jedis);
+	    	finally{
+	    		if(jedis != null)
+	    			JedisUtil.closeJedis(jedis);
+	    	}
 	    	BigDecimal rate = new BigDecimal(100).subtract(proDiscountService.getDiscountRateById(id));	//算出普通会员的折扣率
 			/*System.out.println(rate);
 			System.out.println(productInfo.getMinPrice());*/
@@ -113,8 +122,9 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(field == "sales" || field =="pscore" || field == "inputTime") {
 			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
 		}	
+		Jedis jedis = null;
 		try {
-			Jedis jedis = JedisUtil.getJedis();
+			jedis = JedisUtil.getJedis();
 			String key = "searchKey:"+SysContent.getUserId()+"";
 			jedis.lrem(key, 0, name);
 			if(jedis.llen(key) < 20) {	//获取set集合长度,从0开始保存20条
@@ -123,11 +133,14 @@ public class ProInfoServiceImpl implements ProInfoService{
 				jedis.rpop(key);		//删除最先加入的一个值
 				jedis.lpush(key,name);
 			}
-			JedisUtil.closeJedis(jedis);
+			
 			//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//如果用户未登录，则获取不到用户ID，SysContent.getUserId()方法会抛出异常，这里不做处理
+		} finally {
+			if(jedis != null)
+				JedisUtil.closeJedis(jedis);
 		}
 		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
 		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,"productName:"+name,queryItem,field,judge,null));
