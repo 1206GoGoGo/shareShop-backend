@@ -33,7 +33,7 @@ public class LoginFilter implements Filter{
 		String requestUri = ((HttpServletRequest)request).getRequestURI();
 		//用户登录不过滤
 		
-		if( requestUri.indexOf("/member/login")>-1 ) {
+		if( requestUri.indexOf("/member/login/in")>-1 ) {
 			//继续执行
 			chain.doFilter(request,response);
 			return;
@@ -47,12 +47,15 @@ public class LoginFilter implements Filter{
         String sercityOldCookieOrToken = null;
 		String sercityOldRedis = null;
        
-        //获取token或cookie中的验证信息------------------------------------------------------------------------------------------------------------------------------------①
-		sercityOldCookieOrToken = getCookieVerify((HttpServletRequest) request);
-		if(sercityOldCookieOrToken == null) {
-			useCookie = false;
-			sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
-		}
+//        //获取token或cookie中的验证信息------------------------------------------------------------------------------------------------------------------------------------①
+//		sercityOldCookieOrToken = getCookieVerify((HttpServletRequest) request);
+//		if(sercityOldCookieOrToken == null) {
+//			useCookie = false;
+//			sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
+//		}
+		//暂时不用cookie
+		useCookie = false;
+		sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
 		
 		if(sercityOldCookieOrToken == null) {
 			if(testIsNeedLogin(requestUri)) {
@@ -109,7 +112,7 @@ public class LoginFilter implements Filter{
 
 		//获取redis中的验证信息
 		try {
-			sercityOldRedis = jedis.get("login:"+userName+":_tzBDSFRCVID");
+			sercityOldRedis = jedis.get("login:"+userName+":tz");
 		}catch(Exception e) {
 			JedisUtil.closeJedis(jedis);
 			if(testIsNeedLogin(requestUri)) {
@@ -150,13 +153,15 @@ public class LoginFilter implements Filter{
     		//对于登录模式仅登录需要返回token值
     		//setToken(userName, sercity,(HttpServletResponse) response);
     		HttpSession session = ((HttpServletRequest) request).getSession();
+			session.setAttribute("userId",userId);
+			session.setAttribute("userName",userName);
 			session.setMaxInactiveInterval(60*30);//session保存30分钟
     	}
 		
         //jedis刷新过期时间
 		//jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
 		//jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-		jedis.expire("login:"+userName+":_tzBDSFRCVID", 60*60*24*2);
+		jedis.expire("login:"+userName+":tz", 60*60*24*2);
     	JedisUtil.closeJedis(jedis);
 
 		chain.doFilter(request,response);

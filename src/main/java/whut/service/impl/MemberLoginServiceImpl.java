@@ -62,14 +62,15 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		UserLoginLog userLoginLog = new UserLoginLog(ip, 1, userLogin.getUserId());
 		loginLogDao.addLoginLog(userLoginLog);
 		//---------------------------------------------------------------------------------------设置客户端验证信息token或cookie-----两种方式
-		logininSetCookie(userLogin,sercity);
+//暂时不用cookie
+		////		logininSetCookie(userLogin,sercity);
 		//logininSetToken(userLogin,sercity);
 
 		//将登录状态保存到redis中，session只保存用户id，并且有效期可以短点，减轻服务器负担。redis中登录状态可以保存2天等
 		Jedis jedis = JedisUtil.getJedis();
 		jedis.set("login:"+username+":userid", userLogin.getUserId().toString());	//增加或覆盖用户名
-		jedis.set("login:"+username+":_tzBDSFRCVID", sercity);	//用户身份验证信息
-		jedis.expire("login:"+username+":_tzBDSFRCVID", 60*60*24*2); //保存2天
+		jedis.set("login:"+username+":tz", sercity);	//用户身份验证信息
+		jedis.expire("login:"+username+":tz", 60*60*24*2); //保存2天
     	JedisUtil.closeJedis(jedis);
     	
 		//设置session
@@ -142,9 +143,21 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 	public ResponseData loginout() {
         HttpSession session = SysContent.getRequest().getSession();
         
+        String userName = null;
+        try {
+        	userName = SysContent.getUserName();
+        }catch(Exception e){
+        	try{
+        		userName = SysContent.getRequest().getHeader("Authorization").split("q=my_", 2)[0];
+        	}catch(Exception e2){
+        		return new ResponseData(400,"no login",null);
+        	}
+        }
+        
+        
 		//清除redis中的验证信息
 		Jedis jedis = JedisUtil.getJedis();
-		jedis.del("login:"+SysContent.getUserName()+":_tzBDSFRCVID");
+		jedis.del("login:"+userName+":tz");
     	JedisUtil.closeJedis(jedis);
         
     	//----移除cookie信息
