@@ -38,23 +38,12 @@ public class LoginFilter implements Filter{
 			chain.doFilter(request,response);
 			return;
 		}
-		
-		boolean useCookie = true;	//判断cookie决定是否使用cookie
-
 
 		String userId = null;
         String userName = null;
         String sercityOldCookieOrToken = null;
 		String sercityOldRedis = null;
-       
-//        //获取token或cookie中的验证信息------------------------------------------------------------------------------------------------------------------------------------①
-//		sercityOldCookieOrToken = getCookieVerify((HttpServletRequest) request);
-//		if(sercityOldCookieOrToken == null) {
-//			useCookie = false;
-//			sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
-//		}
-		//暂时不用cookie
-		useCookie = false;
+
 		sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
 		
 		if(sercityOldCookieOrToken == null) {
@@ -76,12 +65,7 @@ public class LoginFilter implements Filter{
 			userName =  ((HttpServletRequest) request).getSession().getAttribute("userName").toString();
 		}catch(Exception e) {
 			//session登录信息已清除
-			//获取cookie中的用户名----------------------------------------------------------------------------------------------------------------------------------------②
-			if(useCookie) {
-				userName = getCookieUserName((HttpServletRequest) request);
-			}else {
-				userName = getTokenUserName((HttpServletRequest) request);
-			}
+			userName = getTokenUserName((HttpServletRequest) request);
 			
 
 			if(userName == null) {
@@ -140,24 +124,14 @@ public class LoginFilter implements Filter{
         }
 		//验证成功，生成安全验证信息，并转发
 		//获取session中的验证信息（暂时不用session存储登录信息）
-        if(useCookie) {
-	        HttpSession session = ((HttpServletRequest) request).getSession();
-	        //String sercity = EncryptUtil.MD5(userName+new Date());
-			session.setAttribute("userId",userId);
-			session.setAttribute("userName",userName);
-			session.setMaxInactiveInterval(60*60*1);//session保存1小时
-			
-			//同步更新cookie----------------------------------------------------------------------------------------③
-    		setCookie(sercityOldRedis,(HttpServletResponse) response);
-    	}else {
-    		//对于登录模式仅登录需要返回token值
-    		//setToken(userName, sercity,(HttpServletResponse) response);
-    		HttpSession session = ((HttpServletRequest) request).getSession();
-			session.setAttribute("userId",userId);
-			session.setAttribute("userName",userName);
-			session.setMaxInactiveInterval(60*30);//session保存30分钟
-    	}
-		
+
+		//对于登录模式仅登录需要返回token值
+		//setToken(userName, sercity,(HttpServletResponse) response);
+		HttpSession session = ((HttpServletRequest) request).getSession();
+		session.setAttribute("userId",userId);
+		session.setAttribute("userName",userName);
+		session.setMaxInactiveInterval(60*30);//session保存30分钟
+    	
         //jedis刷新过期时间
 		//jedis.set("login:"+userName+":userid", userId);	//增加或覆盖用户id，不设置过期
 		//jedis.set("login:"+userName+":_tzBDSFRCVID", sercity);	//用户身份验证信息
@@ -169,13 +143,12 @@ public class LoginFilter implements Filter{
 
 	//true表示可以不登录
 	private boolean testIsNeedLogin(String requestUri) {
-		boolean needLogin1 = requestUri.indexOf("/member/login")>-1;
+		boolean needLogin1 = requestUri.indexOf("/member/login/in")>-1;
 		boolean needLogin2 = requestUri.indexOf("/pro/info")>-1;
 		
 		
 		boolean needLogin = needLogin1 || needLogin2;
 		return needLogin;
-		
 	}
 
 	private void setCookie(String sercity, HttpServletResponse response) {
@@ -188,25 +161,8 @@ public class LoginFilter implements Filter{
 		activity.setPath("/");
 		activity.setMaxAge(60*60*8);
 		response.addCookie(activity);
-		
-	}
-	private void setToken(String username, String sercity, HttpServletResponse response) {
-		response.addHeader("Authorization", username+"q=my_"+sercity);
 	}
 
-	private String getCookieUserName(HttpServletRequest request) {
-		String userName= null;
-		Cookie[] cookies = request.getCookies();
-		if(cookies!=null) {
-			for(Cookie cookie:cookies) {
-				if(cookie.getName().equals("_octouser")) {
-					userName = cookie.getValue();
-					break;
-				}
-			}
-		}
-		return userName;
-	}
 	private String getTokenUserName(HttpServletRequest request) {
 		String userName= null;
 		try{
@@ -215,20 +171,7 @@ public class LoginFilter implements Filter{
 		return userName;
 	}
 
-	private String getCookieVerify(HttpServletRequest request) {
-		String sercityOldCookie= null;
-		Cookie[] cookies = request.getCookies();
-		//获取cookie中的验证信息，不存在直接验证失败
-		if(cookies!=null) {
-			for(Cookie cookie:cookies) {
-				if(cookie.getName().equals("_tzBDSFRCVID")) {
-					sercityOldCookie = cookie.getValue();
-					break;
-				}
-			}
-		}
-		return sercityOldCookie;
-	}
+
 
 	private String getTokenVerify(HttpServletRequest request) {
 		String sercityOldToken= null;

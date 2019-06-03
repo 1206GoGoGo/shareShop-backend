@@ -36,7 +36,4 @@ public interface ProCouponDao {
 	//根据用户Id查看用户领取的未使用(状态为0)优惠券信息的数量
 	Integer getCouponByUIdNum(String id);
 
-	//获取当前登录用户领取优惠券数量
-	Integer getCouponAmountByUser(int userId);
-
 }
