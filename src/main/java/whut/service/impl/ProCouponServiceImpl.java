@@ -134,7 +134,7 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public Integer getCouponAmountByUser() {
-		return proCouponDao.getCouponAmountByUser(SysContent.getUserId());
+		return proCouponDao.getCouponByUIdNum(String.valueOf(SysContent.getUserId()));
 	}
 	
 	

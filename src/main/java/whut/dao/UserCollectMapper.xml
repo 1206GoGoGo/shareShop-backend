@@ -58,6 +58,8 @@
 	 	where uc.collect_id = #{collectId}
    </select>
   
-  
+   <select id="getCollectAmountByUser" parameterType="int" resultType="java.lang.Integer">
+       select count(*) from user_collect where user_id = #{id}
+   </select>
   
 </mapper>
