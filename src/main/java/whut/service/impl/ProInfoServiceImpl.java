@@ -31,6 +31,9 @@ public class ProInfoServiceImpl implements ProInfoService{
 	@Autowired
 	private ProDiscountService proDiscountService;
 	
+	//查找返回的查询项
+	String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description","sales"}; 
+	
 	@Override
 	public ResponseData getList(Integer pageindex, Integer pagesize) {
 		// TODO Auto-generated method stub
@@ -66,7 +69,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 		if(field == "sales" || field =="pscore" || field == "inputTime") {
 			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
 		}	
-		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"}; 
 		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,"*:*",queryItem,field,judge,null));
 	}
 
@@ -142,7 +144,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 			if(jedis != null)
 				JedisUtil.closeJedis(jedis);
 		}
-		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
 		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,"productName:"+name,queryItem,field,judge,null));
 	}
 
@@ -182,8 +183,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 			judge = -1;		//如果按销量、评分、录入时间排序则是默认从高到低递减排序（降序）
 		}
 		String searchCondition = "oneCategoryId:"+id+" || twoCategoryId:"+id;
-		String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description"};
-		//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);
 		return new ResponseData(200,"success",SolrJUtil.searchNew(pageindex,pagesize,searchCondition,queryItem,field,judge,null));
 	}
 
