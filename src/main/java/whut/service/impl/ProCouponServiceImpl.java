@@ -110,11 +110,17 @@ public class ProCouponServiceImpl implements ProCouponService{
 	@Override
 	public ResponseData addCouponReceive(CouponReceive couponReceive) {
 		// TODO Auto-generated method stub
+		Integer cid = couponReceive.getCouponId();
+		if(proCouponDao.getCouponDetailById(cid.toString()).getRemainingQuantity() > 0){
+			proCouponDao.delCouponRemain(cid);
+		}
+			
 		CouponReceive couponReceive1 = new CouponReceive();
-		couponReceive1.setCouponId(couponReceive.getCouponId());
+		couponReceive1.setCouponId(cid);
 		couponReceive1.setUserId(SysContent.getUserId());
 		couponReceive1.setStatus((byte) 1);		//0表示已使用，1表示未使用
 		proCouponDao.addCouponReceive(couponReceive1);
+		
 		return new ResponseData(200,"success",null);
 	}
 

@@ -101,4 +101,8 @@
         select count(*) from coupon_receive where user_id = #{id}
     </select>
     
+    <select id="delCouponRemain" parameterType="int">
+    	UPDATE coupon_info SET remaining_quantity = remaining_quantity - 1 where coupon_id = #{id}
+    </select>
+    
   </mapper>

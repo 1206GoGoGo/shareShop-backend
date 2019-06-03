@@ -39,4 +39,7 @@ public interface ProCouponDao {
 	//获取当前登录用户领取优惠券数量
 	Integer getCouponAmountByUser(int userId);
 
+	//删除优惠券的张数
+	void delCouponRemain(Integer cid);
+
 }
