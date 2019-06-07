@@ -147,7 +147,7 @@
       		and date_format(create_time,'%Y%m%d') BETWEEN #{timebe} AND DATE_ADD(#{timeen},INTERVAL 1 DAY)
     	</if>
 		union
-		SELECT payment_money as money , pay_time as createTime ,'expend' as type, order_status as status FROM order_master where user_id = #{id} order_status = 5
+		SELECT payment_money as money , pay_time as createTime ,'expend' as type, order_status as status FROM order_master where user_id = #{id} and order_status = 5
 		<if test="timebe != null and timeen != null"> 
       		and date_format(pay_time,'%Y%m%d') BETWEEN #{timebe} AND DATE_ADD(#{timeen},INTERVAL 1 DAY)
     	</if>
