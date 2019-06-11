@@ -143,11 +143,12 @@ public class LoginFilter implements Filter{
 
 	//true表示可以不登录
 	private boolean testIsNeedLogin(String requestUri) {
-		boolean needLogin1 = requestUri.indexOf("/member/login/in")>-1;
+		boolean needLogin1 = requestUri.indexOf("/member/login/in")>-1;	
 		boolean needLogin2 = requestUri.indexOf("/pro/info")>-1;
+		boolean needLogin3 = requestUri.indexOf("/member/login/add")>-1;
 		
 		
-		boolean needLogin = needLogin1 || needLogin2;
+		boolean needLogin = needLogin1 || needLogin2 || needLogin3;
 		return needLogin;
 	}
 

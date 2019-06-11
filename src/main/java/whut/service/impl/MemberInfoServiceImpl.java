@@ -166,7 +166,7 @@ public class MemberInfoServiceImpl implements MemberInfoService {
 		  	objNode.put("username", info.getUserLogin().getUsername());
 		  	objNode.put("status", info.getUserLogin().getStatus());
 		  	objNode.put("level", info.getUserLogin().getLevel());
-		  	if(info.getGender().isEmpty()) objNode.set("gender", null); else objNode.put("gender", info.getGender());
+		  	if(info.getGender()== null) objNode.set("gender", null); else objNode.put("gender", info.getGender());
 		  	objNode.put("superiorId", info.getSuperiorId());
 		  	if(info.getPhoneNumber()==null) objNode.set("phoneNumber", null); else objNode.put("phoneNumber", info.getPhoneNumber());
 		  	if(info.getEmail()==null) objNode.set("email", null); else objNode.put("email", info.getEmail());	
