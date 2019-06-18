@@ -9,6 +9,7 @@
     <result column="identity_card_type" jdbcType="TINYINT" property="identityCardType" />
     <result column="identity_card_no" jdbcType="VARCHAR" property="identityCardNo" />
     <result column="phone_number" jdbcType="INTEGER" property="phoneNumber" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="gender" jdbcType="VARCHAR" property="gender" />
     <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
@@ -31,10 +32,10 @@
 
    <select id="add" parameterType="UserInfo">
     	INSERT INTO user_info
-    	(name,identity_card_type,identity_card_no,phone_number,email,gender,birthday,
+    	(name,identity_card_type,identity_card_no,phone_number,icon_url,email,gender,birthday,
     	register_time,user_id,superior_id)      
         VALUES
-    	(#{name},#{identityCardType},#{identityCardNo},#{phoneNumber},#{email},#{gender},#{birthday},
+    	(#{name},#{identityCardType},#{identityCardNo},#{phoneNumber},#{iconUrl},#{email},#{gender},#{birthday},
     	now(),#{userId},#{superiorId})
     </select>
     
@@ -45,7 +46,7 @@
    <select id="modify" parameterType="UserInfo">
     	UPDATE user_info SET 
     	name = #{name},identity_card_type = #{identityCardType},identity_card_no = #{identityCardNo},phone_number = #{phoneNumber},
-    	email = #{email},gender = #{gender},birthday = #{birthday},superior_id = #{superiorId}
+    	icon_url = #{iconUrl},email = #{email},gender = #{gender},birthday = #{birthday},superior_id = #{superiorId}
         WHERE user_id = #{userId}
     </select>
    

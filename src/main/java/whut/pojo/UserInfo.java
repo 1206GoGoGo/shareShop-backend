@@ -19,6 +19,8 @@ public class UserInfo implements Serializable{
     private String identityCardNo;  //证件号码
 
     private String phoneNumber;  //手机号
+    
+    private String iconUrl;//用户头像
 
     private String email;  //邮箱
 
@@ -82,6 +84,14 @@ public class UserInfo implements Serializable{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber == null ? null : phoneNumber.trim();
+    }
+    
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl == null ? null : iconUrl.trim();
     }
 
     public String getEmail() {

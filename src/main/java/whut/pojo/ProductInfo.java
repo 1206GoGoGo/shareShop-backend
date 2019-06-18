@@ -24,6 +24,8 @@ public class ProductInfo implements Serializable{
     private Integer twoCategoryId;//二级分类ID
 
     private Integer threeCategoryId;//三级分类ID
+    
+    private Byte isRecommend;//是否推荐
 
     private String mainImage;//主图
 
@@ -124,6 +126,14 @@ public class ProductInfo implements Serializable{
 
     public void setThreeCategoryId(Integer threeCategoryId) {
         this.threeCategoryId = threeCategoryId;
+    }
+    
+    public Byte getIsRecommend() {
+        return isRecommend;
+    }
+
+    public void setIsRecommend(Byte isRecommend) {
+        this.isRecommend = isRecommend;
     }
 
     public String getMainImage() {

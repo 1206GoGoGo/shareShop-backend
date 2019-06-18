@@ -10,6 +10,7 @@
     <result column="one_category_id" jdbcType="INTEGER" property="oneCategoryId" />
     <result column="two_category_id" jdbcType="INTEGER" property="twoCategoryId" />
     <result column="three_category_id" jdbcType="INTEGER" property="threeCategoryId" />
+    <result column="is_recommend" jdbcType="TINYINT" property="isRecommend" />
     <result column="main_image" jdbcType="VARCHAR" property="mainImage" />
     <result column="attribute_list" jdbcType="VARCHAR" property="attributeList" />
     <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
@@ -52,6 +53,7 @@
     <result column="one_category_id" jdbcType="INTEGER" property="oneCategoryId" />
     <result column="two_category_id" jdbcType="INTEGER" property="twoCategoryId" />
     <result column="three_category_id" jdbcType="INTEGER" property="threeCategoryId" />
+     <result column="is_recommend" jdbcType="TINYINT" property="isRecommend" />
     <result column="main_image" jdbcType="VARCHAR" property="mainImage" />
     <result column="attribute_list" jdbcType="VARCHAR" property="attributeList" />
     <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
@@ -74,7 +76,7 @@
   
   	<sql id="proInfo">
   		SELECT pi.product_id,pi.product_name,pi.brand_name,pi.spu,pi.one_category_id,pi.two_category_id,pi.three_category_id,
-  		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.use_coupon,
+  		pi.is_recommend,pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.use_coupon,
   		pi.discount_rate,pi.production_date,pi.description pro_description,pi.stock,pi.html,pi.input_time,pi.modified_time, 
   		ps.product_specs_id,ps.name,ps.product_code,ps.specs,ps.specs_sort,ps.pic_url,ps.average_cost,ps.original_price,
   		ps.price,ps.description,ps.product_stock,ps.create_time,ps.update_time,psp.min_price,psp.max_price,pc.score  FROM product_info pi
@@ -135,7 +137,7 @@
     
     <select id="getSolrDoucumentList" resultMap="ForSearchResultMap">
     	SELECT pi.product_id,pi.product_name,pi.brand_name,pi.one_category_id,pi.two_category_id,pi.three_category_id,
-		pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.audit_status,pi.use_coupon,pi.discount_rate,
+		pi.is_recommend,pi.main_image,pi.attribute_list,pi.publish_status,pi.audit_status,pi.audit_status,pi.use_coupon,pi.discount_rate,
 		pi.production_date,pi.description,pi.stock,pi.html,pi.input_time,pi.modified_time,pc.score pscore,ps.min_price,ps.max_price,IFNULL(uc.collect,0) collect,
 		IFNULL(oc.cart,0) cart,IFNULL(od.sales,0) sales
 		FROM product_info pi
