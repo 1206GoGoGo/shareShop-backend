@@ -49,7 +49,9 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	}
 
 	@Override
-	public ResponseData collectOrNot(int productId) {
+	public ResponseData collectOrNot(String jsonString) {
+		JsonUtils jsonUtils = new JsonUtils(jsonString);
+		int productId = jsonUtils.getIntValue("productId");
 		
 		Map<String, Integer> map = new HashMap<>();
 		map.put("productId", productId);

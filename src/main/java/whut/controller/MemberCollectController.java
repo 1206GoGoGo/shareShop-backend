@@ -46,9 +46,9 @@ public class MemberCollectController {
 		return  memberCollectService.getAmountById(id);
 	}
 	
-	@RequestMapping(value = "/collectOrNot", method = RequestMethod.POST)
-	public @ResponseBody ResponseData collectOrNot(int productId) {
-		return  memberCollectService.collectOrNot(productId);
+	@RequestMapping(value = "/collectOrNot", method = RequestMethod.POST,consumes="application/json")
+	public @ResponseBody ResponseData collectOrNot(@RequestBody String jsonString) {
+		return  memberCollectService.collectOrNot(jsonString);
 	}
 	
 	
