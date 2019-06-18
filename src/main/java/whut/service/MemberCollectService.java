@@ -10,9 +10,7 @@ public interface MemberCollectService {
 
 	ResponseData getAmountById(int id);
 
-	ResponseData add(String jsonString);
-	
-	ResponseData cancel(int productId);
+	ResponseData collectOrNot(int productId);
 	
 	ResponseData delete(String jsonString);
 	

@@ -49,35 +49,23 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	}
 
 	@Override
-	public ResponseData add(String jsonString) {
-
-		JsonUtils jsonUtils = new JsonUtils(jsonString);
-		int productId = jsonUtils.getIntValue("productId");
+	public ResponseData collectOrNot(int productId) {
 		
 		Map<String, Integer> map = new HashMap<>();
 		map.put("productId", productId);
 		map.put("userId", SysContent.getUserId());
         UserCollect userCollect = dao.getCollect(map);
 		if(userCollect!=null) {
+			dao.cancel(map);  //取消收藏
 			return new ResponseData(406,"the merchandise has been collected",null);
 		}
         userCollect = new UserCollect();
 		userCollect.setUserId(SysContent.getUserId());
 		userCollect.setProductId(productId);
-		userCollect.setCollectTime(new java.util.Date());
-		dao.add(userCollect);
+		dao.add(userCollect);   //收藏
 		return new ResponseData(null);
 	}
 	
-	@Override
-	public ResponseData cancel(int productId) {
-		
-		Map<String, Integer> map = new HashMap<>();
-		map.put("productId", productId);
-		map.put("userId", SysContent.getUserId());
-        dao.cancel(map);
-        return new ResponseData(null);
-	}
 
 	@Override
 	public ResponseData delete(String jsonString) {

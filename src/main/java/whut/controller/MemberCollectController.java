@@ -46,19 +46,9 @@ public class MemberCollectController {
 		return  memberCollectService.getAmountById(id);
 	}
 	
-	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public @ResponseBody ResponseData add(@RequestBody String jsonString) {
-		return  memberCollectService.add(jsonString);
-	}
-	
-	/**
-	 * 取消收藏
-	 * @param productId  商品id
-	 * @return
-	 */
-	@RequestMapping(value = "/cancel", method = RequestMethod.POST)
-	public @ResponseBody ResponseData cancel(int productId) {
-		return  memberCollectService.cancel(productId);
+	@RequestMapping(value = "/collectOrNot", method = RequestMethod.POST)
+	public @ResponseBody ResponseData collectOrNot(int productId) {
+		return  memberCollectService.collectOrNot(productId);
 	}
 	
 	
