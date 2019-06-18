@@ -27,6 +27,16 @@ public class MemberCollectController {
 	}
 	
 	/**
+	 * 判断商品是否被用户收藏
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/getIsCollected", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getIsCollected(int productId) {
+		return memberCollectService.getIsCollected(productId);
+	}
+	
+	/**
 	 * 通过商品id获取收藏数量
 	 * @param id
 	 * @return
@@ -39,6 +49,16 @@ public class MemberCollectController {
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
 	public @ResponseBody ResponseData add(@RequestBody String jsonString) {
 		return  memberCollectService.add(jsonString);
+	}
+	
+	/**
+	 * 取消收藏
+	 * @param productId  商品id
+	 * @return
+	 */
+	@RequestMapping(value = "/cancel", method = RequestMethod.POST)
+	public @ResponseBody ResponseData cancel(int productId) {
+		return  memberCollectService.cancel(productId);
 	}
 	
 	

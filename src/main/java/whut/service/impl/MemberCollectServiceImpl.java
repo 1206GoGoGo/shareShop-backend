@@ -28,6 +28,20 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 			return new ResponseData(200,"success",list);
 		}
 	}
+	
+	@Override
+	public ResponseData getIsCollected(int productId) {
+		
+		Map<String, Integer> map = new HashMap<>();
+		map.put("productId", productId);
+		map.put("userId", SysContent.getUserId());
+        UserCollect userCollect = dao.getCollect(map);
+		if(userCollect!=null) {
+			return new ResponseData(200,"the merchandise has been collected",1);
+		}
+		
+		return new ResponseData(210,"the merchandise has not been collected",0);
+	}
 
 	@Override
 	public ResponseData getAmountById(int id) {
@@ -54,6 +68,16 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 		dao.add(userCollect);
 		return new ResponseData(null);
 	}
+	
+	@Override
+	public ResponseData cancel(int productId) {
+		
+		Map<String, Integer> map = new HashMap<>();
+		map.put("productId", productId);
+		map.put("userId", SysContent.getUserId());
+        dao.cancel(map);
+        return new ResponseData(null);
+	}
 
 	@Override
 	public ResponseData delete(String jsonString) {
@@ -76,4 +100,8 @@ public class MemberCollectServiceImpl implements MemberCollectService {
 	public Integer getCollectAmountByUser() {
 		return dao.getCollectAmountByUser(SysContent.getUserId());
 	}
+
+
+
+	
 }

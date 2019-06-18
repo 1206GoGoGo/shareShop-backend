@@ -53,6 +53,7 @@
 	            <param-value>
 	                http://localhost:8080,
 	                http://localhost:8081,
+	                http://localhost:8082,
 	                https://sarahcsy.github.io,
 	                http://10.120.189.2:8080
 	            </param-value>

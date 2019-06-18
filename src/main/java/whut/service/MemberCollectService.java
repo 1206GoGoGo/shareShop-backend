@@ -5,11 +5,15 @@ import whut.utils.ResponseData;
 public interface MemberCollectService {
 
 	ResponseData getListByUser();
+	
+	ResponseData getIsCollected(int productId);
 
 	ResponseData getAmountById(int id);
 
 	ResponseData add(String jsonString);
-
+	
+	ResponseData cancel(int productId);
+	
 	ResponseData delete(String jsonString);
 	
 	//获取当前登录用户收藏商品数

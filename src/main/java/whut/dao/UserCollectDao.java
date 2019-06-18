@@ -17,8 +17,11 @@ public interface UserCollectDao {
 
 	//新增收藏
 	void add(UserCollect userCollect);
+	
+	//通过用户id和商品id取消收藏
+	void cancel(Map<String, Integer> map);
 
-	//删除收藏
+	//通过收藏id删除收藏
 	void delete(int collectId);
 
 	//通过collectId获取收藏

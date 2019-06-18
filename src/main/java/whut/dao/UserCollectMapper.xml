@@ -45,6 +45,10 @@
         (#{userId},#{productId},now())
    </select>
    
+    <select id="cancel" parameterType="hashmap">
+    	delete from user_collect where user_id = #{userId} and product_id = #{productId}
+    </select>
+    
    <select id="delete" parameterType="int">
     	delete from user_collect where collect_id = #{collectId}
     </select>
