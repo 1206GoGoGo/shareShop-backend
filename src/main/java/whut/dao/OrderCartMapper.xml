@@ -42,7 +42,7 @@
     
     <select id="getCartBySpecsId" parameterType="hashmap" resultMap="BaseResultMap">
        <include refid="orderCart"/>
-        where oc.user_id = #{userId} and oc.product_specs_id = #{productSpecsId}
+        where oc.user_id = #{userId} and oc.product_specs_id = #{productSpecsId} and oc.product_id = #{productId}
    </select>
    
    <select id="addCart" parameterType="OrderCart">

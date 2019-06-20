@@ -92,6 +92,7 @@ public class MemberShopCartServiceImpl implements MemberShopCartService {
 	public ResponseData add(OrderCart orderCart) {
 		Map<String, Integer> map = new HashMap<>();
 		map.put("productSpecsId", orderCart.getProductSpecsId());
+		map.put("productId", orderCart.getProductId());
 		map.put("userId", SysContent.getUserId());
 		OrderCart orderCartOld = dao.getCartBySpecsId(map);
 		if(orderCartOld != null) {
