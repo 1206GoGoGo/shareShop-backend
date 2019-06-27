@@ -1,11 +1,15 @@
 package whut.service;
 
+
 import whut.utils.ResponseData;
 
 
 public interface ProInfoService {
 
 	public ResponseData getList(Integer pageindex, Integer pagesize);
+	
+	//获取推荐商品
+	public ResponseData getRecommendPro(); 
 	
 	public ResponseData getPicList(String id);
 

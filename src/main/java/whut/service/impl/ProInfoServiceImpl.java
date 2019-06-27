@@ -203,5 +203,16 @@ public class ProInfoServiceImpl implements ProInfoService{
 			return new ResponseData(400,"no data",null);
 		}
 	}
+
+
+	@Override
+	public ResponseData getRecommendPro() {
+		List<ProductInfo> list = proInfoDao.getRecommendPro();
+		if(list != null) {
+			return new ResponseData(200,"success",list);
+		}else {
+			return new ResponseData(400,"no data",null);
+		}
+	}
 	
 }

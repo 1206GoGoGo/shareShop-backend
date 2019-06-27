@@ -10,6 +10,9 @@ public interface ProInfoDao {
 
 	//获取所有商品列表
 	List<ProductInfo> getList(Map<String, Object> map);
+	
+	//获取推荐商品列表
+	List<ProductInfo> getRecommendPro();
 
 	//根据商品id获取某商品详情
 	ProductInfo getDetail(String id);

@@ -70,6 +70,11 @@ public class ProInfoController {
 		return proInfoService.getPicList(id);	
 	}
 	
+	@RequestMapping(value = "/getRecommendPro", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getRecommendPro(){
+		return proInfoService.getRecommendPro();	
+	}
+	
 }
 	
 

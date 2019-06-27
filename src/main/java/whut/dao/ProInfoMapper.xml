@@ -96,6 +96,11 @@
         ORDER BY product_id
     </select>
     
+    <select id="getRecommendPro" resultMap="BaseResultMap">
+    	 <include refid="proInfo"/>
+    	  where is_recommend = 1 and publish_status = 1 and audit_status = 1
+    </select>
+    
     <select id="getListNum" resultType="Integer">
         select count(*) from product_info
     </select>
