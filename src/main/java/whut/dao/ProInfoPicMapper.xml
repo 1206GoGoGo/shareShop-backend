@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="whut.dao.ProPicInfoDao">
+<resultMap id="BaseResultMap" type="whut.pojo.ProductPicInfo">
+    <id column="product_pic_id" jdbcType="INTEGER" property="productPicId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="pic_desc" jdbcType="VARCHAR" property="picDesc" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="is_master" jdbcType="TINYINT" property="isMaster" />
+    <result column="pic_status" jdbcType="TINYINT" property="picStatus" />
+    <result column="pic_order" jdbcType="TINYINT" property="picOrder" />
+  </resultMap>
+  
+   <select id="getPicList" parameterType="String" resultMap="BaseResultMap">
+        select * from product_pic_info where product_id = #{id}
+   </select>
+
+</mapper>

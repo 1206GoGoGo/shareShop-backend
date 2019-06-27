@@ -6,6 +6,8 @@ import whut.utils.ResponseData;
 public interface ProInfoService {
 
 	public ResponseData getList(Integer pageindex, Integer pagesize);
+	
+	public ResponseData getPicList(String id);
 
 	public ResponseData getDetail(String id);
 

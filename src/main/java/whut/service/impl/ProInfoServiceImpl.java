@@ -2,7 +2,6 @@ package whut.service.impl;
 
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import redis.clients.jedis.Jedis;
 import whut.dao.ProInfoDao;
+import whut.dao.ProPicInfoDao;
 import whut.pojo.ProductInfo;
+import whut.pojo.ProductPicInfo;
 import whut.service.ProDiscountService;
 import whut.service.ProInfoService;
 import whut.utils.JedisUtil;
@@ -31,12 +32,14 @@ public class ProInfoServiceImpl implements ProInfoService{
 	@Autowired
 	private ProDiscountService proDiscountService;
 	
+	@Autowired
+	private ProPicInfoDao proPicInfoDao;
+	 
 	//查找返回的查询项
 	String[] queryItem = new String[] {"productId", "productName","discountRate","pscore","mainImage","minPrice","maxPrice","description","sales"}; 
 	
 	@Override
 	public ResponseData getList(Integer pageindex, Integer pagesize) {
-		// TODO Auto-generated method stub
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
@@ -54,9 +57,9 @@ public class ProInfoServiceImpl implements ProInfoService{
 		}
 	}
 	
+	
 	@Override
 	public ResponseData getListSearch(Integer pageindex, Integer pagesize,String field,Byte judge) {
-		// TODO Auto-generated method stub
 		if(pageindex == null) {
 			pageindex = 1;
 		}
@@ -74,7 +77,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Override
 	public ResponseData getDetail(String id) {
-		// TODO Auto-generated method stub
 		ProductInfo productInfo = proInfoDao.getDetail(id);
 		if(productInfo != null) {
 			//用户点击一个商品详情则记录到Redis浏览信息中（view:商品id）是键，（次数）是值
@@ -87,7 +89,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 					jedis.incr("view:"+id);		//对查询到的商品id对应的值，即次数，自增1
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				//e.printStackTrace();
 			}
 			//System.out.println(jedis.get("view:"+id));	//测试输出，根据键（view：商品id）查值（次数）
@@ -110,7 +111,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Override
 	public ResponseData search(String name,Integer pageindex, Integer pagesize,String field,Byte judge) {
-		// TODO Auto-generated method stub
 		//pageindex从1开始
 		if(pageindex == null) {
 			pageindex = 1;
@@ -138,7 +138,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 			
 			//SolrJUtil.search(pageindex,pagesize,"productName:"+name,new String[] {"productId", "productName","discountRate","price","mainImage"},null,null,null);	//测试
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			//如果用户未登录，则获取不到用户ID，SysContent.getUserId()方法会抛出异常，这里不做处理
 		} finally {
 			if(jedis != null)
@@ -149,7 +148,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Override
 	public ResponseData getListByCategory(String id,Integer pageindex, Integer pagesize) {
-		// TODO Auto-generated method stub
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
@@ -169,7 +167,6 @@ public class ProInfoServiceImpl implements ProInfoService{
 	
 	@Override
 	public ResponseData getListByCategorySearch(String id, Integer pageindex, Integer pagesize,String field,Byte judge) {
-		// TODO Auto-generated method stub
 		if(pageindex == null) {
 			pageindex = 1;
 		}
@@ -188,10 +185,20 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Override
 	public ResponseData getDetailByCode(String id) {
-		// TODO Auto-generated method stub
 		ProductInfo productInfo = proInfoDao.getDetailByCode(id);
 		if(productInfo != null) {
 			return new ResponseData(200,"success",productInfo);
+		}else {
+			return new ResponseData(400,"no data",null);
+		}
+	}
+
+
+	@Override
+	public ResponseData getPicList(String id) {
+		List<ProductPicInfo> proPiclist = proPicInfoDao.getPicList(id);
+		if(proPiclist != null) {
+			return new ResponseData(200,"success",proPiclist);
 		}else {
 			return new ResponseData(400,"no data",null);
 		}

@@ -64,6 +64,12 @@ public class ProInfoController {
 		return proInfoService.getListByCategorySearch(id,pageindex, pagesize,field,judge);	
 	}
 	
+	//根据商品id获取商品的展示图
+	@RequestMapping(value = "/getPicList", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getPicList(String id){
+		return proInfoService.getPicList(id);	
+	}
+	
 }
 	
 
