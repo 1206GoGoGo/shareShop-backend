@@ -27,7 +27,7 @@ public class UserCollect implements Serializable{
     
     private String description;//商品描述
     
-    private BigDecimal price;//销售价格
+    private BigDecimal minPrice;//销售价格
 
     public Integer getCollectId() {
         return collectId;
@@ -93,13 +93,12 @@ public class UserCollect implements Serializable{
 		this.description = description;
 	}
 
-	public BigDecimal getPrice() {
-		return price;
+	public BigDecimal getMinPrice() {
+		return minPrice;
 	}
 
-	public void setPrice(BigDecimal price) {
-		this.price = price;
-	}
-    
+	public void setMinPrice(BigDecimal minPrice) {
+		this.minPrice = minPrice;
+	}    
     
 }

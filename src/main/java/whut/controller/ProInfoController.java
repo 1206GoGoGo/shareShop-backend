@@ -70,6 +70,7 @@ public class ProInfoController {
 		return proInfoService.getPicList(id);	
 	}
 	
+	//获取推荐的商品
 	@RequestMapping(value = "/getRecommendPro", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getRecommendPro(){
 		return proInfoService.getRecommendPro();	

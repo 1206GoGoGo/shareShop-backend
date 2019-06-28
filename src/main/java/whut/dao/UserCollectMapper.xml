@@ -11,12 +11,12 @@
     <result column="main_image" jdbcType="VARCHAR" property="mainImage" />
     <result column="publish_status" jdbcType="TINYINT" property="publishStatus" />
     <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="price" property="price" jdbcType="DECIMAL" />
+    <result column="min_price" jdbcType="DECIMAL" property="minPrice"  />
   </resultMap>
   
    <select id="getListByUser" parameterType="int" resultMap="BaseResultMap">
        	SELECT uc.collect_id,uc.product_id,uc.user_id,uc.collect_time,
-		pi.product_name,pi.main_image,pi.publish_status,pi.description,mp.price
+		pi.product_name,pi.main_image,pi.publish_status,pi.description,mp.price min_price
 		FROM user_collect uc
 		LEFT JOIN product_info pi on pi.product_id = uc.product_id
 		LEFT JOIN (select product_id,min(price) price FROM product_specs GROUP BY product_id) mp ON mp.product_id = uc.product_id
