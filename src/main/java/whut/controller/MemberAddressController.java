@@ -23,6 +23,11 @@ public class MemberAddressController {
 		return  memberAddressService.getListByUserId();
 	}
 	
+	@RequestMapping(value = "/getAddrByAddrId", method = RequestMethod.GET)
+	public @ResponseBody ResponseData getAddrByAddrId(int addrId) {
+		return  memberAddressService.getAddrByAddrId(addrId);
+	}
+	
 	@RequestMapping(value = "/modify", method = RequestMethod.POST)
 	public @ResponseBody ResponseData modify(@RequestBody UserAddr userAddr) {
 		return  memberAddressService.modify(userAddr);

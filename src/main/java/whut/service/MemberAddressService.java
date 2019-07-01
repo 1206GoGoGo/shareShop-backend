@@ -6,6 +6,8 @@ import whut.utils.ResponseData;
 public interface MemberAddressService {
 	
 	public ResponseData getListByUserId();
+	
+	public ResponseData getAddrByAddrId(int addrId);
 
 	public ResponseData modify(UserAddr userAddr);
 

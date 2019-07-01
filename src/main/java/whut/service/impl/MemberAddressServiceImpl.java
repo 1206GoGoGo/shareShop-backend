@@ -93,4 +93,15 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 		return new ResponseData(cityList);
 	}
 
+	@Override
+	public ResponseData getAddrByAddrId(int addrId) {
+		
+		UserAddr userAddr = dao.getAddrByAddrId(addrId);
+		if(userAddr == null) {
+			return new ResponseData(400,"no data satify request",null);
+		}else {
+			return new ResponseData(200,"success",userAddr);
+		}
+	}
+
 }
