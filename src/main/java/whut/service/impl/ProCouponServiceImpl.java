@@ -24,7 +24,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData getList(Integer pageindex, Integer pagesize) {
-		// TODO Auto-generated method stub
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
@@ -45,7 +44,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 	
 	@Override
 	public ResponseData getCouponDetailById(String id) {
-		// TODO Auto-generated method stub
 		CouponInfo couponInfo = proCouponDao.getCouponDetailById(id);
 		if(couponInfo != null) {
 			return new ResponseData(200,"success",couponInfo);
@@ -56,7 +54,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData getCouponByUId(String id,Integer pageindex, Integer pagesize) {
-		// TODO Auto-generated method stub
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
@@ -77,7 +74,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData addCouponLogs(CouponLogs couponLogs) {
-		// TODO Auto-generated method stub
 		CouponLogs couponLogs1 = new CouponLogs();
 		couponLogs1.setCouponId(couponLogs.getCouponId());
 		couponLogs1.setUserId(SysContent.getUserId());
@@ -89,7 +85,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData getCouponLogsListByStatus(String status,Integer pageindex, Integer pagesize) {
-		// TODO Auto-generated method stub
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
@@ -109,7 +104,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData addCouponReceive(CouponReceive couponReceive) {
-		// TODO Auto-generated method stub
 		Integer cid = couponReceive.getCouponId();
 		if(proCouponDao.getCouponDetailById(cid.toString()).getRemainingQuantity() > 0){
 			proCouponDao.delCouponRemain(cid);
@@ -126,7 +120,6 @@ public class ProCouponServiceImpl implements ProCouponService{
 
 	@Override
 	public ResponseData modifyCouponReceiveStatus(String id) {
-		// TODO Auto-generated method stub
 		proCouponDao.modifyCouponReceiveStatus(id);
 		return new ResponseData(200,"success",null);
 	}

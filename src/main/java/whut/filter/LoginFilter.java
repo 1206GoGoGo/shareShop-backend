@@ -20,7 +20,7 @@ public class LoginFilter implements Filter{
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -31,10 +31,9 @@ public class LoginFilter implements Filter{
 			throws IOException, ServletException {
 		
 		String requestUri = ((HttpServletRequest)request).getRequestURI();
-		//用户登录不过滤
-		
-		if( requestUri.indexOf("/member/login/in")>-1 ) {
-			//继续执行
+		//验证该请求连接是否不需要登录
+		if(testIsNeedLogin(requestUri)) {
+			//无需登录即可访问
 			chain.doFilter(request,response);
 			return;
 		}
@@ -47,11 +46,6 @@ public class LoginFilter implements Filter{
 		sercityOldCookieOrToken = getTokenVerify((HttpServletRequest) request);
 		
 		if(sercityOldCookieOrToken == null) {
-			if(testIsNeedLogin(requestUri)) {
-				//无需登录即可访问
-				chain.doFilter(request,response);
-				return;
-			}
 			response.setContentType("application/json;charset=UTF-8");
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录1\",\"data\": null}");
         	return;
@@ -67,13 +61,7 @@ public class LoginFilter implements Filter{
 			//session登录信息已清除
 			userName = getTokenUserName((HttpServletRequest) request);
 			
-
 			if(userName == null) {
-				if(testIsNeedLogin(requestUri)) {
-					//无需登录即可访问
-					chain.doFilter(request,response);
-					return;
-				}
 				response.setContentType("application/json;charset=UTF-8");
 	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录2\",\"data\": null}");
 	        	return;
@@ -82,42 +70,25 @@ public class LoginFilter implements Filter{
 				userId = jedis.get("login:"+userName+":userid");
 			}catch(Exception e2) {
 				JedisUtil.closeJedis(jedis);
-				if(testIsNeedLogin(requestUri)) {
-					//无需登录即可访问
-					chain.doFilter(request,response);
-					return;
-				}
 				response.setContentType("application/json;charset=UTF-8");
 	        	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录3\",\"data\": null}");
 	        	return;
 			}
 		}
-		
 
 		//获取redis中的验证信息
 		try {
 			sercityOldRedis = jedis.get("login:"+userName+":tz");
 		}catch(Exception e) {
 			JedisUtil.closeJedis(jedis);
-			if(testIsNeedLogin(requestUri)) {
-				//无需登录即可访问
-				chain.doFilter(request,response);
-				return;
-			}
 			response.setContentType("application/json;charset=UTF-8");
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录4\",\"data\": null}");
         	return;
 		}
-
-		
+	
 		//判断客户端发送的安全验证是否符合条件
         if(!sercityOldCookieOrToken.equals(sercityOldRedis)) {
 			JedisUtil.closeJedis(jedis);
-			if(testIsNeedLogin(requestUri)) {
-				//无需登录即可访问
-				chain.doFilter(request,response);
-				return;
-			}
 			response.setContentType("application/json;charset=UTF-8");
         	response.getWriter().print( "{\"code\":403,\"msg\":\"用户未登录5\",\"data\": null}");
         	return;
@@ -144,9 +115,8 @@ public class LoginFilter implements Filter{
 	//true表示可以不登录
 	private boolean testIsNeedLogin(String requestUri) {
 		boolean needLogin1 = requestUri.indexOf("/member/login/in")>-1;	
-		boolean needLogin2 = requestUri.indexOf("/pro/info")>-1;
+		boolean needLogin2 = requestUri.indexOf("/pro")>-1;
 		boolean needLogin3 = requestUri.indexOf("/member/login/add")>-1;
-		
 		
 		boolean needLogin = needLogin1 || needLogin2 || needLogin3;
 		return needLogin;

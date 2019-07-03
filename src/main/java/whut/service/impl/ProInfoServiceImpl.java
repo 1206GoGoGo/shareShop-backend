@@ -12,11 +12,13 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import whut.dao.ProInfoDao;
 import whut.dao.ProPicInfoDao;
+import whut.pojo.ProductCategory;
 import whut.pojo.ProductInfo;
 import whut.pojo.ProductPicInfo;
 import whut.service.ProDiscountService;
 import whut.service.ProInfoService;
 import whut.utils.JedisUtil;
+import whut.utils.JsonUtils;
 import whut.utils.ResponseData;
 import whut.utils.SolrJUtil;
 import whut.utils.SysContent;
@@ -82,12 +84,12 @@ public class ProInfoServiceImpl implements ProInfoService{
 			//用户点击一个商品详情则记录到Redis浏览信息中（view:商品id）是键，（次数）是值
 			Jedis jedis = null;
 			try {
-				jedis = JedisUtil.getJedis();
-				if(jedis.get("view:"+id) == null) {		//获取商品id对应的次数,如果为空说明未存过
-					jedis.set("view:"+id, "1");		//第一次存1
-				}else {
-					jedis.incr("view:"+id);		//对查询到的商品id对应的值，即次数，自增1
-				}
+			    jedis = JedisUtil.getJedis();
+			    if(jedis.hget("productView",id) == null) {		//获取商品id对应的次数,如果为空说明未存过
+			        jedis.hset("productView",id, "1");		//第一次存1
+			    }else {
+			        jedis.hincrBy("productView", id, 1);		//对查询到的商品id对应的值，即次数，自增1
+			    }
 			} catch (Exception e) {
 				//e.printStackTrace();
 			}
@@ -207,12 +209,34 @@ public class ProInfoServiceImpl implements ProInfoService{
 
 	@Override
 	public ResponseData getRecommendPro() {
+		
+		// 查询缓存
+		try {
+			Jedis jedis = JedisUtil.getJedis();
+			String jsonstr = jedis.get("recommendPro");
+			JedisUtil.closeJedis(jedis);
+			// 如果存在，说明有缓存
+			if (jsonstr != null) {
+				List<ProductInfo> list = JsonUtils.jsonToList(jsonstr, ProductInfo.class);
+				return new ResponseData(200, "success", list);
+			}
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		List<ProductInfo> list = proInfoDao.getRecommendPro();
 		if(list != null) {
+			try {
+				Jedis jedis = JedisUtil.getJedis();
+				jedis.set("recommendPro", JsonUtils.objectToJson(list));
+				JedisUtil.closeJedis(jedis);
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
 			return new ResponseData(200,"success",list);
 		}else {
 			return new ResponseData(400,"no data",null);
 		}
+
 	}
 	
 }

@@ -46,6 +46,7 @@ public class MemberLoginServiceImpl implements MemberLoginService {
 		if( !EncryptUtil.MD5(password).equals(userLogin.getPassword())) {
 			return new ResponseData(4061,"password error",null);
 		}
+		
 		//seller登录后台界面需要验证该信息
 //		if( userLogin.getLevel()!=20 ) {
 //			return new ResponseData(4063,"inadequate permissions",null);
@@ -115,9 +116,9 @@ public class MemberLoginServiceImpl implements MemberLoginService {
         	}
         }
         
-        
 		//清除redis中的验证信息
 		Jedis jedis = JedisUtil.getJedis();
+		jedis.del("login:"+userName+":userid");
 		jedis.del("login:"+userName+":tz");
     	JedisUtil.closeJedis(jedis);
         
