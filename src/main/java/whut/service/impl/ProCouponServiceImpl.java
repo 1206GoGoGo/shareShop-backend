@@ -53,13 +53,14 @@ public class ProCouponServiceImpl implements ProCouponService{
 	}
 
 	@Override
-	public ResponseData getCouponByUId(String id,Integer pageindex, Integer pagesize) {
+	public ResponseData getCouponByUId(Integer pageindex, Integer pagesize) {
 		if(pageindex == null)
 			pageindex = 0;
 		if(pagesize == null)
 			pagesize = 20;
+		String id = String.valueOf(SysContent.getUserId()); //获取用户id
 		Map<String,Object> map = new HashMap<>();
-		map.put("userId", id);
+		map.put("userId",id);
 		map.put("pageindex", pageindex);
 		map.put("pagesize", pagesize);
 		List<CouponReceive> list = new ArrayList<>();

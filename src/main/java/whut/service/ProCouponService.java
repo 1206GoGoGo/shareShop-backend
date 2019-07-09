@@ -10,7 +10,7 @@ public interface ProCouponService {
 
 	ResponseData getCouponDetailById(String id);
 
-	ResponseData getCouponByUId(String id, Integer pageindex, Integer pagesize);
+	ResponseData getCouponByUId(Integer pageindex, Integer pagesize);
 
 	ResponseData addCouponLogs(CouponLogs couponLogs);
 

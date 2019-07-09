@@ -36,7 +36,7 @@ public class ProCouponController {
 	//根据用户Id查看用户领取的未使用(状态为0)优惠券信息
 	@RequestMapping(value = "/getCouponByUId", method = RequestMethod.GET)
 	public @ResponseBody ResponseData getCouponByUId(String id,Integer pageindex, Integer pagesize) {
-		return proCouponService.getCouponByUId(id,pageindex, pagesize);
+		return proCouponService.getCouponByUId(pageindex, pagesize);
 	}
 	
 	//向优惠券消费记录表增加记录
