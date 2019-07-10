@@ -17,6 +17,7 @@
     <result column="category_id" jdbcType="INTEGER" property="categoryId" />
     <result column="status" jdbcType="TINYINT" property="status" />
     <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
   </resultMap>
   
   <resultMap id="CouponReceiveResultMap" type="whut.pojo.CouponReceive">
@@ -27,6 +28,11 @@
     <result column="full_money" jdbcType="DECIMAL" property="fullMoney" />
     <result column="receive_time" jdbcType="TIMESTAMP" property="receiveTime" />
     <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
   </resultMap>
   
   <resultMap id="CouponLogsResultMap" type="whut.pojo.CouponLogs">
@@ -41,21 +47,21 @@
   </resultMap>
   
   <select id="getList"  parameterType="hashmap" resultMap="CouponInfoResultMap">
-        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.full_money,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
-		LEFT JOIN product_category pc on pc.category_id = ci.category_id
-		where ci.status = 1 or ci.status = 0
+        SELECT coupon_id,name,type,coupon_money,full_money,image_url,start_time,end_time,amount,remaining_quantity,create_time,
+        category_id,status,category_name,description FROM coupon_info
+		where status = 1 or status = 0
         limit #{pageindex},#{pagesize}
    </select>
     
    <select id="getCouponDetailById" parameterType="string" resultMap="CouponInfoResultMap">
-        SELECT ci.coupon_id,ci.name,ci.type,ci.coupon_money,ci.full_money,ci.image_url,ci.start_time,ci.end_time,ci.amount,ci.remaining_quantity,ci.create_time,ci.category_id,ci.status,pc.category_name FROM coupon_info  ci
-		LEFT JOIN product_category pc on pc.category_id = ci.category_id
+        SELECT coupon_id,name,type,coupon_money,full_money,image_url,start_time,end_time,amount,remaining_quantity,create_time,
+        category_id,status,category_name,description FROM coupon_info
 		where coupon_id = #{id}
     </select>
     
     <select id="getCouponByUId" parameterType="hashmap" resultMap="CouponReceiveResultMap">
         SELECT cr.id,cr.user_id,cr.coupon_id,cr.receive_time,cr.status,
- 		ci.coupon_money,ci.full_money
+ 		ci.coupon_money,ci.full_money,ci.start_time,ci.end_time,ci.category_id,ci.category_name,ci.description
  		FROM coupon_receive  cr
 		LEFT JOIN coupon_info ci on ci.coupon_id = cr.coupon_id
 		where user_id = #{userId}

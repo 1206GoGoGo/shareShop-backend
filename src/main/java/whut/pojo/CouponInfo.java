@@ -38,6 +38,8 @@ public class CouponInfo implements Serializable{
     
     private String categoryName; //商品类别名称
 
+    private String description;//使用描述
+
     public Integer getCouponId() {
         return couponId;
     }
@@ -149,4 +151,13 @@ public class CouponInfo implements Serializable{
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
 }

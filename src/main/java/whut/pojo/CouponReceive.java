@@ -23,6 +23,16 @@ public class CouponReceive implements Serializable{
     private Date receiveTime;//领取时间
 
     private Byte status;//状态
+    
+    private Date startTime;//优惠券开始时间
+
+    private Date endTime;//优惠券结束时间
+    
+    private Integer categoryId;//商品类别id
+    
+    private String categoryName; //商品类别名称
+    
+    private String description;//使用描述
 
     public Integer getId() {
         return id;
@@ -79,4 +89,45 @@ public class CouponReceive implements Serializable{
     public void setStatus(Byte status) {
         this.status = status;
     }
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	public Integer getCategoryId() {
+		return categoryId;
+	}
+
+	public void setCategoryId(Integer categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
+	}
+    
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+    
 }
