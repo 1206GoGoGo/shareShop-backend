@@ -58,7 +58,7 @@ public class ProCouponServiceImpl implements ProCouponService{
 			pageindex = 0;
 		if(pagesize == null)
 			pagesize = 20;
-		String id = String.valueOf(SysContent.getUserId()); //获取用户id
+		String id = SysContent.getUserId()+""; //获取用户id
 		Map<String,Object> map = new HashMap<>();
 		map.put("userId",id);
 		map.put("pageindex", pageindex);
